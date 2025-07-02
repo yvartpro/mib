@@ -4,22 +4,27 @@ import com.example.madeinburundi.data.model.CartItem
 import com.example.madeinburundi.data.model.Order
 import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(
   private val client: HttpClient
 ) {
+  init {
+    println("Received: ${client.hashCode()}")
+  }
   suspend fun placeOrder(order: Order): Boolean {
+    println("Sending: ${order}")
     return try {
-      val response = client.post("https://mib.vovota.bi/api/orders/") {
+      val response = client.post("https://mib.vovota.bi/api/order/") {
         contentType(ContentType.Application.Json)
         setBody(order)
       }
+      println("Response: $response")
       response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK
     } catch (e: Exception) {
       e.printStackTrace()
+      println("Error found: ${e.message}")
       false
     }
   }
@@ -39,5 +44,4 @@ class OrderRepository @Inject constructor(
       append("\nTotal: ${total.toInt()} FC")
     }
   }
-
 }

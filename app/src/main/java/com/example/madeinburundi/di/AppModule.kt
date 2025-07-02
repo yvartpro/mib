@@ -21,14 +21,19 @@ object AppModule {
 
   @Provides
   @Singleton
-  fun provideHttpClient(): HttpClient = HttpClient(CIO) {
-    install(ContentNegotiation) {
-      json(Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-        prettyPrint = true
-      })
+  fun provideHttpClient(): HttpClient {
+    val client = HttpClient(CIO) {
+      install(ContentNegotiation) {
+        json(Json {
+          ignoreUnknownKeys = true
+          isLenient = true
+          prettyPrint = true
+        })
+      }
+
     }
+    println("Provided: ${client.hashCode()}")
+    return client
   }
 
   @Provides
@@ -47,5 +52,4 @@ object AppModule {
   fun provideUserRepository(client: HttpClient): UserRepository {
     return UserRepository(client)
   }
-
 }

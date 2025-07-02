@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.example.madeinburundi.data.model.CartItem
 import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.ui.theme.FontSizes
+import com.example.madeinburundi.ui.theme.GreenMIB
+import com.example.madeinburundi.viewmodel.OrderViewModel
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.launch
 
@@ -49,7 +51,9 @@ fun CartScreen(
   val totalAmount = cartViewModel.grandTotal
   val isCheckoutLoading = cartViewModel.isCheckingOut
   var showCheckoutDialog by remember { mutableStateOf(false) }
-  val orderRepository = remember { OrderRepository(client = HttpClient()) }
+  //val orderRepository = remember { OrderRepository(client = HttpClient()) }
+  //val orderRepository: OrderRepository = hiltViewModel()
+  //val orderRepository: OrderRepository = hiltViewModel<OrderViewModel>()
   val snackbarHostState = remember { SnackbarHostState() }
   val coroutineScope = rememberCoroutineScope()
 
@@ -92,8 +96,7 @@ fun CartScreen(
 
         CheckoutSummarySection(
           totalAmount = totalAmount,
-
-          onCheckoutClick = {cartViewModel.checkoutAndClear(2, orderRepository) { success ->
+          onCheckoutClick = {cartViewModel.checkoutAndClear(2) { success ->
             if (success) {
               showCheckoutDialog = true
             } else {
@@ -177,7 +180,7 @@ fun ModernCartItem(
             onClick = onDecreaseQuantity,
             modifier = Modifier.size(32.dp)
           ) {
-            Icon(painter = painterResource(R.drawable.remove), contentDescription = "Decrease")
+            Icon(painter = painterResource(R.drawable.remove), contentDescription = "Decrease", tint = Color.Red)
           }
 
           Text(
@@ -190,7 +193,7 @@ fun ModernCartItem(
             onClick = onIncreaseQuantity,
             modifier = Modifier.size(32.dp)
           ) {
-            Icon(Icons.Default.Add, contentDescription = "Increase")
+            Icon(Icons.Default.Add, contentDescription = "Increase", tint = GreenMIB)
           }
         }
       }

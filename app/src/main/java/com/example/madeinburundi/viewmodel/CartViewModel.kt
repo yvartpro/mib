@@ -36,7 +36,7 @@ class CartViewModel @Inject constructor(
   var isCheckingOut by mutableStateOf(false)
     private set
 
-  val grandTotal: Double
+  var grandTotal: Double = 0.0
     get() = cartItems.sumOf { it.product.price.toDouble() * it.quantity.value }
 
   init {
@@ -81,15 +81,20 @@ class CartViewModel @Inject constructor(
 
   fun checkoutAndClear(
     customerId: Int,
-    orderRepository: OrderRepository,
+    //orderRepository: OrderRepository,
     onResult: (Boolean) -> Unit
   ) {
+    isCheckingOut = true
     viewModelScope.launch {
-      isCheckingOut = true
-      val result = orderRepository.placeOrderMessage(customerId, cartItems)
-      if (result) clearCart()
+      val success = orderRepository.placeOrderMessage(customerId, cartItems)
+      if(success) {
+        cartItems.clear()
+        grandTotal = 0.00
+      }
+//      val result = orderRepository.placeOrderMessage(customerId, cartItems)
+//      if (result) clearCart()
       isCheckingOut = false
-      onResult(result)
+      //onResult(result)
     }
   }
 

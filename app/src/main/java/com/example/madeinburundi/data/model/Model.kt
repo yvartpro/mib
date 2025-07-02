@@ -64,6 +64,9 @@ data class TokenResponse(
 )
 
 @Serializable
-data class Order(val customer: Int, val description: String)
+data class Order(
+  val customer: Int,
+  val description: String
+)
 
 data class Category(val title: String, val name: String? = null, var isActive: Boolean)
