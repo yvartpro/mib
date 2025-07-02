@@ -14,7 +14,7 @@ class OrderRepository @Inject constructor(
     println("Received: ${client.hashCode()}")
   }
   suspend fun placeOrder(order: Order): Boolean {
-    println("Sending: ${order}")
+    println("Sending...: ${order}")
     return try {
       val response = client.post("https://mib.vovota.bi/api/order/") {
         contentType(ContentType.Application.Json)
@@ -26,6 +26,8 @@ class OrderRepository @Inject constructor(
       e.printStackTrace()
       println("Error found: ${e.message}")
       false
+    }finally {
+      println("Order placed successfully or failed")
     }
   }
   suspend fun placeOrderMessage(customerId: Int, cartItems: List<CartItem>): Boolean {

@@ -44,7 +44,7 @@ fun TopBar(
     navigationIcon = {
       if (showBackArrow) {
         IconButton(onClick = { navController.popBackStack() }) {
-          Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.Black)
+          Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
         }
       }
     },

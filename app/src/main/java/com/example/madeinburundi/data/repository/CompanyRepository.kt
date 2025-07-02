@@ -13,14 +13,10 @@ class CompanyRepository @Inject constructor(
 ) {
   suspend fun getCompanies(): List<Company> {
     return try {
-      println("🔎 Calling API...")
       val response: HttpResponse = client.get("https://mib.vovota.bi/api/company/")
-      println("✅ Response: ${response.status}")
       val rawJson = response.bodyAsText()
-      println("📦 Body: $rawJson")
 
       val companies = Json.decodeFromString<List<Company>>(rawJson)
-      println("✅ Companies loaded: ${companies.size}")
       companies
     } catch (e: Exception) {
       println("❌ Exception: ${e.message}")

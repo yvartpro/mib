@@ -3,11 +3,11 @@
   <component name="deploymentTargetSelector">
     <selectionStates>
       <SelectionState runConfigName="Made_In_Burundi.app">
-        <option name="selectionMode" value="DIALOG" />
-        <DropdownSelection timestamp="2025-07-02T07:51:34.035857486Z">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2025-07-02T13:38:17.598078418Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=12680154BP014552" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=105453738P111199" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -20,7 +20,7 @@
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=12680154BP014552" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=QV70376110" />
               </handle>
             </Target>
           </targets>

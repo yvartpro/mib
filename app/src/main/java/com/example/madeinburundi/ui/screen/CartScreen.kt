@@ -51,9 +51,6 @@ fun CartScreen(
   val totalAmount = cartViewModel.grandTotal
   val isCheckoutLoading = cartViewModel.isCheckingOut
   var showCheckoutDialog by remember { mutableStateOf(false) }
-  //val orderRepository = remember { OrderRepository(client = HttpClient()) }
-  //val orderRepository: OrderRepository = hiltViewModel()
-  //val orderRepository: OrderRepository = hiltViewModel<OrderViewModel>()
   val snackbarHostState = remember { SnackbarHostState() }
   val coroutineScope = rememberCoroutineScope()
 
@@ -73,6 +70,7 @@ fun CartScreen(
   ) { innerPadding ->
     Column(
       modifier = Modifier
+        .fillMaxSize()
         .padding(innerPadding)
         .padding(horizontal = 16.dp)
         .verticalScroll(rememberScrollState())

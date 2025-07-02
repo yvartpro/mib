@@ -32,6 +32,7 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
       error = null
       try {
         user = userRepository.getProfile()
+        println("User is: $user")
       }catch (e: UnAuthorizedException){
         _navigateToLogin.emit(Unit)
       }catch (e: Exception) {

@@ -1,17 +1,29 @@
 package com.example.madeinburundi.ui.component
 
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +32,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,16 +41,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.madeinburundi.R
+import com.example.madeinburundi.ui.screen.Country
 import com.example.madeinburundi.ui.theme.GreenMIB
+import io.ktor.client.plugins.ConnectTimeoutException
+import kotlin.math.exp
 
 @Composable
 fun InputField(
@@ -224,4 +245,94 @@ fun ProfileTextField(
       unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
     )
   )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PhoneInputField(
+  modifier: Modifier = Modifier,
+  onPhoneChanged: (String) -> Unit,
+  countries: List<Country>
+) {
+  var expanded by remember { mutableStateOf(false) }
+  var selectedCountry by remember { mutableStateOf(countries.first()) }
+  var localNumber by remember { mutableStateOf("") }
+
+  val fullNumber = "$selectedCountry$localNumber"
+  val flag = selectedCountry.flag
+  val code = selectedCountry.code
+  val name = selectedCountry.name
+  LaunchedEffect(fullNumber) {
+    onPhoneChanged(fullNumber)
+  }
+
+  Row(
+    modifier = modifier.fillMaxWidth(),
+    verticalAlignment = Alignment.CenterVertically,
+
+  ) {
+    // Country Code Dropdown
+    ExposedDropdownMenuBox(
+      expanded = expanded,
+      onExpandedChange = { expanded = !expanded }
+    ) {
+      OutlinedTextField(
+        readOnly = true,
+        value = selectedCountry.initial,
+        onValueChange = {},
+        trailingIcon = {
+          ExposedDropdownMenuDefaults.TrailingIcon(expanded)
+        },
+        modifier = Modifier
+          .menuAnchor()
+          .width(100.dp)
+          .fillMaxHeight()
+      )
+
+      ExposedDropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { expanded = false }
+      ) {
+        countries.forEach { country ->
+          DropdownMenuItem(
+            text = { Text("${country.code}")},
+            leadingIcon = {
+              Image(
+                painter = painterResource(country.flag),
+                contentDescription = country.name,
+                modifier = Modifier.size(24.dp)
+              )
+            },
+            onClick = {
+              selectedCountry = country
+              expanded = false
+            }
+          )
+        }
+      }
+    }
+    Spacer(modifier = Modifier.width(8.dp))
+    // Local number input
+    OutlinedTextField(
+      value = localNumber,
+      onValueChange = {
+        localNumber = it.filter { c -> c.isDigit() }
+      },
+      keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+      visualTransformation = PhonePrefixTransform("+${code}"),
+      modifier = Modifier.weight(1f)
+    )
+  }
+}
+
+
+class PhonePrefixTransform(private val prefix: String): VisualTransformation {
+  override fun filter(text: AnnotatedString): TransformedText {
+    val newText = prefix + text.text
+    val offSetMapping = object: OffsetMapping {
+      override fun originalToTransformed(offset: Int): Int = offset + prefix.length
+      override fun transformedToOriginal(offset: Int): Int = (offset - prefix.length).coerceAtLeast(0)
+    }
+    return TransformedText(AnnotatedString(newText), offSetMapping)
+  }
 }

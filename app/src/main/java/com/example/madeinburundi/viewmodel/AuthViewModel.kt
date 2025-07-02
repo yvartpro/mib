@@ -41,7 +41,7 @@ class AuthViewModel @Inject constructor(
           _message.value = "Compte créé avec succès"
         } else {
           _isError.value = true
-          _message.value = "Une erreur est survenue"
+          _message.value = "Une erreur est survenue. Veuillez réessayer"
         }
       } catch (e: Exception) {
         _isError.value = true
@@ -59,15 +59,17 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       try {
         val result = authRepository.loginUser(phone, password)
+        println("Errorviewmodel: $result")
         if (result != null) {
           _token.value = result
-          TokenManager.saveTokens(result.access, result.refresh) //save authentication keys for user
+          TokenManager.saveTokens(result.access, result.refresh)
           _message.value = "Connexion réussie"
         } else {
           _isError.value = true
           _message.value = "Échec de la connexion"
         }
       } catch (e: Exception) {
+        println("Errorviewmodel catch: ${e.message}")
         _isError.value = true
         _message.value = "Erreur serveur"
       } finally {

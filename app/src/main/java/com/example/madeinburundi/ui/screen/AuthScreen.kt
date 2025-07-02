@@ -1,6 +1,7 @@
 package com.example.madeinburundi.ui.screen
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -47,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.madeinburundi.R
+import com.example.madeinburundi.ui.component.PhoneInputField
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.component.SmallText
 import com.example.madeinburundi.ui.theme.GreenMIB
@@ -85,7 +88,7 @@ viewModel: AuthViewModel = hiltViewModel()
     modifier = Modifier
       .fillMaxSize()
       .padding(0.dp)
-      .background(Color.White)
+      .background(color = MaterialTheme.colorScheme.background )
       .verticalScroll(rememberScrollState()),
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
@@ -103,7 +106,7 @@ viewModel: AuthViewModel = hiltViewModel()
       style = TextStyle(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
-        color = GreenMIB
+        color = MaterialTheme.colorScheme.primary
       )
     )
     Spacer(modifier = Modifier.height(8.dp))
@@ -123,14 +126,11 @@ viewModel: AuthViewModel = hiltViewModel()
           imeAction = ImeAction.Next
         )
       }
-      ProfileTextField(
-        value = phone,
-        onValueChange = { phone = it },
-        label = "Numéro de téléphone",
-        leadingIconVector = Icons.Filled.Call,
-        keyboardType = KeyboardType.Phone,
-        imeAction = ImeAction.Next
-      )
+      PhoneInputField(
+        modifier = Modifier,
+        onPhoneChanged = { phone = it},
+        countries = countryList
+        )
       if(!isLogin){
         ProfileTextField(
           value = address,
@@ -189,7 +189,7 @@ viewModel: AuthViewModel = hiltViewModel()
 
     // Show message
     if (message.isNotBlank()) {
-      SmallText(text = message, color = if (isError) Color.Red else GreenMIB)
+      SmallText(text = message, color = if (isError) MaterialTheme.colorScheme.onError  else MaterialTheme.colorScheme.primary)
     }
     Spacer(modifier = Modifier.height(8.dp))
     Row(
@@ -205,3 +205,20 @@ viewModel: AuthViewModel = hiltViewModel()
   }
 }
 
+
+
+data class Country(
+  val name: String,
+  val code: String,
+  @DrawableRes val flag: Int,
+  val initial: String
+)
+
+val countryList = listOf(
+  Country("Burundi", "257", R.drawable.bi, "BDI"),
+  Country("DRC", "243", R.drawable.cd, "RDC"),
+  Country("Kenya", "254", R.drawable.ke, "KE"),
+  Country("Ouganda", "256", R.drawable.ug, "UG"),
+  Country("Rwanda", "250", R.drawable.rw, "RW"),
+  Country("Tanzania", "255", R.drawable.tz, "TZ")
+)

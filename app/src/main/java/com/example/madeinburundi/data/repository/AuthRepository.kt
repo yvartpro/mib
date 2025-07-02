@@ -6,6 +6,7 @@ import com.example.madeinburundi.data.model.UserRegister
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import javax.inject.Inject
 
@@ -18,22 +19,27 @@ class AuthRepository @Inject constructor(
         contentType(ContentType.Application.Json)
         setBody(UserRegister(fullName, phoneNumber, address, password))
       }
+      println("Response: $resp")
+
       resp.status == HttpStatusCode.Created || resp.status == HttpStatusCode.OK
     } catch (e: Exception) {
       e.printStackTrace()
+      println("Sapor: ${e.message}")
       false
     }
   }
 
   suspend fun loginUser(phoneNumber: String, password: String): TokenResponse? {
     return try {
-      val resp = client.post("https://mib.vovota.bi/api/token/") {
+      val resp = client.post("https://mib.vovota.bi/api/auth/login/") {
         contentType(ContentType.Application.Json)
         setBody(UserLogin(phoneNumber, password))
       }
+      println("Error resp: $resp.bodyAsText()")
       resp.body()
     } catch (e: Exception) {
       e.printStackTrace()
+      println("Error 2: $e.message")
       null
     }
   }

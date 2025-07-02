@@ -23,7 +23,7 @@ data class BottomNavItem(
 
 val bottomNavItems = listOf(
   BottomNavItem("Accueil", R.drawable.home, NavDestinations.HOME),
-  BottomNavItem("Idustries", R.drawable.business, NavDestinations.COMPANIES),
+  BottomNavItem("Industry", R.drawable.business, NavDestinations.COMPANIES),
   BottomNavItem("Panier", R.drawable.shopping_cart, NavDestinations.CART),
   BottomNavItem("Profil", R.drawable.person, NavDestinations.PROFILE)
 )
