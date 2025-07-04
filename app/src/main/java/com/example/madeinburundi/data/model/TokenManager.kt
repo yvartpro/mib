@@ -21,6 +21,7 @@ object TokenManager {
   }
 
   suspend fun saveTokens(access: String, refresh: String) {
+    println("Tokens: access - $access -- refresh - $refresh")
     dataStore.edit {
       it[ACCESS_TOKEN_KEY] = access
       it[REFRESH_TOKEN_KEY] = refresh

@@ -17,14 +17,19 @@ class AuthRepository @Inject constructor(
     return try {
       val resp = client.post("https://mib.vovota.bi/api/register/") {
         contentType(ContentType.Application.Json)
-        setBody(UserRegister(fullName, phoneNumber, password))
+        setBody(UserRegister(fullName, phoneNumber,  password))
       }
-      println("Response: $resp")
-
-      resp.status == HttpStatusCode.Created || resp.status == HttpStatusCode.OK
+      if(resp.status == HttpStatusCode.Created || resp.status == HttpStatusCode.OK){
+        println("Success register: ${resp.status}")
+        true
+      }else{
+        val err = resp.bodyAsText()
+        println("$fullName, $phoneNumber")
+        println("Error register: ${resp.status} -$err ")
+        false
+      }
     } catch (e: Exception) {
       e.printStackTrace()
-      println("Sapor: ${e.message}")
       false
     }
   }
@@ -35,16 +40,9 @@ class AuthRepository @Inject constructor(
         contentType(ContentType.Application.Json)
         setBody(UserLogin(phoneNumber, password))
       }
-      if (resp.status.isSuccess()) {
-        resp.body()
-      } else {
-        val errorText = resp.bodyAsText()
-        println("Login error response: $errorText")
-        null
-      }
+      resp.body()
     } catch (e: Exception) {
       e.printStackTrace()
-      println("Error 2: $e.message")
       null
     }
   }

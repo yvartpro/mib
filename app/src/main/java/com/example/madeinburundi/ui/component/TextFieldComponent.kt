@@ -258,7 +258,7 @@ fun PhoneInputField(
   var selectedCountry by remember { mutableStateOf(countries.first()) }
   var localNumber by remember { mutableStateOf("") }
 
-  val fullNumber = "$selectedCountry$localNumber"
+  val fullNumber = "${selectedCountry.code}$localNumber"
   val flag = selectedCountry.flag
   val code = selectedCountry.code
   val name = selectedCountry.name
@@ -279,7 +279,7 @@ fun PhoneInputField(
       OutlinedTextField(
         readOnly = true,
         value = selectedCountry.initial,
-        onValueChange = {},
+        onValueChange = { println(selectedCountry)},
         trailingIcon = {
           ExposedDropdownMenuDefaults.TrailingIcon(expanded)
         },

@@ -132,14 +132,14 @@ viewModel: AuthViewModel = hiltViewModel()
         countries = countryList
         )
       if(!isLogin){
-        ProfileTextField(
-          value = address,
-          onValueChange = { address = it },
-          label = "Adresse",
-          leadingIconVector = Icons.Filled.LocationOn,
-          keyboardType = KeyboardType.Text,
-          imeAction = ImeAction.Next
-        )
+//        ProfileTextField(
+//          value = address,
+//          onValueChange = { address = it },
+//          label = "Adresse",
+//          leadingIconVector = Icons.Filled.LocationOn,
+//          keyboardType = KeyboardType.Text,
+//          imeAction = ImeAction.Next
+//        )
       }
       ProfileTextField(
         value = password,
