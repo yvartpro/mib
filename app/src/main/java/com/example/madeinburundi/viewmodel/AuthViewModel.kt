@@ -31,12 +31,12 @@ class AuthViewModel @Inject constructor(
   private val _token = MutableStateFlow<TokenResponse?>(null)
   val token: StateFlow<TokenResponse?> = _token
 
-  fun register(fullName: String, phone: String, address: String,  password: String) {
+  fun register(fullName: String, phone: String, password: String) {
     _loading.value = true
     _isError.value = false
     viewModelScope.launch {
       try {
-        val result = authRepository.registerUser(fullName, phone, address, password)
+        val result = authRepository.registerUser(fullName, phone, password)
         if (result) {
           _message.value = "Compte créé avec succès"
         } else {

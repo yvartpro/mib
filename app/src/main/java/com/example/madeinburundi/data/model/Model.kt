@@ -47,7 +47,6 @@ data class User(
 data class UserRegister(
   @SerialName("full_name") val fullName: String,
   @SerialName("phone_number") val phone: String,
-  val address: String,
   val password: String
 )
 

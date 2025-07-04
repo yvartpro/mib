@@ -177,7 +177,7 @@ viewModel: AuthViewModel = hiltViewModel()
         if (isLogin) {
           viewModel.login(phone, password)
         } else {
-          viewModel.register(fullName, phone, address, password)
+          viewModel.register(fullName, phone, password)
         }
       },
       modifier = Modifier

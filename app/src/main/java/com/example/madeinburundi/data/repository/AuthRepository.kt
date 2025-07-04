@@ -13,11 +13,11 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor(
   private val client: HttpClient
 ) {
-  suspend fun registerUser(fullName: String, phoneNumber: String, address: String, password: String): Boolean {
+  suspend fun registerUser(fullName: String, phoneNumber: String, password: String): Boolean {
     return try {
       val resp = client.post("https://mib.vovota.bi/api/register/") {
         contentType(ContentType.Application.Json)
-        setBody(UserRegister(fullName, phoneNumber, address, password))
+        setBody(UserRegister(fullName, phoneNumber, password))
       }
       println("Response: $resp")
 
@@ -31,12 +31,17 @@ class AuthRepository @Inject constructor(
 
   suspend fun loginUser(phoneNumber: String, password: String): TokenResponse? {
     return try {
-      val resp = client.post("https://mib.vovota.bi/api/auth/login/") {
+      val resp = client.post("https://mib.vovota.bi/api/token/") {
         contentType(ContentType.Application.Json)
         setBody(UserLogin(phoneNumber, password))
       }
-      println("Error resp: $resp.bodyAsText()")
-      resp.body()
+      if (resp.status.isSuccess()) {
+        resp.body()
+      } else {
+        val errorText = resp.bodyAsText()
+        println("Login error response: $errorText")
+        null
+      }
     } catch (e: Exception) {
       e.printStackTrace()
       println("Error 2: $e.message")
