@@ -29,17 +29,17 @@ fun LogoutButton(
     Button(
         onClick = onClick,
         modifier = modifier
-            .fillMaxWidth()
             .padding(horizontal = 16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            contentColor = MaterialTheme.colorScheme.onErrorContainer
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary
         )
     ) {
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.logout),
             contentDescription = "Logout",
-            modifier = modifier.size(20.dp)
+            modifier = modifier.size(20.dp),
+            tint = MaterialTheme.colorScheme.onSecondary
         )
         Spacer(modifier = modifier.width(8.dp))
         Text(

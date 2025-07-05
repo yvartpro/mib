@@ -53,7 +53,6 @@ fun CartScreen(
   var showCheckoutDialog by remember { mutableStateOf(false) }
   val snackbarHostState = remember { SnackbarHostState() }
   val coroutineScope = rememberCoroutineScope()
-
   Scaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
@@ -66,6 +65,7 @@ fun CartScreen(
           actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
       )
+
     }
   ) { innerPadding ->
     Column(
@@ -96,17 +96,19 @@ fun CartScreen(
           totalAmount = totalAmount,
           onCheckoutClick = {cartViewModel.checkoutAndClear() { success ->
             if (success) {
-              showCheckoutDialog = true
-            } else {
               coroutineScope.launch {
-                snackbarHostState.showSnackbar("La commande a échoué. Veuillez réessayer.")
+                snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
+              }
+              showCheckoutDialog = true
+              } else {
+                coroutineScope.launch {
+                  snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
+                }
               }
             }
-          }
-
-          } ,
+          },
           isLoading = isCheckoutLoading,
-          modifier = Modifier.padding(top = 24.dp)
+          modifier = Modifier.padding(top = 24.dp),
         )
       }
     }
@@ -116,7 +118,6 @@ fun CartScreen(
     FancyCheckoutDialog(
       cartItems = cartItems,
       totalAmount = totalAmount,
-      customerId = 2,
       onDismiss = { showCheckoutDialog = false }
     )
   }
@@ -215,12 +216,11 @@ fun ModernCartItem(
 fun FancyCheckoutDialog(
   cartItems: List<CartItem>,
   totalAmount: Double,
-  customerId: Int,
   onDismiss: () -> Unit
 ) {
   val orderSummary = remember(cartItems, totalAmount) {
     buildString {
-      append("Commande de l'utilisateur $customerId:\n")
+      append("Détails de la commande:")
       cartItems.forEach {
         val name = it.product.name
         val unitPrice = it.product.price.toDouble()

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.madeinburundi.data.model.User
 import com.example.madeinburundi.data.model.UserManager
+import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.data.repository.UnAuthorizedException
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,9 +34,7 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
       isLoading = true
       error = null
       try {
-        //val u = UserManager.getUser()
         user = userRepository.getProfile()
-        //println("User printed from Manager: $u")
         println("User is: $user")
       }catch (e: UnAuthorizedException){
         _navigateToLogin.emit(Unit)
@@ -47,4 +46,21 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     }
   }
 
+  fun updateUser(fullname: String?, address: String?) {
+    viewModelScope.launch {
+      isLoading = true
+      try {
+        val success = userRepository.editUser(UserUpdate(fullname, address))
+        if (success) {
+          println("Mise a jour reussie")
+        } else {
+          println("Echec de la mise a jour")
+        }
+      } catch (e: Exception) {
+        e.printStackTrace()
+      } finally {
+        isLoading = false
+      }
+    }
+  }
 }

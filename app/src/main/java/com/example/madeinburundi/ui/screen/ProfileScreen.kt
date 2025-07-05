@@ -69,7 +69,7 @@ fun ProfileScreen(
   // State for editable fields
   var fullNameState by remember(user?.fullName) { mutableStateOf(user?.fullName) }
   var phoneNumberState by remember(user?.phone) { mutableStateOf(user?.phone) }
-  //var addressState by remember(user?.address) { mutableStateOf(user?.address) }
+  var addressState by remember(user?.address) { mutableStateOf(user?.address) }
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
   val scope = rememberCoroutineScope()
@@ -127,22 +127,24 @@ fun ProfileScreen(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
           )
+          if (!isEditMode) {
+            ProfileTextField(
+              value = "+${phoneNumberState.toString()}",
+              onValueChange = { phoneNumberState = it },
+              label = "Numero de tétéphone",
+              leadingIconVector = Icons.Filled.Phone,
+              keyboardType = KeyboardType.Phone,
+              imeAction = ImeAction.Next
+            )
+          }
           ProfileTextField(
-            value = phoneNumberState.toString(),
-            onValueChange = { phoneNumberState = it },
-            label = "Numero de tétéphone",
-            leadingIconVector = Icons.Filled.Phone,
-            keyboardType = KeyboardType.Phone,
+            value = addressState.toString(),
+            onValueChange = { addressState = it },
+            label = "Adresse",
+            leadingIconVector = Icons.Filled.LocationOn,
+            keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
           )
-//          ProfileTextField(
-//            value = addressState.toString(),
-//            onValueChange = { addressState = it },
-//            label = "Adresse",
-//            leadingIconVector = Icons.Filled.LocationOn,
-//            keyboardType = KeyboardType.Text,
-//            imeAction = ImeAction.Next
-//          )
           ProfileTextField(
             value = passwordState,
             onValueChange = { passwordState = it },
@@ -163,12 +165,12 @@ fun ProfileScreen(
           Spacer(modifier = Modifier.height(16.dp))
 
           Button(
-            onClick = { isEditMode = false },
+            onClick = { userViewModel.updateUser(fullNameState, addressState) },
             modifier = Modifier.fillMaxWidth()
           ) {
             Icon(Icons.Filled.Add, contentDescription = "Save Icon", modifier = Modifier.size(ButtonDefaults.IconSize))
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-            Text("Enregistrer")
+            Text(text = if (isLoading) "Patientez..." else "Enregistrer")
           }
 
           // Cancel Button
@@ -184,22 +186,25 @@ fun ProfileScreen(
         } else {
           ProfileInfoItem(label = "Nom complet", value = user.fullName, icon = Icons.Filled.Person)
           ProfileInfoItem(label = "Numéro de téléphone", value = user.phone, icon = Icons.Filled.Phone)
-          //ProfileInfoItem(label = "Adresse", value = user?.address, icon = Icons.Filled.LocationOn)
+          user.address?.let { ProfileInfoItem(label = "Adresse", value = it, icon = Icons.Filled.LocationOn) }
           Spacer(modifier = Modifier.height(24.dp))
-          Button(
-            onClick = { isEditMode = true },
+          Row(
             modifier = Modifier.fillMaxWidth()
           ) {
-            Icon(Icons.Filled.Edit, contentDescription = "Edit Icon", modifier = Modifier.size(ButtonDefaults.IconSize))
-            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-            Text("Modifier le Profil")
-          }
-          LogoutButton(onClick = {
-            scope.launch {
-              TokenManager.clearTokens()
-              navController.navigate(NavDestinations.HOME)
+            Button(
+              onClick = { isEditMode = true },
+            ) {
+              Icon(Icons.Filled.Edit, contentDescription = "Edit Icon", modifier = Modifier.size(ButtonDefaults.IconSize))
+              Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+              Text("Modifier le Profil")
             }
-          }, modifier = Modifier, text = "Logout")
+            LogoutButton(onClick = {
+              scope.launch {
+                TokenManager.clearTokens()
+                navController.navigate(NavDestinations.HOME)
+              }
+            }, modifier = Modifier, text = "Logout")
+          }
         }
       }
   }

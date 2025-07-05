@@ -91,3 +91,9 @@ data class Order(
 )
 
 data class Category(val title: String, val name: String? = null, var isActive: Boolean)
+
+@Serializable
+data class UserUpdate(
+  @SerialName("full_name") val name: String?,
+  val address: String?
+)

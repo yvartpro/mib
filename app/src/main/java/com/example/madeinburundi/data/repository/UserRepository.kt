@@ -6,6 +6,7 @@ import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.TokenResponse
 import com.example.madeinburundi.data.model.User
 import com.example.madeinburundi.data.model.UserRaw
+import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.data.model.UserWrapper
 import com.example.madeinburundi.data.model.toUser
 import io.ktor.client.HttpClient
@@ -13,6 +14,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -49,6 +51,7 @@ class UserRepository @Inject constructor(
         if (refreshed) {
           val newAccess = TokenManager.getAccessToken()
           val retryResponse =  client.get("https://mib.vovota.bi/api/profile/"){
+            contentType(ContentType.Application.Json)
             header(HttpHeaders.Authorization, "Bearer $newAccess")
           }
           return retryResponse.body()
@@ -58,6 +61,29 @@ class UserRepository @Inject constructor(
       }else {
         throw e
       }
+    }
+  }
+
+  suspend fun editUser(update: UserUpdate): Boolean {
+    val access = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
+    return try {
+      val response = client.patch("https://mib.vovota.bi/api/profile/"){
+        header(HttpHeaders.Authorization, "Bearer $access")
+        setBody(update)
+      }
+      if ( response.status == HttpStatusCode.OK || response.status == HttpStatusCode.Accepted) {
+        println("Update repo: ${response.status}")
+        true
+      }else{
+        println("Update repo: ${response.status}")
+        false
+      }
+    } catch (e: ClientRequestException) {
+      println("Client error: ${e.response.status}")
+      false
+    } catch (e: Exception) {
+      e.printStackTrace()
+      false
     }
   }
 

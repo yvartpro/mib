@@ -29,6 +29,17 @@ class CartViewModel @Inject constructor(
   var products by mutableStateOf<List<Product>>(emptyList())
     private set
 
+  var isAdded by mutableStateOf(false)
+    private set
+
+  fun notifyAdded() {
+    isAdded = true
+  }
+
+  fun resetIsAdded() {
+    isAdded = false
+  }
+
   var companies by mutableStateOf<List<Company>>(emptyList())
     private set
 
@@ -59,6 +70,7 @@ class CartViewModel @Inject constructor(
     } else {
       cartItems.add(CartItem(id = product.id, product = product, quantity = mutableIntStateOf(1)))
     }
+    notifyAdded()
   }
 
   fun increaseQuantity(productId: Int) {

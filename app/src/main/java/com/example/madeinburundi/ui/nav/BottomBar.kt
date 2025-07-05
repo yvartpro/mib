@@ -1,10 +1,8 @@
 package com.example.madeinburundi.ui.nav
 
 
-import android.R
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,7 +36,7 @@ fun BottomBar(navController: NavController, cartItemCount: Int) {
           },
           icon = {
             if (item.route == NavDestinations.CART && cartItemCount > 0) {
-              BadgedBox(badge = { Badge { Text("$cartItemCount") } }) {
+              BadgedBox(badge = { Badge { Text(text = "$cartItemCount", color = MaterialTheme.colorScheme.onPrimary) } }) {
                 Icon(
                   painter = painterResource(id = item.icon),
                   contentDescription = item.label

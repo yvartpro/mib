@@ -40,7 +40,7 @@ private val LightColorScheme = lightColorScheme(
   primary = GreenMIB,
   onPrimary = Color.White,
 
-  secondary = Pink40,
+  secondary = PurpleGrey40,
   onSecondary = Color.White,
 
   tertiary = PurpleGrey40,
