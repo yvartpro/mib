@@ -1,5 +1,6 @@
 package com.example.madeinburundi.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +54,9 @@ fun CartScreen(
   var showCheckoutDialog by remember { mutableStateOf(false) }
   val snackbarHostState = remember { SnackbarHostState() }
   val coroutineScope = rememberCoroutineScope()
+  var confirmedItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
+  var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
+
   Scaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
@@ -94,19 +98,32 @@ fun CartScreen(
 
         CheckoutSummarySection(
           totalAmount = totalAmount,
-          onCheckoutClick = {cartViewModel.checkoutAndClear() { success ->
-            if (success) {
-              coroutineScope.launch {
-                snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
-              }
-              showCheckoutDialog = true
+          onCheckoutClick = {
+            println("🛒 Checkout clicked")
+            Log.d("CartScreen", "🛒 Checkout clicked. Total: $totalAmount, Items: ${cartItems.size}")
+
+            val itemsCopy = cartItems.map { it.copy() }
+            val totalCopy = totalAmount
+
+            cartViewModel.checkoutAndClear { success ->
+              Log.d("CartScreen", "✅ Checkout result: $success")
+
+              if (success) {
+                confirmedItems = itemsCopy
+                confirmedTotal = totalCopy
+                showCheckoutDialog = true
+
+                coroutineScope.launch {
+                  snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
+                }
               } else {
                 coroutineScope.launch {
                   snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
                 }
               }
             }
-          },
+          }
+          ,
           isLoading = isCheckoutLoading,
           modifier = Modifier.padding(top = 24.dp),
         )
@@ -116,8 +133,8 @@ fun CartScreen(
 
   if (showCheckoutDialog) {
     FancyCheckoutDialog(
-      cartItems = cartItems,
-      totalAmount = totalAmount,
+      cartItems = confirmedItems,
+      totalAmount = confirmedTotal,
       onDismiss = { showCheckoutDialog = false }
     )
   }
@@ -220,7 +237,7 @@ fun FancyCheckoutDialog(
 ) {
   val orderSummary = remember(cartItems, totalAmount) {
     buildString {
-      append("Détails de la commande:")
+      append("Détails de la commande:\n")
       cartItems.forEach {
         val name = it.product.name
         val unitPrice = it.product.price.toDouble()
@@ -235,14 +252,14 @@ fun FancyCheckoutDialog(
   AlertDialog(
     onDismissRequest = onDismiss,
     title = {
-      Text("🎉 Commande confirmée", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+      Text("🎉 Commande confirmée", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
     },
     text = {
-      Text(orderSummary, style = MaterialTheme.typography.bodyLarge)
+      Text(orderSummary, style = MaterialTheme.typography.bodySmall)
     },
     confirmButton = {
       Button(onClick = onDismiss) {
-        Text("Retour")
+        Text(text = "Ok", fontSize = FontSizes.caption() )
       }
     }
   )

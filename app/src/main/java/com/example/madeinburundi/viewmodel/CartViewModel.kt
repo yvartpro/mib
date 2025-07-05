@@ -93,23 +93,20 @@ class CartViewModel @Inject constructor(
     cartItems.clear()
   }
 
-  fun checkoutAndClear(
-    onResult: (Boolean) -> Unit
-  ) {
+  fun checkoutAndClear(onResult: (Boolean) -> Unit) {
     isCheckingOut = true
     viewModelScope.launch {
       val user = userRepository.getProfile()
       val success = orderRepository.placeOrderMessage(user.id, cartItems)
-      if(success) {
+      if (success) {
         cartItems.clear()
         grandTotal = 0.00
       }
-//      val result = orderRepository.placeOrderMessage(customerId, cartItems)
-//      if (result) clearCart()
       isCheckingOut = false
-      //onResult(result)
+      onResult(success) // ✅ RETURN THE RESULT!
     }
   }
+
 
 
 }
