@@ -5,8 +5,10 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.example.madeinburundi.ui.component.PhoneInputField
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
@@ -15,19 +17,29 @@ object TokenManager {
   private lateinit var dataStore: DataStore<Preferences>
   private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
   private val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
+  private val USER_ID = intPreferencesKey("user_id")
+  private val USER_NAME = stringPreferencesKey("user_name")
+  private val USER_PHONE = stringPreferencesKey("user_phone")
 
   fun init(context: Context) {
     dataStore = PreferenceDataStoreFactory.create(produceFile = { context.preferencesDataStoreFile("user_prefs")})
   }
 
   suspend fun saveTokens(access: String, refresh: String) {
-    println("Tokens: access - $access -- refresh - $refresh")
     dataStore.edit {
       it[ACCESS_TOKEN_KEY] = access
       it[REFRESH_TOKEN_KEY] = refresh
     }
   }
 
+  suspend fun saveUser(user: User) {
+    println(user)
+    dataStore.edit {
+      it[USER_ID] = user.id
+      it[USER_NAME] = user.fullName
+      it[USER_PHONE] = user.phone
+    }
+  }
   suspend fun getAccessToken(): String? = dataStore.data.map {
     it[ACCESS_TOKEN_KEY]  }.firstOrNull().also { println("Access token got: $it") }
 

@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.madeinburundi.data.AuthRepository
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.TokenResponse
+import com.example.madeinburundi.data.model.User
+import com.example.madeinburundi.data.model.UserManager
+import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-  private val authRepository: AuthRepository
-
+  private val authRepository: AuthRepository,
+  private val userRepository: UserRepository
 ): ViewModel() {
 
   private val _loading = MutableStateFlow(false)
@@ -62,7 +65,9 @@ class AuthViewModel @Inject constructor(
         val result = authRepository.loginUser(phone, password)
         if (result != null) {
           _token.value = result
+          //val user = userRepository.getProfile()
           TokenManager.saveTokens(result.access, result.refresh) //save authentication keys for user
+          //TokenManager.saveUser(user)
           _message.value = "Connexion réussie"
         } else {
           _isError.value = true

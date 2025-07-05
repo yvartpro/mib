@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.madeinburundi.data.model.User
+import com.example.madeinburundi.data.model.UserManager
 import com.example.madeinburundi.data.repository.UnAuthorizedException
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,10 +29,13 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
 
   fun loadUserProfile() {
     viewModelScope.launch {
+
       isLoading = true
       error = null
       try {
+        //val u = UserManager.getUser()
         user = userRepository.getProfile()
+        //println("User printed from Manager: $u")
         println("User is: $user")
       }catch (e: UnAuthorizedException){
         _navigateToLogin.emit(Unit)

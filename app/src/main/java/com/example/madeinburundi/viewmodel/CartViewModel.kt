@@ -13,6 +13,7 @@ import com.example.madeinburundi.data.model.Product
 import com.example.madeinburundi.data.repository.CompanyRepository
 import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.data.repository.ProductRepository
+import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
   private val productRepository: ProductRepository,
   private val companyRepository: CompanyRepository,
-  private val orderRepository: OrderRepository
+  private val orderRepository: OrderRepository,
+  private val userRepository: UserRepository
 ) : ViewModel() {
 
   var products by mutableStateOf<List<Product>>(emptyList())
@@ -80,13 +82,12 @@ class CartViewModel @Inject constructor(
   }
 
   fun checkoutAndClear(
-    customerId: Int,
-    //orderRepository: OrderRepository,
     onResult: (Boolean) -> Unit
   ) {
     isCheckingOut = true
     viewModelScope.launch {
-      val success = orderRepository.placeOrderMessage(customerId, cartItems)
+      val user = userRepository.getProfile()
+      val success = orderRepository.placeOrderMessage(user.id, cartItems)
       if(success) {
         cartItems.clear()
         grandTotal = 0.00

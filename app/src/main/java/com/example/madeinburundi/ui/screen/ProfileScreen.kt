@@ -1,3 +1,4 @@
+
 package com.example.madeinburundi.ui.screen
 
 
@@ -36,9 +37,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.madeinburundi.R
+import com.example.madeinburundi.data.model.TokenManager
+import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -68,6 +72,7 @@ fun ProfileScreen(
   //var addressState by remember(user?.address) { mutableStateOf(user?.address) }
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
+  val scope = rememberCoroutineScope()
 
   LaunchedEffect(key1 = user, key2 = isEditMode) {
     if (!isEditMode) {
@@ -189,6 +194,12 @@ fun ProfileScreen(
             Spacer(Modifier.size(ButtonDefaults.IconSpacing))
             Text("Modifier le Profil")
           }
+          LogoutButton(onClick = {
+            scope.launch {
+              TokenManager.clearTokens()
+              navController.navigate(NavDestinations.HOME)
+            }
+          }, modifier = Modifier, text = "Logout")
         }
       }
   }

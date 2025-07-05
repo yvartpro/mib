@@ -2,6 +2,7 @@ package com.example.madeinburundi.data.repository
 
 import com.example.madeinburundi.data.model.CartItem
 import com.example.madeinburundi.data.model.Order
+import com.example.madeinburundi.data.model.TokenManager
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -14,10 +15,14 @@ class OrderRepository @Inject constructor(
     println("Received: ${client.hashCode()}")
   }
   suspend fun placeOrder(order: Order): Boolean {
+    val access = TokenManager.getAccessToken()
+    println("Passed access_token: $access")
+    val token = access ?: println("No token found") //throw UnAuthorizedException("No access token found")
     println("Sending...: ${order}")
     return try {
       val response = client.post("https://mib.vovota.bi/api/order/") {
         contentType(ContentType.Application.Json)
+        header(HttpHeaders.Authorization, "Bearer $token")
         setBody(order)
       }
       println("Response: $response")
