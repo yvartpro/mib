@@ -94,7 +94,7 @@ fun CartScreen(
 
         CheckoutSummarySection(
           totalAmount = totalAmount,
-          onCheckoutClick = {cartViewModel.checkoutAndClear(2) { success ->
+          onCheckoutClick = {cartViewModel.checkoutAndClear(3) { success ->
             if (success) {
               showCheckoutDialog = true
             } else {

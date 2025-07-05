@@ -65,7 +65,7 @@ fun ProfileScreen(
   // State for editable fields
   var fullNameState by remember(user?.fullName) { mutableStateOf(user?.fullName) }
   var phoneNumberState by remember(user?.phone) { mutableStateOf(user?.phone) }
-  var addressState by remember(user?.address) { mutableStateOf(user?.address) }
+  //var addressState by remember(user?.address) { mutableStateOf(user?.address) }
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
 
@@ -73,7 +73,7 @@ fun ProfileScreen(
     if (!isEditMode) {
       fullNameState = user?.fullName
       phoneNumberState = user?.phone
-      addressState = user?.address
+      //addressState = user?.address
       passwordState = ""
     }
   }
@@ -130,14 +130,14 @@ fun ProfileScreen(
             keyboardType = KeyboardType.Phone,
             imeAction = ImeAction.Next
           )
-          ProfileTextField(
-            value = addressState.toString(),
-            onValueChange = { addressState = it },
-            label = "Adresse",
-            leadingIconVector = Icons.Filled.LocationOn,
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-          )
+//          ProfileTextField(
+//            value = addressState.toString(),
+//            onValueChange = { addressState = it },
+//            label = "Adresse",
+//            leadingIconVector = Icons.Filled.LocationOn,
+//            keyboardType = KeyboardType.Text,
+//            imeAction = ImeAction.Next
+//          )
           ProfileTextField(
             value = passwordState,
             onValueChange = { passwordState = it },
@@ -179,7 +179,7 @@ fun ProfileScreen(
         } else {
           ProfileInfoItem(label = "Nom complet", value = user.fullName, icon = Icons.Filled.Person)
           ProfileInfoItem(label = "Numéro de téléphone", value = user.phone, icon = Icons.Filled.Phone)
-          ProfileInfoItem(label = "Adresse", value = user.address, icon = Icons.Filled.LocationOn)
+          //ProfileInfoItem(label = "Adresse", value = user?.address, icon = Icons.Filled.LocationOn)
           Spacer(modifier = Modifier.height(24.dp))
           Button(
             onClick = { isEditMode = true },

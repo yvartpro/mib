@@ -37,12 +37,34 @@ data class CartItem(
 )
 
 @Serializable
-data class User(
-  val id: Int = 0,
-  @SerialName("full_name") val fullName: String = "",
-  @SerialName("phone_number") val phone: String = "",
-  val address: String = ""
+data class UserWrapper(
+  val id:  Int,
+  val user: User,
+  val address: String? = null,
+  val photo: String? = null
 )
+@Serializable
+data class UserRaw(
+  val id: Int,
+  val user: NestedUser,
+  val address: String? = null,
+  val photo: String? = null
+)
+@Serializable
+data class NestedUser(
+  @SerialName("full_name") val fullName: String,
+  @SerialName("phone_number") val phone: String,
+)
+fun UserRaw.toUser(): User = User(id, user.fullName, user.phone, address, photo)
+@Serializable
+data class User(
+  val id: Int,
+  val fullName: String,
+  val phone: String,
+  val address: String? = null,
+  val photo: String? = null
+)
+
 @Serializable
 data class UserRegister(
   @SerialName("full_name") val fullName: String,

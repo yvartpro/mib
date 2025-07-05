@@ -285,7 +285,7 @@ fun PhoneInputField(
         },
         modifier = Modifier
           .menuAnchor()
-          .width(100.dp)
+          .width(110.dp)
           .fillMaxHeight()
       )
 

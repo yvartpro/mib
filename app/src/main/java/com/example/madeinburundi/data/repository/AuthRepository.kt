@@ -1,5 +1,6 @@
 package com.example.madeinburundi.data
 
+import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.TokenResponse
 import com.example.madeinburundi.data.model.UserLogin
 import com.example.madeinburundi.data.model.UserRegister
@@ -44,6 +45,28 @@ class AuthRepository @Inject constructor(
     } catch (e: Exception) {
       e.printStackTrace()
       null
+    }
+  }
+
+  suspend fun refreshToken(): Boolean {
+    val refresh = TokenManager.getRefreshToken()
+    if (refresh.isNullOrEmpty()) {
+      println("No refresh token available")
+      return false
+    }
+    return try {
+        val response = client.post("https://mib.vovota.bi/api/refresh") {
+          contentType(ContentType.Application.Json)
+          setBody(mapOf("refresh" to refresh))
+        }
+      val tokenResponse = response.body<TokenResponse>()
+      println("Token refreshed: ${tokenResponse.access}")
+      TokenManager.saveTokens(tokenResponse.access, tokenResponse.refresh)
+      true
+    } catch (e: Exception) {
+      println("Refresh failed: ${e.message}")
+      TokenManager.clearTokens()
+      false
     }
   }
 }
