@@ -2,6 +2,8 @@
 package com.example.madeinburundi.ui.screen
 
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,8 +26,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -36,23 +40,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.madeinburundi.R
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.nav.NavDestinations
+import com.example.madeinburundi.utils.ImageUploadSection
 import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
   navController: NavController,
-  userViewModel: UserViewModel = hiltViewModel(),
+  userViewModel: UserViewModel,
   initialIsEditMode: Boolean = false
 ) {
   val user = userViewModel.user
   val isLoading = userViewModel.isLoading
   val error = userViewModel.error
+  val context = LocalContext.current
+  val imageUri = userViewModel.selectedImageUri
+  val isUploading = userViewModel.isUploading
+  val uploadMessage = userViewModel.uploadMessage
 
   LaunchedEffect(Unit) {
     userViewModel.loadUserProfile()
@@ -74,11 +84,36 @@ fun ProfileScreen(
   var passwordVisible by remember { mutableStateOf(false) }
   val scope = rememberCoroutineScope()
 
+  val imagePickerLauncher = rememberLauncherForActivityResult(
+    contract = ActivityResultContracts.GetContent()
+  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
+
+  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    imageUri?.let {
+      AsyncImage(model = it, contentDescription = null, modifier = Modifier.size(120.dp))
+    }
+
+    Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+      Text("Choose Image")
+    }
+
+    Button(
+      onClick = { userViewModel.uploadImage() },
+      enabled = imageUri != null && !isUploading
+    ) {
+      if (isUploading) CircularProgressIndicator(modifier = Modifier.size(16.dp))
+      else Text("Upload")
+    }
+
+    uploadMessage?.let {
+      Text(it, color = if (it.contains("success")) Color.Green else Color.Red)
+    }
+  }
+  //ImageUploadSection(userViewModel)
   LaunchedEffect(key1 = user, key2 = isEditMode) {
     if (!isEditMode) {
       fullNameState = user?.fullName
       phoneNumberState = user?.phone
-      //addressState = user?.address
       passwordState = ""
     }
   }
@@ -201,6 +236,7 @@ fun ProfileScreen(
             LogoutButton(onClick = {
               scope.launch {
                 TokenManager.clearTokens()
+                userViewModel.clearUser()
                 navController.navigate(NavDestinations.HOME)
               }
             }, modifier = Modifier, text = "Logout")

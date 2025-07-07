@@ -1,40 +1,58 @@
 package com.example.madeinburundi.data.repository
 
-import com.example.madeinburundi.data.AuthRepository
-import com.example.madeinburundi.data.model.Company
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import com.bumptech.glide.Glide
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.TokenResponse
 import com.example.madeinburundi.data.model.User
 import com.example.madeinburundi.data.model.UserRaw
 import com.example.madeinburundi.data.model.UserUpdate
-import com.example.madeinburundi.data.model.UserWrapper
 import com.example.madeinburundi.data.model.toUser
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.http.headers
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import java.io.File
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-  private val client: HttpClient
-) {
+  private val client: HttpClient,
+  @ApplicationContext private val context: Context,
+  private val tokenManager: TokenManager
+)
+{
   var onLoginNeeded: (()-> Unit)? = null
   suspend fun getProfile(): User {
-    val access = TokenManager.getAccessToken()
-    println("Passed access_token: $access")
-    val token = access ?: throw UnAuthorizedException("No access token found")
+    val token = tokenManager.getAccessToken()
+    if (token == null) {
+      Log.e("UserRepo", "Missing token")
+      throw UnAuthorizedException("No access token found")
+    }
     try {
       val response = client.get("https://mib.vovota.bi/api/profile/"){
           header(HttpHeaders.Authorization, "Bearer $token")
@@ -107,6 +125,45 @@ class UserRepository @Inject constructor(
       TokenManager.clearTokens()
       false
     }
+  }
+
+  suspend fun uploadImage(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+    val token = tokenManager.getAccessToken()
+
+    val file = compressImage(uri)
+
+    val client = HttpClient(CIO) {
+      install(ContentNegotiation) {
+        json(Json { ignoreUnknownKeys = true })
+      }
+      install(Auth) {
+        bearer {loadTokens { BearerTokens(token.toString(), "") }  }
+      }
+    }
+
+    val response = client.submitFormWithBinaryData(
+      url = "https://your-api.com/upload",
+      formData = formData {
+        append("image", file.readBytes(), Headers.build {
+          append(HttpHeaders.ContentType, "image/jpeg")
+          append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
+        })
+      }
+    ) {
+      header(HttpHeaders.Authorization, "Bearer $token")
+    }
+println("Uploaded image: $file")
+    println("Response: ${response.bodyAsText()}")
+    response.status.value in 200..299
+  }
+
+  private suspend fun compressImage(uri: Uri): File = withContext(Dispatchers.IO) {
+    val file = File(context.cacheDir, "profile.jpg")
+    val bitmap = Glide.with(context).asBitmap().load(uri).submit(500, 500).get()
+    file.outputStream().use {
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it)
+    }
+    file
   }
 }
 

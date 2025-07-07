@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Serializable
 data class Company(

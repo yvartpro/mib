@@ -18,6 +18,7 @@ import com.example.madeinburundi.ui.screen.SearchScreen
 import com.example.madeinburundi.viewmodel.CartViewModel
 import com.example.madeinburundi.viewmodel.CompanyViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
+import com.example.madeinburundi.viewmodel.UserViewModel
 
 @Composable
 fun AppNavGraph(
@@ -25,6 +26,7 @@ fun AppNavGraph(
   navController: NavHostController,
   cartViewModel: CartViewModel = hiltViewModel(),
   productViewModel: ProductViewModel = hiltViewModel(),
+  userViewModel: UserViewModel = hiltViewModel(),
   companyViewModel: CompanyViewModel
 ) {
   LaunchedEffect(Unit) {
@@ -45,6 +47,8 @@ fun AppNavGraph(
     composable(NavDestinations.CART) {
       CartScreen(
         cartViewModel = cartViewModel,
+        userViewModel = userViewModel,
+        navController = navController,
         onBack = { navController.popBackStack() }
       )
     }
@@ -64,13 +68,14 @@ fun AppNavGraph(
       }
     }
     composable(NavDestinations.PROFILE) {
-      ProfileScreen( navController = navController)
+      ProfileScreen( navController = navController, userViewModel = userViewModel)
     }
     composable(NavDestinations.AUTH) {
       AuthScreen(
         modifier = Modifier,
         onBackClick = { navController.navigate(NavDestinations.HOME)},
-        onLoginSuccess = { navController.navigate(NavDestinations.PROFILE)}
+        onLoginSuccess = { navController.navigate(NavDestinations.PROFILE)},
+        navController = navController
       )
     }
     composable(NavDestinations.SEARCH) {

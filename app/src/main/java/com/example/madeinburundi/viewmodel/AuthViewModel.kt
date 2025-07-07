@@ -34,6 +34,9 @@ class AuthViewModel @Inject constructor(
   private val _token = MutableStateFlow<TokenResponse?>(null)
   val token: StateFlow<TokenResponse?> = _token
 
+  private val _loginSuccess = MutableStateFlow(false)
+  val loginSuccess: StateFlow<Boolean> = _loginSuccess
+
   fun register(fullName: String, phone: String, password: String) {
     _loading.value = true
     _isError.value = false
@@ -68,6 +71,7 @@ class AuthViewModel @Inject constructor(
           //val user = userRepository.getProfile()
           TokenManager.saveTokens(result.access, result.refresh) //save authentication keys for user
           //TokenManager.saveUser(user)
+          _loginSuccess.value = true
           _message.value = "Connexion réussie"
         } else {
           _isError.value = true

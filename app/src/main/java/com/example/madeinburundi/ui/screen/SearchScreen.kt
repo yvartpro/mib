@@ -17,11 +17,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.LaunchedEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.madeinburundi.ui.section.CategoryRow
 import com.example.madeinburundi.ui.section.ProductCard
 import com.example.madeinburundi.ui.section.ProductList
 import com.example.madeinburundi.viewmodel.CartViewModel
+import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 
 @Composable
@@ -29,7 +31,8 @@ fun SearchScreen(
   cartViewModel: CartViewModel,
   productViewModel: ProductViewModel,
   categoryName: String? = null,
-  navController: NavController
+  navController: NavController,
+  categoryViewModel: CategoryViewModel = viewModel()
 ) {
   val searchQuery = productViewModel.searchQuery
   val products = if(categoryName != null) {
@@ -45,7 +48,7 @@ fun SearchScreen(
     .verticalScroll(rememberScrollState())
     .padding(16.dp)) {
     if (categoryName != null) {
-      CategoryRow(navController = navController)
+      CategoryRow(navController = navController, categoryViewModel)
     } else {
       OutlinedTextField(
         value = searchQuery,

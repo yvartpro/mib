@@ -1,17 +1,22 @@
 package com.example.madeinburundi.di
 
+import android.content.Context
 import com.example.madeinburundi.data.AuthRepository
+import com.example.madeinburundi.data.model.Category
+import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
@@ -49,7 +54,19 @@ object AppModule {
 
   @Provides
   @Singleton
-  fun provideUserRepository(client: HttpClient): UserRepository {
-    return UserRepository(client)
+  fun provideUserRepository(
+    client: HttpClient,
+    @ApplicationContext context: Context,
+    tokenManager: TokenManager
+  ): UserRepository {
+    return UserRepository(client, context, tokenManager)
   }
+
+  @Provides
+  @Singleton
+  fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
+    TokenManager.init(context)
+    return TokenManager
+  }
+
 }

@@ -75,6 +75,7 @@ dependencies {
   implementation("androidx.datastore:datastore-preferences:1.0.0")
   //coi for images
   implementation("io.coil-kt:coil-compose:2.4.0")
+  implementation("com.github.bumptech.glide:glide:4.15.1")
   // Navigation
   implementation("androidx.navigation:navigation-compose:2.6.0")
   //viewmodel

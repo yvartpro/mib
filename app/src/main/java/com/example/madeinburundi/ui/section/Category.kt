@@ -13,53 +13,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.madeinburundi.data.model.Category
+import com.example.madeinburundi.viewmodel.CategoryViewModel
 
 @Composable
-fun CategoryRow(navController: NavController) {
-  val categories = listOf(
-    Category("Tous", null, true),
-    Category("Aliments", "food", false),//food
-    Category("Boissons", "beverage", false),//beverage
-    Category("Sovons", "soap", false),//soap
-    Category("Beauté", "beauty", false),//beauty
-    Category( "Electroniques", "electronic",false),//electronic
-    Category("Construction", "construction", false)//construction
-  )
+fun CategoryRow(navController: NavController, viewModel: CategoryViewModel = hiltViewModel()) {
+  val categories = viewModel.categories
+
   LazyRow(
     horizontalArrangement = Arrangement.spacedBy(12.dp),
-    contentPadding = PaddingValues(vertical = 8.dp) // Padding for the row itself
+    contentPadding = PaddingValues(vertical = 8.dp)
   ) {
     items(categories) { category ->
       CategoryItem(
-        category,
-        category.isActive,
-        modifier = Modifier,
-        navController = navController
+        category = category,
+        isActive = category.isActive,
+        onClick = {
+          viewModel.setActive(category.name)
+          navController.navigate("search/${category.name}")
+        }
       )
     }
   }
 }
 
+
+
 @Composable
 fun CategoryItem(
   category: Category,
   isActive: Boolean,
-  modifier: Modifier = Modifier,
-  navController: NavController
+  onClick: () -> Unit
 ) {
   Text(
     text = category.title,
     fontWeight = FontWeight(if (isActive) 700 else 400),
-    modifier = modifier
-      .clickable(onClick = {
-        navController.navigate("search/${category.name}") {
-          popUpTo("home") { inclusive = false }
-          launchSingleTop = true
-        }
-        category.isActive = true
-      } )
+    modifier = Modifier
+      .clickable(onClick = onClick)
       .padding(vertical = 8.dp, horizontal = 4.dp),
     style = MaterialTheme.typography.bodyLarge,
     color = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,

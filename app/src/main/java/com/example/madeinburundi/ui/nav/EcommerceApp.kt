@@ -33,6 +33,7 @@ fun EcommerceApp(
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentRoute = navBackStackEntry?.destination?.route
   val isAdded = cartViewModel.isAdded
+  val msg = cartViewModel.notif
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
 
@@ -48,7 +49,7 @@ fun EcommerceApp(
         resetState = { cartViewModel.resetIsAdded()},
         scope = scope,
         snackbarHostState = snackbarHostState,
-        message = "Item added",
+        message = msg,
         topPadding = if ( currentRoute == NavDestinations.HOME) 100.dp else 24.dp
       )
     },

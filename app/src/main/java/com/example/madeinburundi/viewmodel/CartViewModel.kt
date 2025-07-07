@@ -13,6 +13,7 @@ import com.example.madeinburundi.data.model.Product
 import com.example.madeinburundi.data.repository.CompanyRepository
 import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.data.repository.ProductRepository
+import com.example.madeinburundi.data.repository.UnAuthorizedException
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,8 +33,12 @@ class CartViewModel @Inject constructor(
   var isAdded by mutableStateOf(false)
     private set
 
-  fun notifyAdded() {
+  var notif by mutableStateOf("")
+    private set
+
+  fun notifyAdded(msg: String) {
     isAdded = true
+    notif  = msg
   }
 
   fun resetIsAdded() {
@@ -70,7 +75,7 @@ class CartViewModel @Inject constructor(
     } else {
       cartItems.add(CartItem(id = product.id, product = product, quantity = mutableIntStateOf(1)))
     }
-    notifyAdded()
+    notifyAdded("Produit ajouté")
   }
 
   fun increaseQuantity(productId: Int) {
@@ -96,16 +101,28 @@ class CartViewModel @Inject constructor(
   fun checkoutAndClear(onResult: (Boolean) -> Unit) {
     isCheckingOut = true
     viewModelScope.launch {
-      val user = userRepository.getProfile()
-      val success = orderRepository.placeOrderMessage(user.id, cartItems)
-      if (success) {
-        cartItems.clear()
-        grandTotal = 0.00
+      try {
+        val user = userRepository.getProfile() // Might throw
+        val success = orderRepository.placeOrderMessage(user.id, cartItems)
+        if (success) {
+          cartItems.clear()
+          grandTotal = 0.0
+        } else {
+          notifyAdded("Commande échouée")
+        }
+        onResult(success)
+      } catch (e: UnAuthorizedException) {
+        notifyAdded("Vous devez vous connecter")
+        onResult(false)
+      } catch (e: Exception) {
+        notifyAdded("Erreur: ${e.message}")
+        onResult(false)
+      } finally {
+        isCheckingOut = false
       }
-      isCheckingOut = false
-      onResult(success) // ✅ RETURN THE RESULT!
     }
   }
+
 
 
 

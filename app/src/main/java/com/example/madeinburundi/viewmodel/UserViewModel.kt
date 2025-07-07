@@ -1,5 +1,6 @@
 package com.example.madeinburundi.viewmodel
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -46,6 +47,10 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     }
   }
 
+  fun clearUser() {
+    user = null
+  }
+
   fun updateUser(fullname: String?, address: String?) {
     viewModelScope.launch {
       isLoading = true
@@ -61,6 +66,30 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
       } finally {
         isLoading = false
       }
+    }
+  }
+
+  var selectedImageUri by mutableStateOf<Uri?>(null)
+    private set
+
+  var isUploading by mutableStateOf(false)
+    private set
+
+  var uploadMessage by mutableStateOf<String?>(null)
+    private set
+
+  fun onImageSelected(uri: Uri) {
+    selectedImageUri = uri
+    uploadMessage = null
+  }
+
+  fun uploadImage() {
+    val uri = selectedImageUri ?: return
+    viewModelScope.launch {
+      isUploading = true
+      val success = userRepository.uploadImage(uri)
+      isUploading = false
+      uploadMessage = if (success) "Upload successful" else "Upload failed"
     }
   }
 }

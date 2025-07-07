@@ -34,18 +34,23 @@ import com.example.madeinburundi.R
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.madeinburundi.data.model.CartItem
 import com.example.madeinburundi.data.repository.OrderRepository
+import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.theme.FontSizes
 import com.example.madeinburundi.ui.theme.GreenMIB
 import com.example.madeinburundi.viewmodel.OrderViewModel
+import com.example.madeinburundi.viewmodel.UserViewModel
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-  cartViewModel: CartViewModel = hiltViewModel(),
+  cartViewModel: CartViewModel,
+  userViewModel: UserViewModel,
+  navController: NavController,
   onBack: () -> Unit
 ) {
   val cartItems = cartViewModel.cartItems
@@ -105,22 +110,28 @@ fun CartScreen(
             val itemsCopy = cartItems.map { it.copy() }
             val totalCopy = totalAmount
 
-            cartViewModel.checkoutAndClear { success ->
-              Log.d("CartScreen", "✅ Checkout result: $success")
 
-              if (success) {
-                confirmedItems = itemsCopy
-                confirmedTotal = totalCopy
-                showCheckoutDialog = true
+            if (userViewModel.user != null) {
+              cartViewModel.checkoutAndClear { success ->
+                Log.d("CartScreen", "✅ Checkout result: $success")
 
-                coroutineScope.launch {
-                  snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
-                }
-              } else {
-                coroutineScope.launch {
-                  snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
+                if (success) {
+                  confirmedItems = itemsCopy
+                  confirmedTotal = totalCopy
+                  showCheckoutDialog = true
+
+                  coroutineScope.launch {
+                    cartViewModel.notifyAdded("Commande réussie")
+                    snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
+                  }
+                } else {
+                  coroutineScope.launch {
+                    snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
+                  }
                 }
               }
+            }else{
+              navController.navigate(NavDestinations.AUTH)
             }
           }
           ,

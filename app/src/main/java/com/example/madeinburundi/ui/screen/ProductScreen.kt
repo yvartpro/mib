@@ -1,6 +1,7 @@
 package com.example.madeinburundi.ui.screen
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -57,7 +58,12 @@ fun ProductScreen(
 
   val products = productViewModel.products
   val relatedProducts = products.filter { it.category == product.category && it.id != product.id }
-
+  BackHandler {
+    val popped = navController.popBackStack("home", inclusive = false)
+    if (!popped) {
+      navController.navigate("home")
+    }
+  }
   Column(
     modifier = Modifier
       .fillMaxSize()

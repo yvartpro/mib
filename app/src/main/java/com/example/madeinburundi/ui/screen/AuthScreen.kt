@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.madeinburundi.R
 import com.example.madeinburundi.ui.component.PhoneInputField
 import com.example.madeinburundi.ui.component.ProfileTextField
@@ -61,6 +62,7 @@ fun AuthScreen(
 modifier: Modifier = Modifier,
 onBackClick: () -> Unit,
 onLoginSuccess: () -> Unit,
+navController: NavController,
 viewModel: AuthViewModel = hiltViewModel()
 ) {
   var isLogin by rememberSaveable { mutableStateOf(true) }
@@ -74,15 +76,21 @@ viewModel: AuthViewModel = hiltViewModel()
   val message by viewModel.message.collectAsState()
   val isError by viewModel.isError.collectAsState()
   val token by viewModel.token.collectAsState()
+  val loginSuccess by viewModel.loginSuccess.collectAsState()
 
   val context = LocalContext.current
 
-  LaunchedEffect(token) {
-    if (token != null) {
-      Toast.makeText(context, "Bienvenue !", Toast.LENGTH_SHORT).show()
-      onLoginSuccess()
+  LaunchedEffect(loginSuccess) {
+    if (loginSuccess) {
+      navController.popBackStack() // ✅ Go back to Cart or previous screen
     }
   }
+//  LaunchedEffect(token) {
+//    if (token != null) {
+//      Toast.makeText(context, "Bienvenue !", Toast.LENGTH_SHORT).show()
+//      onLoginSuccess()
+//    }
+//  }
 
   Column(
     modifier = Modifier
@@ -131,16 +139,6 @@ viewModel: AuthViewModel = hiltViewModel()
         onPhoneChanged = { phone = it},
         countries = countryList
         )
-      if(!isLogin){
-//        ProfileTextField(
-//          value = address,
-//          onValueChange = { address = it },
-//          label = "Adresse",
-//          leadingIconVector = Icons.Filled.LocationOn,
-//          keyboardType = KeyboardType.Text,
-//          imeAction = ImeAction.Next
-//        )
-      }
       ProfileTextField(
         value = password,
         onValueChange = { password = it },
@@ -159,18 +157,18 @@ viewModel: AuthViewModel = hiltViewModel()
         placeholderText = "Entrer votre mot depasse"
       )
     }
-    if(!isLogin){
-      Row(
-        modifier = Modifier.fillMaxWidth()
-          .padding(vertical = 0.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
-      ){
-        TextButton(onClick = {}){
-          Text(text = "Mot de passe oublié ?")
-        }
-      }
-    }
+//    if(!isLogin){
+//      Row(
+//        modifier = Modifier.fillMaxWidth()
+//          .padding(vertical = 0.dp),
+//        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.End
+//      ){
+//        TextButton(onClick = {}){
+//          Text(text = "Mot de passe oublié ?")
+//        }
+//      }
+//    }
     Spacer(modifier = Modifier.height(16.dp))
     Button(
       onClick = {
