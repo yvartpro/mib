@@ -16,6 +16,7 @@ import com.example.madeinburundi.ui.screen.ProductScreen
 import com.example.madeinburundi.ui.screen.ProfileScreen
 import com.example.madeinburundi.ui.screen.SearchScreen
 import com.example.madeinburundi.viewmodel.CartViewModel
+import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.CompanyViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
@@ -27,6 +28,7 @@ fun AppNavGraph(
   cartViewModel: CartViewModel = hiltViewModel(),
   productViewModel: ProductViewModel = hiltViewModel(),
   userViewModel: UserViewModel = hiltViewModel(),
+  categoryViewModel: CategoryViewModel = hiltViewModel(),
   companyViewModel: CompanyViewModel
 ) {
   LaunchedEffect(Unit) {
@@ -41,6 +43,7 @@ fun AppNavGraph(
         cartViewModel = cartViewModel,
         productViewModel = productViewModel,
         onNavigateToCart = { navController.navigate(NavDestinations.CART) },
+        categoryViewModel = categoryViewModel,
         navController = navController
       )
     }
@@ -75,14 +78,16 @@ fun AppNavGraph(
         modifier = Modifier,
         onBackClick = { navController.navigate(NavDestinations.HOME)},
         onLoginSuccess = { navController.navigate(NavDestinations.PROFILE)},
-        navController = navController
+        navController = navController,
+        userViewModel = userViewModel
       )
     }
     composable(NavDestinations.SEARCH) {
       SearchScreen(
         cartViewModel = cartViewModel,
         productViewModel = productViewModel,
-        navController = navController
+        navController = navController,
+        categoryViewModel = categoryViewModel
       )
     }
     composable(NavDestinations.CATEGORY) { backStackEntry->
@@ -91,7 +96,8 @@ fun AppNavGraph(
         cartViewModel = cartViewModel,
         productViewModel = productViewModel,
         categoryName = categoryName.takeIf { it != null },
-        navController = navController
+        navController = navController,
+        categoryViewModel = categoryViewModel
       )
     }
     composable(NavDestinations.COMPANY) { backStackEntry ->

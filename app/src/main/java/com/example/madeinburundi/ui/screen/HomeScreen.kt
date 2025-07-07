@@ -34,13 +34,15 @@ import com.example.madeinburundi.ui.section.ProductImageRow
 import com.example.madeinburundi.ui.section.ProductList
 import com.example.madeinburundi.ui.section.Recommended
 import com.example.madeinburundi.viewmodel.CartViewModel
+import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
-  cartViewModel: CartViewModel = hiltViewModel(),
-  productViewModel: ProductViewModel = hiltViewModel(),
+  cartViewModel: CartViewModel,
+  productViewModel: ProductViewModel,
+  categoryViewModel: CategoryViewModel,
   onNavigateToCart: () -> Unit,
   navController: NavController
 ) {
@@ -58,7 +60,7 @@ fun HomeScreen(
       .padding(vertical = 8.dp)
   ) {
     HomeSection(title = "Catégories") {
-      CategoryRow(navController = navController)
+      CategoryRow(navController = navController, viewModel = categoryViewModel)
     }
     HomeSection(title = "Les plus récents") {
       ProductImageRow(products = productViewModel.products, navController = navController)
@@ -84,7 +86,7 @@ fun HomeSection(
       text = title,
       fontWeight = FontWeight.Bold,
       fontSize = 14.sp,
-      modifier = Modifier.padding(8.dp)
+      modifier = Modifier.padding(2.dp)
     )
     content()
     Spacer(Modifier.height(16.dp))

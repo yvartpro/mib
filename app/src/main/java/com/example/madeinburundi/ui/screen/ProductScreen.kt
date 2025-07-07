@@ -131,7 +131,10 @@ fun ProductScreen(
       }
 
       Button(
-        onClick = { /* TODO: implement purchase */ },
+        onClick = {
+          cartViewModel.addToCart(product)
+          navController.navigate(NavDestinations.CART)
+        },
         modifier = Modifier.weight(1f),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
       ) {

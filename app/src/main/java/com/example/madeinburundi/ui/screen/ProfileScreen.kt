@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -38,7 +37,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.madeinburundi.R
@@ -46,7 +44,6 @@ import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.nav.NavDestinations
-import com.example.madeinburundi.utils.ImageUploadSection
 import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -59,10 +56,10 @@ fun ProfileScreen(
   val user = userViewModel.user
   val isLoading = userViewModel.isLoading
   val error = userViewModel.error
-  val context = LocalContext.current
   val imageUri = userViewModel.selectedImageUri
   val isUploading = userViewModel.isUploading
   val uploadMessage = userViewModel.uploadMessage
+  val isImagePicked = userViewModel.isImagePicked
 
   LaunchedEffect(Unit) {
     userViewModel.loadUserProfile()
@@ -88,28 +85,6 @@ fun ProfileScreen(
     contract = ActivityResultContracts.GetContent()
   ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
 
-  Column(horizontalAlignment = Alignment.CenterHorizontally) {
-    imageUri?.let {
-      AsyncImage(model = it, contentDescription = null, modifier = Modifier.size(120.dp))
-    }
-
-    Button(onClick = { imagePickerLauncher.launch("image/*") }) {
-      Text("Choose Image")
-    }
-
-    Button(
-      onClick = { userViewModel.uploadImage() },
-      enabled = imageUri != null && !isUploading
-    ) {
-      if (isUploading) CircularProgressIndicator(modifier = Modifier.size(16.dp))
-      else Text("Upload")
-    }
-
-    uploadMessage?.let {
-      Text(it, color = if (it.contains("success")) Color.Green else Color.Red)
-    }
-  }
-  //ImageUploadSection(userViewModel)
   LaunchedEffect(key1 = user, key2 = isEditMode) {
     if (!isEditMode) {
       fullNameState = user?.fullName
@@ -138,22 +113,37 @@ fun ProfileScreen(
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
         // Profile Avatar Section
-        Image(
-          painter = painterResource(id = R.drawable.user),
-          contentDescription = "Profile Avatar",
-          modifier = Modifier
-            .size(120.dp)
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable {  },
-          contentScale = ContentScale.Crop
-        )
+        if (imageUri != null) {
+          AsyncImage(
+            model = imageUri,
+            contentDescription = null,
+            modifier = Modifier
+              .size(120.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.surfaceVariant)
+              .clickable { imagePickerLauncher.launch("image/*")  },
+            contentScale = ContentScale.Crop
+          )
+          IconButton(onClick = { userViewModel.uploadImage()}) {
+            Icon(Icons.Filled.Add, contentDescription = "Add photo", tint = MaterialTheme.colorScheme.primary)
+          }
+          uploadMessage?.let { Text(text = uploadMessage) }
+        }else {
+          Image(
+            painter = painterResource(id = R.drawable.user),
+            contentDescription = "Profile Avatar",
+            modifier = Modifier
+              .size(120.dp)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.surfaceVariant)
+              .clickable { imagePickerLauncher.launch("image/*")  },
+            contentScale = ContentScale.Crop
+          )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // User Information Sections
         if (isEditMode) {
-          // --- Edit Mode ---
           ProfileTextField(
             value = fullNameState.toString(),
             onValueChange = { fullNameState = it },

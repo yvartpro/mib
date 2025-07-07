@@ -55,6 +55,7 @@ import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.component.SmallText
 import com.example.madeinburundi.ui.theme.GreenMIB
 import com.example.madeinburundi.viewmodel.AuthViewModel
+import com.example.madeinburundi.viewmodel.UserViewModel
 
 
 @Composable
@@ -63,7 +64,8 @@ modifier: Modifier = Modifier,
 onBackClick: () -> Unit,
 onLoginSuccess: () -> Unit,
 navController: NavController,
-viewModel: AuthViewModel = hiltViewModel()
+viewModel: AuthViewModel = hiltViewModel(),
+userViewModel: UserViewModel
 ) {
   var isLogin by rememberSaveable { mutableStateOf(true) }
   var fullName by rememberSaveable { mutableStateOf("") }
@@ -82,7 +84,8 @@ viewModel: AuthViewModel = hiltViewModel()
 
   LaunchedEffect(loginSuccess) {
     if (loginSuccess) {
-      navController.popBackStack() // ✅ Go back to Cart or previous screen
+      userViewModel.loadUserProfile()
+      navController.popBackStack() // Go back to previous screen
     }
   }
 //  LaunchedEffect(token) {

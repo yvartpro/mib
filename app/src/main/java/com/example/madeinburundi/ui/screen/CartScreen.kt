@@ -61,6 +61,7 @@ fun CartScreen(
   val coroutineScope = rememberCoroutineScope()
   var confirmedItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
   var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
+  val user = userViewModel.user
 
   Scaffold(
     snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -110,8 +111,7 @@ fun CartScreen(
             val itemsCopy = cartItems.map { it.copy() }
             val totalCopy = totalAmount
 
-
-            if (userViewModel.user != null) {
+            if (user != null) {
               cartViewModel.checkoutAndClear { success ->
                 Log.d("CartScreen", "✅ Checkout result: $success")
 
@@ -119,11 +119,6 @@ fun CartScreen(
                   confirmedItems = itemsCopy
                   confirmedTotal = totalCopy
                   showCheckoutDialog = true
-
-                  coroutineScope.launch {
-                    cartViewModel.notifyAdded("Commande réussie")
-                    snackbarHostState.showSnackbar(message = "Commande réussie", withDismissAction = true)
-                  }
                 } else {
                   coroutineScope.launch {
                     snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
@@ -131,7 +126,10 @@ fun CartScreen(
                 }
               }
             }else{
-              navController.navigate(NavDestinations.AUTH)
+              coroutineScope.launch {
+                userViewModel.loadUserProfile()
+                navController.navigate(NavDestinations.AUTH)
+              }
             }
           }
           ,

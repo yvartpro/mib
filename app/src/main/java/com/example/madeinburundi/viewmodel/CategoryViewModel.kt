@@ -12,19 +12,15 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(
     private val categoryProvider: CategoryProvider
 ) : ViewModel() {
-
     var categories = mutableStateListOf<Category>()
         private set
-
     init {
         loadCategories()
     }
-
     private fun loadCategories() {
         categories.clear()
         categories.addAll(categoryProvider.getCategories())
     }
-
     fun setActive(name: String?) {
         categories = categories.map {
             it.copy(isActive = it.name == name)

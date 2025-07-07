@@ -14,12 +14,7 @@ import com.example.madeinburundi.data.model.toUser
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BearerTokens
-import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
@@ -33,12 +28,14 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import java.io.File
 import javax.inject.Inject
+import io.ktor.client.request.forms.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+
 
 class UserRepository @Inject constructor(
   private val client: HttpClient,
@@ -128,33 +125,33 @@ class UserRepository @Inject constructor(
   }
 
   suspend fun uploadImage(uri: Uri): Boolean = withContext(Dispatchers.IO) {
-    val token = tokenManager.getAccessToken()
-
+    val token = tokenManager.getAccessToken() ?: throw UnAuthorizedException("No token")
     val file = compressImage(uri)
 
-    val client = HttpClient(CIO) {
-      install(ContentNegotiation) {
-        json(Json { ignoreUnknownKeys = true })
-      }
-      install(Auth) {
-        bearer {loadTokens { BearerTokens(token.toString(), "") }  }
-      }
-    }
-
-    val response = client.submitFormWithBinaryData(
-      url = "https://your-api.com/upload",
-      formData = formData {
+    try {
+      val parts = formData {
         append("image", file.readBytes(), Headers.build {
           append(HttpHeaders.ContentType, "image/jpeg")
           append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
         })
       }
-    ) {
-      header(HttpHeaders.Authorization, "Bearer $token")
+
+      val response = client.submitFormWithBinaryData(
+        formData = parts
+      ) {
+        url("https://mib.vovota.bi/api/profile/")
+        method = HttpMethod.Patch
+        header(HttpHeaders.Authorization, "Bearer $token")
+      }
+
+      println("Response status: ${response.status}")
+      println("Response body: ${response.bodyAsText()}")
+
+      response.status.value in 200..299
+    } catch (e: Exception) {
+      println("Upload error: ${e.message}")
+      false
     }
-println("Uploaded image: $file")
-    println("Response: ${response.bodyAsText()}")
-    response.status.value in 200..299
   }
 
   private suspend fun compressImage(uri: Uri): File = withContext(Dispatchers.IO) {

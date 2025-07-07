@@ -31,7 +31,6 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
 
   fun loadUserProfile() {
     viewModelScope.launch {
-
       isLoading = true
       error = null
       try {
@@ -78,9 +77,13 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
   var uploadMessage by mutableStateOf<String?>(null)
     private set
 
+  var isImagePicked by mutableStateOf(false)
+    private set
+
   fun onImageSelected(uri: Uri) {
     selectedImageUri = uri
     uploadMessage = null
+    isImagePicked = true
   }
 
   fun uploadImage() {
@@ -89,7 +92,13 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
       isUploading = true
       val success = userRepository.uploadImage(uri)
       isUploading = false
-      uploadMessage = if (success) "Upload successful" else "Upload failed"
+      isImagePicked = false
+      uploadMessage = if (success) {
+        loadUserProfile() // 👈 refresh profile after upload
+        "Upload successful"
+      } else {
+        "Upload failed"
+      }
     }
   }
 }

@@ -32,7 +32,7 @@ fun SearchScreen(
   productViewModel: ProductViewModel,
   categoryName: String? = null,
   navController: NavController,
-  categoryViewModel: CategoryViewModel = viewModel()
+  categoryViewModel: CategoryViewModel
 ) {
   val searchQuery = productViewModel.searchQuery
   val products = if(categoryName != null) {
