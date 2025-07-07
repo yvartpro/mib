@@ -84,6 +84,7 @@ class UserRepository @Inject constructor(
     return try {
       val response = client.patch("https://mib.vovota.bi/api/profile/"){
         header(HttpHeaders.Authorization, "Bearer $access")
+        contentType(ContentType.Application.Json) // ✅ Add this
         setBody(update)
       }
       if ( response.status == HttpStatusCode.OK || response.status == HttpStatusCode.Accepted) {
@@ -140,7 +141,7 @@ class UserRepository @Inject constructor(
         formData = parts
       ) {
         url("https://mib.vovota.bi/api/profile/")
-        method = HttpMethod.Patch
+        method = HttpMethod.Post
         header(HttpHeaders.Authorization, "Bearer $token")
       }
 

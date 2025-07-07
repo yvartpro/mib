@@ -142,6 +142,9 @@ fun ProfileScreen(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+        userViewModel.updateMsg?.let { Text(text = userViewModel.updateMsg, color = MaterialTheme.colorScheme.error) }
+        Spacer(modifier = Modifier.height(24.dp))
+
 
         if (isEditMode) {
           ProfileTextField(

@@ -50,17 +50,22 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     user = null
   }
 
+  var updateMsg by mutableStateOf("")
+    private set
   fun updateUser(fullname: String?, address: String?) {
     viewModelScope.launch {
       isLoading = true
       try {
         val success = userRepository.editUser(UserUpdate(fullname, address))
         if (success) {
+          updateMsg = "Mise a jour reussie"
           println("Mise a jour reussie")
         } else {
+          updateMsg = "Echec de la mise a jour"
           println("Echec de la mise a jour")
         }
       } catch (e: Exception) {
+        updateMsg = e.message.toString()
         e.printStackTrace()
       } finally {
         isLoading = false
