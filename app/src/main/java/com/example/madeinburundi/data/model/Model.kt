@@ -5,8 +5,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Serializable
 data class Company(
@@ -26,6 +24,8 @@ data class Product(
   val category: String,
   val tax: String?="",
   val transport: String?="",
+  @SerialName("is_box") val isBox: Boolean,
+  @SerialName("add_at") val addedAt: String?,
   @SerialName("product_photo") val image: String,
   val company: Company
 )
@@ -96,6 +96,11 @@ data class Category(val title: String, val name: String? = null, var isActive: B
 
 @Serializable
 data class UserUpdate(
-  @SerialName("full_name") val name: String?,
-  val address: String?
+  val user: UserFields
+)
+
+@Serializable
+data class UserFields(
+  @SerialName("full_name") val fullName: String,
+  val address: String? = null
 )

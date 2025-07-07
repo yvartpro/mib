@@ -1,6 +1,5 @@
 package com.example.madeinburundi.utils
 
-import android.text.Layout
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.madeinburundi.viewmodel.UserViewModel
 import io.ktor.websocket.Frame
@@ -24,6 +22,7 @@ fun ImageUploadSection(viewModel: UserViewModel) {
         it?.let(viewModel::onImageSelected)
     }
 
+    val user = viewModel.user
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         viewModel.selectedImageUri?.let {
             AsyncImage(model = it, contentDescription = null, modifier = Modifier.size(120.dp))
@@ -35,7 +34,7 @@ fun ImageUploadSection(viewModel: UserViewModel) {
 
         Button(
             onClick = {
-                viewModel.uploadImage()
+                viewModel.uploadImage(user?.id)
                 println("Uploaded image: ${viewModel.user}")
                       },
             enabled = viewModel.selectedImageUri != null && !viewModel.isUploading

@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.madeinburundi.data.model.User
-import com.example.madeinburundi.data.model.UserManager
 import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.data.repository.UnAuthorizedException
 import com.example.madeinburundi.data.repository.UserRepository
@@ -52,17 +51,17 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
 
   var updateMsg by mutableStateOf("")
     private set
-  fun updateUser(fullname: String?, address: String?) {
+  fun updateUser(update: UserUpdate, userId: Int) {
     viewModelScope.launch {
       isLoading = true
       try {
-        val success = userRepository.editUser(UserUpdate(fullname, address))
+        val success = userRepository.editUser(update, userId)
         if (success) {
           updateMsg = "Mise a jour reussie"
           println("Mise a jour reussie")
         } else {
           updateMsg = "Echec de la mise a jour"
-          println("Echec de la mise a jour")
+          println("Echec de la mise a jour, $update")
         }
       } catch (e: Exception) {
         updateMsg = e.message.toString()
@@ -91,11 +90,11 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     isImagePicked = true
   }
 
-  fun uploadImage() {
+  fun uploadImage(userId: Int?) {
     val uri = selectedImageUri ?: return
     viewModelScope.launch {
       isUploading = true
-      val success = userRepository.uploadImage(uri)
+      val success = userRepository.uploadImage(uri, userId)
       isUploading = false
       isImagePicked = false
       uploadMessage = if (success) {

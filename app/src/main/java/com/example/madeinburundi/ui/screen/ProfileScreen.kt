@@ -4,7 +4,6 @@ package com.example.madeinburundi.ui.screen
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -41,6 +39,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.madeinburundi.R
 import com.example.madeinburundi.data.model.TokenManager
+import com.example.madeinburundi.data.model.UserFields
+import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.nav.NavDestinations
@@ -124,13 +124,13 @@ fun ProfileScreen(
               .clickable { imagePickerLauncher.launch("image/*")  },
             contentScale = ContentScale.Crop
           )
-          IconButton(onClick = { userViewModel.uploadImage()}) {
+          IconButton(onClick = { userViewModel.uploadImage(user.id)}) {
             Icon(Icons.Filled.Add, contentDescription = "Add photo", tint = MaterialTheme.colorScheme.primary)
           }
           uploadMessage?.let { Text(text = uploadMessage) }
         }else {
-          Image(
-            painter = painterResource(id = R.drawable.user),
+          AsyncImage(
+            model = user.photo,
             contentDescription = "Profile Avatar",
             modifier = Modifier
               .size(120.dp)
@@ -193,7 +193,7 @@ fun ProfileScreen(
           Spacer(modifier = Modifier.height(16.dp))
 
           Button(
-            onClick = { userViewModel.updateUser(fullNameState, addressState) },
+            onClick = { userViewModel.updateUser(UserUpdate(user = UserFields(fullNameState.toString(),addressState )), user.id) },
             modifier = Modifier.fillMaxWidth()
           ) {
             Icon(Icons.Filled.Add, contentDescription = "Save Icon", modifier = Modifier.size(ButtonDefaults.IconSize))

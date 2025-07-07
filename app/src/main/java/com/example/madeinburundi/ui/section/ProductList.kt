@@ -136,12 +136,13 @@ fun ProductCard(
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          text = "${product.price} FC",
+          text = "${product.price} FC${product.isBox.let { " / box" }}",
           fontSize = FontSizes.caption(),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.primary
         )
+        //Text(text = "1 box", fontSize = FontSizes.caption(), color = MaterialTheme.colorScheme.onBackground)
         FilledIconButton(
           onClick = { cartViewModel.addToCart(product) },
           shape = CircleShape,

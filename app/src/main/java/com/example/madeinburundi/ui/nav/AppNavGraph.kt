@@ -56,7 +56,11 @@ fun AppNavGraph(
       )
     }
     composable(NavDestinations.COMPANIES)   {
-      CompanyScreen( navController = navController, companies = companyViewModel.companies)
+      CompanyScreen(
+        navController = navController,
+        companies = companyViewModel.companies,
+        companyViewModel = companyViewModel
+      )
     }
     composable(NavDestinations.PRODUCT) { backStackEntry->
       val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()

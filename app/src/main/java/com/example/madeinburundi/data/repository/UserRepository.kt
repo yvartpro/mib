@@ -79,19 +79,19 @@ class UserRepository @Inject constructor(
     }
   }
 
-  suspend fun editUser(update: UserUpdate): Boolean {
+  suspend fun editUser(update: UserUpdate, userId: Int): Boolean {
     val access = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
     return try {
-      val response = client.patch("https://mib.vovota.bi/api/profile/"){
+      val response = client.patch("https://mib.vovota.bi/api/profile/$userId/"){
         header(HttpHeaders.Authorization, "Bearer $access")
-        contentType(ContentType.Application.Json) // ✅ Add this
+        contentType(ContentType.Application.Json)
         setBody(update)
       }
       if ( response.status == HttpStatusCode.OK || response.status == HttpStatusCode.Accepted) {
         println("Update repo: ${response.status}")
         true
       }else{
-        println("Update repo: ${response.status}")
+        println("Update repo: ${response}")
         false
       }
     } catch (e: ClientRequestException) {
@@ -125,7 +125,7 @@ class UserRepository @Inject constructor(
     }
   }
 
-  suspend fun uploadImage(uri: Uri): Boolean = withContext(Dispatchers.IO) {
+  suspend fun uploadImage(uri: Uri, userId: Int?): Boolean = withContext(Dispatchers.IO) {
     val token = tokenManager.getAccessToken() ?: throw UnAuthorizedException("No token")
     val file = compressImage(uri)
 
@@ -140,11 +140,10 @@ class UserRepository @Inject constructor(
       val response = client.submitFormWithBinaryData(
         formData = parts
       ) {
-        url("https://mib.vovota.bi/api/profile/")
+        url("https://mib.vovota.bi/api/profile/$userId/")
         method = HttpMethod.Post
         header(HttpHeaders.Authorization, "Bearer $token")
       }
-
       println("Response status: ${response.status}")
       println("Response body: ${response.bodyAsText()}")
 

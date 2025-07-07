@@ -1,6 +1,7 @@
 package com.example.madeinburundi.ui.screen
 
 
+import AccompanistShimmerCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,7 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,22 +27,43 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.madeinburundi.data.model.Company
-import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.viewmodel.CompanyViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun CompanyScreen(
   navController: NavController,
-  companies: List<Company>
+  companies: List<Company>,
+  companyViewModel: CompanyViewModel
 ) {
+  var isLoading by remember { mutableStateOf(true) }
+  val scope = rememberCoroutineScope()
   Surface(
     modifier = Modifier.fillMaxSize(),
-    color = MaterialTheme.colorScheme.background // Will be white in light mode
+    color = MaterialTheme.colorScheme.background
   ) {
+ LaunchedEffect(Unit) {
+   scope.launch {
+     delay(5000)
+     isLoading = false
+   }
+ }
+    if(isLoading) {
+      LazyColumn {
+        items(4) { item ->
+          AccompanistShimmerCard()
+        }
+      }
+    }else{
     if (companies.isEmpty()) {
       Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text("Aucune industrie disponible")
@@ -56,9 +77,10 @@ fun CompanyScreen(
           CompanyListItem(company = company, navController = navController)
         }
       }
-    }
+    }}
   }
 }
+
 
 @Composable
 fun CompanyListItem(company: Company, navController: NavController) {
