@@ -1,6 +1,5 @@
 package com.example.madeinburundi.ui.screen
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -109,7 +107,7 @@ fun ProductScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-          text = "${product.price ?: "N/A"} FC",
+          text = "${product.price ?: ""} FC ${if (product.isBox) " / box" else ""}",
           fontSize = FontSizes.caption(),
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.primary

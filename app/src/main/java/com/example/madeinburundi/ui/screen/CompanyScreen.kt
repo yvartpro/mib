@@ -1,7 +1,6 @@
 package com.example.madeinburundi.ui.screen
 
-
-import AccompanistShimmerCard
+import CompanyShimmerCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,11 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.madeinburundi.data.model.Company
@@ -45,7 +40,7 @@ fun CompanyScreen(
   companies: List<Company>,
   companyViewModel: CompanyViewModel
 ) {
-  var isLoading by remember { mutableStateOf(true) }
+  var isLoading = companyViewModel.isLoading
   val scope = rememberCoroutineScope()
   Surface(
     modifier = Modifier.fillMaxSize(),
@@ -60,7 +55,7 @@ fun CompanyScreen(
     if(isLoading) {
       LazyColumn {
         items(4) { item ->
-          AccompanistShimmerCard()
+          CompanyShimmerCard()
         }
       }
     }else{

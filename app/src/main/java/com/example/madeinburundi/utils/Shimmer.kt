@@ -28,7 +28,7 @@ import com.google.accompanist.placeholder.material.shimmer
 import io.ktor.utils.io.concurrent.shared
 
 @Composable
-fun AccompanistShimmerCard() {
+fun CompanyShimmerCard() {
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -38,13 +38,13 @@ fun AccompanistShimmerCard() {
             containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-
+        Row(modifier = Modifier.padding(16.dp)) {
             // Simulated image section
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(160.dp)
+                    .height(60.dp)
+                    .width(60.dp)
+                    .clip(CircleShape)
                     .placeholder(
                         visible = true,
                         color = Color.LightGray,
@@ -52,32 +52,43 @@ fun AccompanistShimmerCard() {
                     )
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Simulated title
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .height(20.dp)
-                    .placeholder(
-                        visible = true,
-                        color = Color.LightGray,
-                        highlight = PlaceholderHighlight.shimmer()
-                    )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Simulated subtitle
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(16.dp)
-                    .placeholder(
-                        visible = true,
-                        color = Color.LightGray,
-                        highlight = PlaceholderHighlight.shimmer()
-                    )
-            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(14.dp)
+                        .placeholder(
+                            visible = true,
+                            color = Color.LightGray,
+                            highlight = PlaceholderHighlight.shimmer()
+                        )
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                // Simulated subtitle
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(12.dp)
+                        .placeholder(
+                            visible = true,
+                            color = Color.LightGray,
+                            highlight = PlaceholderHighlight.shimmer()
+                        )
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                // Simulated subtitle
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                        .height(12.dp)
+                        .placeholder(
+                            visible = true,
+                            color = Color.LightGray,
+                            highlight = PlaceholderHighlight.shimmer()
+                        )
+                )
+            }
         }
     }
 }
@@ -182,8 +193,11 @@ fun RecommendedShimmerItem() {
 @Composable
 fun ProductCardShimmer(modifier: Modifier) {
     Card(
-        modifier = modifier.width(IntrinsicSize.Max),
-        shape = RoundedCornerShape(4.dp)
+        modifier = modifier,
+        shape = RoundedCornerShape(4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent
+        ),
     ) {
         Column(
             modifier = Modifier.padding(Spacings.medium())
@@ -199,7 +213,6 @@ fun ProductCardShimmer(modifier: Modifier) {
                     )
             )
             Spacer(modifier = Modifier.height(8.dp))
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
@@ -211,7 +224,6 @@ fun ProductCardShimmer(modifier: Modifier) {
                     )
             )
             Spacer(modifier = Modifier.height(2.dp))
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.4f)
@@ -222,15 +234,12 @@ fun ProductCardShimmer(modifier: Modifier) {
                         highlight = PlaceholderHighlight.shimmer()
                     )
             )
-
             Spacer(modifier = Modifier.height(6.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
@@ -241,7 +250,6 @@ fun ProductCardShimmer(modifier: Modifier) {
                             highlight = PlaceholderHighlight.shimmer()
                         )
                 )
-
                 Box(
                     modifier = Modifier
                         .height(28.dp)

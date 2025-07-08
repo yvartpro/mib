@@ -52,6 +52,9 @@ fun ProductList(
   val isLoading = productViewModel.isLoading
   val chunks = if (isLoading) List(5) { listOf(null, null) } else products.chunked(2)
 
+  if (productViewModel.emptyMsg != "") {
+    cartViewModel.notifyAdded(productViewModel.emptyMsg.toString())
+  }
   Column(
     modifier = Modifier
       .fillMaxWidth()

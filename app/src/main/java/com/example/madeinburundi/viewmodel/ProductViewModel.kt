@@ -22,6 +22,9 @@ class ProductViewModel @Inject constructor(
   var filteredProducts by mutableStateOf<List<Product>>(emptyList())
     private set
 
+  var emptyMsg by mutableStateOf("")
+    private set
+
   var searchQuery by mutableStateOf("")
 
   var isLoading by mutableStateOf(false)
@@ -30,8 +33,11 @@ class ProductViewModel @Inject constructor(
   fun loadProducts() {
     viewModelScope.launch {
       isLoading = true
-      products = productRepository.getProducts()
-      isLoading = false
+      val result = productRepository.getProducts()
+      if (result.isNotEmpty())  {
+        products = result
+        isLoading = false
+      }
     }
   }
 

@@ -26,8 +26,11 @@ class CompanyViewModel @Inject constructor(
   fun loadCompanies() {
     viewModelScope.launch {
       isLoading = true
-      companies = companyRepository.getCompanies()
-      isLoading = false
+      val result = companyRepository.getCompanies()
+      if (result.isNotEmpty()) {
+        companies = result
+        isLoading = false
+      }
     }
   }
 }
