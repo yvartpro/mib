@@ -103,6 +103,41 @@ class UserRepository @Inject constructor(
     }
   }
 
+  suspend fun uploadProfileImage(uri: Uri, userId: Int): Boolean = withContext(Dispatchers.IO) {
+    val token = TokenManager.getAccessToken() ?: return@withContext false
+println("Token image: $token")
+    // Create temp JPEG file
+    val file = File(context.cacheDir, "profile.jpg").apply {
+      val bitmap = Glide.with(context).asBitmap().load(uri).submit(300, 300).get()
+      outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it) }
+    }
+
+    // Prepare multipart body
+    val formData = formData {
+      append("image", file.readBytes(), Headers.build {
+        append(HttpHeaders.ContentType, "image/jpeg")
+        append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
+      })
+    }
+    // Use correct overload: only `formData` and builder block
+    try {
+      val response = client.submitFormWithBinaryData(
+        formData = formData
+      ) {
+        url("https://mib.vovota.bi/api/profile/$userId/")
+        method = HttpMethod.Patch
+        headers.append(HttpHeaders.Authorization, "Bearer $token")
+      }
+      println("$formData")
+      response.status.value in 200..299
+    } catch (e: Exception) {
+      e.printStackTrace()
+      false
+    }
+  }
+
+
+
   private suspend fun refreshToken(): Boolean {
     val refresh = TokenManager.getRefreshToken()
     if (refresh.isNullOrEmpty()) {
@@ -110,7 +145,7 @@ class UserRepository @Inject constructor(
       return false
     }
     return try {
-      val response = client.post("https://mib.vovota.bi/api/refresh") {
+      val response = client.post("https://mib.vovota.bi/api/refresh/") {
         contentType(ContentType.Application.Json)
         setBody(mapOf("refresh" to refresh))
       }
@@ -123,44 +158,6 @@ class UserRepository @Inject constructor(
       TokenManager.clearTokens()
       false
     }
-  }
-
-  suspend fun uploadImage(uri: Uri, userId: Int?): Boolean = withContext(Dispatchers.IO) {
-    val token = tokenManager.getAccessToken() ?: throw UnAuthorizedException("No token")
-    val file = compressImage(uri)
-
-    try {
-      val parts = formData {
-        append("image", file.readBytes(), Headers.build {
-          append(HttpHeaders.ContentType, "image/jpeg")
-          append(HttpHeaders.ContentDisposition, "filename=\"profile.jpg\"")
-        })
-      }
-
-      val response = client.submitFormWithBinaryData(
-        formData = parts
-      ) {
-        url("https://mib.vovota.bi/api/profile/$userId/")
-        method = HttpMethod.Post
-        header(HttpHeaders.Authorization, "Bearer $token")
-      }
-      println("Response status: ${response.status}")
-      println("Response body: ${response.bodyAsText()}")
-
-      response.status.value in 200..299
-    } catch (e: Exception) {
-      println("Upload error: ${e.message}")
-      false
-    }
-  }
-
-  private suspend fun compressImage(uri: Uri): File = withContext(Dispatchers.IO) {
-    val file = File(context.cacheDir, "profile.jpg")
-    val bitmap = Glide.with(context).asBitmap().load(uri).submit(500, 500).get()
-    file.outputStream().use {
-      bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it)
-    }
-    file
   }
 }
 

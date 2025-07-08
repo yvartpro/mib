@@ -44,6 +44,7 @@ import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.nav.NavDestinations
+import com.example.madeinburundi.utils.ProfileImageUploader
 import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -83,7 +84,10 @@ fun ProfileScreen(
 
   val imagePickerLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.GetContent()
-  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
+  ) { uri -> uri?.let {
+    println("Selected image: $it")
+    userViewModel.onImageSelected(it)
+  } }
 
   LaunchedEffect(key1 = user, key2 = isEditMode) {
     if (!isEditMode) {
@@ -124,10 +128,13 @@ fun ProfileScreen(
               .clickable { imagePickerLauncher.launch("image/*")  },
             contentScale = ContentScale.Crop
           )
-          IconButton(onClick = { userViewModel.uploadImage(user.id)}) {
-            Icon(Icons.Filled.Add, contentDescription = "Add photo", tint = MaterialTheme.colorScheme.primary)
+          IconButton(onClick = {
+            userViewModel.uploadImage(user.id)
+            println("new")
+          }) {
+            //Icon(Icons.Filled.Add, contentDescription = "Add photo", tint = MaterialTheme.colorScheme.primary)
           }
-          uploadMessage?.let { Text(text = uploadMessage) }
+          //uploadMessage?.let { Text(text = uploadMessage) }
         }else {
           AsyncImage(
             model = user.photo,
@@ -141,10 +148,11 @@ fun ProfileScreen(
           )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
-        userViewModel.updateMsg?.let { Text(text = userViewModel.updateMsg, color = MaterialTheme.colorScheme.error) }
-        Spacer(modifier = Modifier.height(24.dp))
+//        Spacer(modifier = Modifier.height(24.dp))
+//        userViewModel.updateMsg?.let { Text(text = userViewModel.updateMsg, color = MaterialTheme.colorScheme.error) }
+//        Spacer(modifier = Modifier.height(24.dp))
 
+        //ProfileImageUploader(userViewModel, user.id)
 
         if (isEditMode) {
           ProfileTextField(

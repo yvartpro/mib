@@ -57,19 +57,19 @@ fun HomeScreen(
     modifier = Modifier
       .fillMaxSize()
       .verticalScroll(rememberScrollState())
-      .padding(vertical = 8.dp)
+      .padding(vertical = 8.dp, horizontal = 8.dp)
   ) {
     HomeSection(title = "Catégories") {
       CategoryRow(navController = navController, viewModel = categoryViewModel)
     }
     HomeSection(title = "Les plus récents") {
-      ProductImageRow(products = productViewModel.products, navController = navController)
+      ProductImageRow(productViewModel = productViewModel, navController = navController)
     }
     HomeSection(title = "Recommendés") {
-      Recommended(products = productViewModel.products, navController = navController)
+      Recommended(productViewModel = productViewModel, navController = navController)
     }
     HomeSection(title = "Produits") {
-      ProductList(cartViewModel = cartViewModel, products = products, navController = navController)
+      ProductList(cartViewModel = cartViewModel, productViewModel = productViewModel, navController = navController)
     }
   }
 }

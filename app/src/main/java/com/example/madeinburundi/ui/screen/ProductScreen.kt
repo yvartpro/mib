@@ -80,7 +80,7 @@ fun ProductScreen(
       AsyncImage(
         model = product.image,
         contentDescription = product.name,
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         modifier = Modifier
           .weight(1f)
           .aspectRatio(1f)
@@ -203,7 +203,7 @@ fun ProductImageItem(
     AsyncImage(
       model = product.image,
       contentDescription = product.name,
-      contentScale = ContentScale.Crop,
+      contentScale = ContentScale.Fit,
       modifier = Modifier.fillMaxSize()
     )
   }

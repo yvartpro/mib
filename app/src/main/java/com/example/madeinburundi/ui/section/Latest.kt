@@ -1,5 +1,7 @@
 package com.example.madeinburundi.ui.section
 
+import AccompanistShimmerCard
+import ProductImageShimmerItem
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,15 +35,21 @@ import com.example.madeinburundi.viewmodel.ProductViewModel
 
 @Composable
 fun ProductImageRow(
-  products: List<Product>,
-  navController: NavController
+  productViewModel: ProductViewModel,
+  navController: NavController,
 ) {
+  val isLoading = productViewModel.isLoading
+  val products = productViewModel.products
   LazyRow(
     horizontalArrangement = Arrangement.spacedBy(16.dp),
     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
   ) {
-    items(products) { product->
-      ProductImageItem(product, navController = navController)
+    if (isLoading) {
+      items(5) { ProductImageShimmerItem() }
+    } else {
+      items(products) { product ->
+        ProductImageItem(product, navController = navController)
+      }
     }
   }
 }
@@ -64,7 +72,7 @@ fun ProductImageItem(product: Product, navController: NavController) {
         AsyncImage(
           model = product.image,
           contentDescription = product.name,
-          contentScale = ContentScale.Crop,
+          contentScale = ContentScale.Fit,
           modifier = Modifier.fillMaxSize()
         )
       }

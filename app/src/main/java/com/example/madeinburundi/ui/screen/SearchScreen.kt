@@ -62,7 +62,7 @@ fun SearchScreen(
     if (products.isEmpty()) {
       Text("Aucun produit.")
     } else {
-      ProductList(cartViewModel = cartViewModel,products = products, navController = navController)
+      ProductList(cartViewModel = cartViewModel,productViewModel = productViewModel, navController = navController)
     }
   }
 }

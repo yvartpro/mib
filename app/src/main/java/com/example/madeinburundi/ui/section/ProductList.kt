@@ -1,5 +1,6 @@
 package com.example.madeinburundi.ui.section
 
+import ProductCardShimmer
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,32 +40,42 @@ import com.example.madeinburundi.data.model.Product
 import com.example.madeinburundi.ui.theme.FontSizes
 import com.example.madeinburundi.ui.theme.Spacings
 import com.example.madeinburundi.viewmodel.CartViewModel
+import com.example.madeinburundi.viewmodel.ProductViewModel
 
 @Composable
 fun ProductList(
   cartViewModel: CartViewModel,
-  products: List<Product>,
+  productViewModel: ProductViewModel,
   navController: NavController
 ) {
+  val products = productViewModel.products
+  val isLoading = productViewModel.isLoading
+  val chunks = if (isLoading) List(5) { listOf(null, null) } else products.chunked(2)
+
   Column(
     modifier = Modifier
       .fillMaxWidth()
       .padding(horizontal = 8.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp)
   ) {
-    products.chunked(2).forEach { rowItems ->
+    chunks.forEach { rowItems ->
       Row(
         modifier = Modifier
           .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
       ) {
         for (product in rowItems) {
-          ProductCard(
-            cartViewModel =  cartViewModel,
-            product = product,
-            modifier = Modifier.weight(1f),
-            navController = navController
-          )
+          if (product == null) {
+            ProductCardShimmer(modifier = Modifier.weight(1f))
+          }else {
+            ProductCard(
+              cartViewModel =  cartViewModel,
+              product = product,
+              modifier = Modifier.weight(1f),
+              navController = navController
+            )
+          }
+
         }
         if (rowItems.size == 1) {
           Spacer(modifier = Modifier.weight(1f))
@@ -97,7 +108,7 @@ fun ProductCard(
       AsyncImage(
         model = product.image,
         contentDescription = product.name,
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         modifier = Modifier
           .fillMaxWidth()
           .aspectRatio(1f)
@@ -136,7 +147,7 @@ fun ProductCard(
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          text = "${product.price} FC${product.isBox.let { " / box" }}",
+          text = "${product.price} FC${ if (product.isBox) " / box" else ""}",
           fontSize = FontSizes.caption(),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.ExtraBold,

@@ -3,48 +3,76 @@ package com.example.madeinburundi.utils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.madeinburundi.viewmodel.UserViewModel
 import io.ktor.websocket.Frame
 
 @Composable
-fun ImageUploadSection(viewModel: UserViewModel) {
+fun ProfileImageUploader(
+    userViewModel: UserViewModel,
+    userId: Int
+) {
+    val imageUri = userViewModel.selectedImageUri
+    val isUploading = userViewModel.isUploading
+    val uploadMessage = userViewModel.uploadMessage
+    println("$isUploading $uploadMessage $imageUri")
+
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
-        it?.let(viewModel::onImageSelected)
+        it?.let(userViewModel::onImageSelected)
     }
 
-    val user = viewModel.user
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        viewModel.selectedImageUri?.let {
-            AsyncImage(model = it, contentDescription = null, modifier = Modifier.size(120.dp))
-        }
-
+    Column(modifier = Modifier.padding(all = 16.dp)) {
         Button(onClick = { launcher.launch("image/*") }) {
-            Frame.Text("Choose Image")
+            Text("Choisir une image")
         }
 
-        Button(
-            onClick = {
-                viewModel.uploadImage(user?.id)
-                println("Uploaded image: ${viewModel.user}")
-                      },
-            enabled = viewModel.selectedImageUri != null && !viewModel.isUploading
-        ) {
-            if (viewModel.isUploading) CircularProgressIndicator(modifier = Modifier.size(20.dp))
-            else Frame.Text("Upload")
-        }
+//        imageUri?.let {
+//            Spacer(Modifier.height(12.dp))
+//
+//            AsyncImage(
+//                model = it,
+//                contentDescription = null,
+//                modifier = Modifier
+//                    .size(100.dp)
+//                    .clip(RoundedCornerShape(8.dp))
+//            )
+//
+//            Spacer(Modifier.height(8.dp))
+//
+//            Button(
+//                onClick = { userViewModel.uploadImage(userId) },
+//                enabled = !isUploading
+//            ) {
+//                println("Uploader clicked")
+//                if (isUploading)
+//                    CircularProgressIndicator(Modifier.size(18.dp))
+//                else
+//                    Text("Uploader")
+//            }
+//        }
 
-        viewModel.uploadMessage?.let {
-            Text(it, color = if (it.contains("success")) Color.Green else Color.Red)
-        }
+//        uploadMessage?.let {
+//            Text(
+//                it,
+//                color = if (it.startsWith("✅")) Color.Green else Color.Red,
+//                fontSize = 14.sp,
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
+//        }
     }
 }

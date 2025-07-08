@@ -39,13 +39,6 @@ data class CartItem(
 )
 
 @Serializable
-data class UserWrapper(
-  val id:  Int,
-  val user: User,
-  val address: String? = null,
-  val photo: String? = null
-)
-@Serializable
 data class UserRaw(
   val id: Int,
   val user: NestedUser,
