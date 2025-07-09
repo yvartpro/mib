@@ -32,9 +32,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
-import io.ktor.client.request.forms.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import java.io.InputStream
 
 
 class UserRepository @Inject constructor(
@@ -79,9 +79,11 @@ class UserRepository @Inject constructor(
     }
   }
 
+
   suspend fun editUser(update: UserUpdate, userId: Int): Boolean {
     val access = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
     return try {
+      println("payload: $update")
       val response = client.patch("https://mib.vovota.bi/api/profile/$userId/"){
         header(HttpHeaders.Authorization, "Bearer $access")
         contentType(ContentType.Application.Json)
@@ -91,7 +93,7 @@ class UserRepository @Inject constructor(
         println("Update repo: ${response.status}")
         true
       }else{
-        println("Update repo: ${response}")
+        println("Update repo: $response")
         false
       }
     } catch (e: ClientRequestException) {
@@ -105,13 +107,13 @@ class UserRepository @Inject constructor(
 
   suspend fun uploadProfileImage(uri: Uri, userId: Int): Boolean = withContext(Dispatchers.IO) {
     val token = TokenManager.getAccessToken() ?: return@withContext false
-println("Token image: $token")
     // Create temp JPEG file
     val file = File(context.cacheDir, "profile.jpg").apply {
       val bitmap = Glide.with(context).asBitmap().load(uri).submit(300, 300).get()
       outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it) }
     }
 
+    println("File: $file")
     // Prepare multipart body
     val formData = formData {
       append("image", file.readBytes(), Headers.build {
@@ -128,7 +130,7 @@ println("Token image: $token")
         method = HttpMethod.Patch
         headers.append(HttpHeaders.Authorization, "Bearer $token")
       }
-      println("$formData")
+      println("Formdata: $response")
       response.status.value in 200..299
     } catch (e: Exception) {
       e.printStackTrace()

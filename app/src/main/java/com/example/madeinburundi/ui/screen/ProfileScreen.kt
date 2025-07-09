@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
@@ -37,7 +36,6 @@ import com.example.madeinburundi.R
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.UserFields
 import com.example.madeinburundi.data.model.UserUpdate
-import com.example.madeinburundi.ui.component.LogoutButton
 import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -57,7 +55,6 @@ fun ProfileScreen(
   var addressState by remember(user?.address) { mutableStateOf(user?.address ?: "") }
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
-
   val scope = rememberCoroutineScope()
 
   LaunchedEffect(Unit) {
@@ -116,7 +113,7 @@ fun ProfileScreen(
         icon = Icons.Default.Person,
         onSubmit = {
           fullNameState = it
-          userViewModel.updateUser(UserUpdate(UserFields(fullName = it)), user.id)
+          userViewModel.updateUser(UserUpdate(UserFields(it, null, null), null), user.id)
         }
       )
 
@@ -126,7 +123,7 @@ fun ProfileScreen(
         icon = Icons.Default.Phone,
         onSubmit = {
           phoneState = it
-          //userViewModel.updateUser(UserUpdate(UserFields(phone = it)), user.id)
+          userViewModel.updateUser(UserUpdate(UserFields(null, it, null)), user.id)
         }
       )
 
@@ -136,7 +133,7 @@ fun ProfileScreen(
         icon = Icons.Default.LocationOn,
         onSubmit = {
           addressState = it
-          //userViewModel.updateUser(UserUpdate(UserFields(address = it)), user.id)
+          userViewModel.updateUser(UserUpdate(UserFields(null, it)), user.id)
         }
       )
 
@@ -144,10 +141,11 @@ fun ProfileScreen(
         label = "Mot de passe",
         value = passwordState,
         icon = Icons.Default.Lock,
-        placeholder = "Nouveau mot de passe",
+        placeholder = "",
         onSubmit = {
+          passwordState = it
+          userViewModel.updateUser(UserUpdate(UserFields(null, null, it)), user.id)
           passwordState = ""
-          //userViewModel.updateUser(UserUpdate(UserFields(password = it)), user.id)
         },
         keyboardType = KeyboardType.Password,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),

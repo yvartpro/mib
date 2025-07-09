@@ -2,7 +2,6 @@ package com.example.madeinburundi.di
 
 import android.content.Context
 import com.example.madeinburundi.data.AuthRepository
-import com.example.madeinburundi.data.model.Category
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.data.repository.UserRepository
@@ -34,7 +33,6 @@ object AppModule {
           prettyPrint = true
         })
       }
-
     }
     println("Provided: ${client.hashCode()}")
     return client

@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Made_In_Burundi.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-07-09T01:56:35.474911691Z">
+        <DropdownSelection timestamp="2025-07-09T09:45:35.637831189Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=a8260721" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=12680154BP014552" />
             </handle>
           </Target>
         </DropdownSelection>

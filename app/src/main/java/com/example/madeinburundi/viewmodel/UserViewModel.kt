@@ -1,5 +1,6 @@
 package com.example.madeinburundi.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +59,7 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
         val success = userRepository.editUser(update, userId)
         if (success) {
           updateMsg = "Mise a jour reussie"
-          println("Mise a jour reussie")
+          println("Mise a jour reussie $update")
         } else {
           updateMsg = "Echec de la mise a jour"
           println("Echec de la mise a jour, $update")
@@ -72,27 +73,30 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     }
   }
 
-  var selectedImage by mutableStateOf<Uri?>(null)
-  var uploadResult by mutableStateOf<String?>(null)
 
-  fun onImagePicked(uri: Uri) {
-    selectedImage = uri
-    uploadResult = null
-  }
-
-  fun uploadImage(userId: Int) {
-    println("$userId")
-    selectedImage?.let { uri ->
-      println("$uri")
+  fun uploadImage(userId: Int, context: Context) {
+    selectedImageUri?.let { uri ->
       viewModelScope.launch {
         isUploading = true
-        val success = userRepository.uploadProfileImage(uri, userId)
-        println("$success")
-        uploadResult = if (success) "Succès" else "Erreur"
+        val success = userRepository.uploadProfileImage(uri, userId, context)
+        uploadMessage = if (success) "Image upload réussie" else "Échec de l'upload"
         isUploading = false
       }
     }
   }
+//  fun uploadImage(userId: Int) {
+//    println("$userId")
+//    selectedImageUri?.let { uri ->
+//      println("$uri")
+//      viewModelScope.launch {
+//        isUploading = true
+//        val success = userRepository.uploadProfileImage(uri, userId)
+//        println("$success")
+//        uploadMessage = if (success) "Succès" else "Erreur"
+//        isUploading = false
+//      }
+//    } ?: run { println("No image selected")}
+//  }
   var selectedImageUri by mutableStateOf<Uri?>(null)
     private set
 
@@ -106,9 +110,10 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     private set
 
   fun onImageSelected(uri: Uri) {
-    println("$uri")
     selectedImageUri = uri
     uploadMessage = null
     isImagePicked = true
   }
 }
+
+

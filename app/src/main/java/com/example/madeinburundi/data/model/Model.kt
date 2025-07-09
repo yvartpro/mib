@@ -89,11 +89,13 @@ data class Category(val title: String, val name: String? = null, var isActive: B
 
 @Serializable
 data class UserUpdate(
-  val user: UserFields
+  val user: UserFields,
+  val address: String? = null,
 )
 
 @Serializable
 data class UserFields(
-  @SerialName("full_name") val fullName: String,
-  val address: String? = null
+  @SerialName("full_name") val fullName: String? =null,
+  @SerialName("phone_number") val phone: String? = null,
+  val password: String? = null,
 )
