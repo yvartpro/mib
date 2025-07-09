@@ -74,29 +74,29 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
   }
 
 
-  fun uploadImage(userId: Int, context: Context) {
-    selectedImageUri?.let { uri ->
-      viewModelScope.launch {
-        isUploading = true
-        val success = userRepository.uploadProfileImage(uri, userId, context)
-        uploadMessage = if (success) "Image upload réussie" else "Échec de l'upload"
-        isUploading = false
-      }
-    }
-  }
-//  fun uploadImage(userId: Int) {
-//    println("$userId")
+//  fun uploadImage(userId: Int, context: Context) {
 //    selectedImageUri?.let { uri ->
-//      println("$uri")
 //      viewModelScope.launch {
 //        isUploading = true
 //        val success = userRepository.uploadProfileImage(uri, userId)
-//        println("$success")
-//        uploadMessage = if (success) "Succès" else "Erreur"
+//        uploadMessage = if (success) "Image upload réussie" else "Échec de l'upload"
 //        isUploading = false
 //      }
-//    } ?: run { println("No image selected")}
+//    }
 //  }
+  fun uploadImage(userId: Int) {
+    println("$userId")
+    selectedImageUri?.let { uri ->
+      println("$uri")
+      viewModelScope.launch {
+        isUploading = true
+        val success = userRepository.uploadProfileImage(uri, userId)
+        println("$success")
+        uploadMessage = if (success) "Succès" else "Erreur"
+        isUploading = false
+      }
+    } ?: run { println("No image selected")}
+  }
   var selectedImageUri by mutableStateOf<Uri?>(null)
     private set
 
