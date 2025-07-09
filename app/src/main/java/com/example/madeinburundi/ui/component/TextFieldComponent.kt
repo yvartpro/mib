@@ -227,7 +227,7 @@ fun ProfileTextField(
   OutlinedTextField(
     value = value,
     onValueChange = onValueChange,
-    label = { Text(label, style = MaterialTheme.typography.bodySmall) }, // Smaller label for text field
+    label = { Text(label, style = MaterialTheme.typography.bodySmall) },
     leadingIcon = { Icon(leadingIconVector, contentDescription = label) },
     trailingIcon = trailingIcon,
     modifier = modifier
@@ -252,6 +252,7 @@ fun ProfileTextField(
 fun PhoneInputField(
   modifier: Modifier = Modifier,
   onPhoneChanged: (String) -> Unit,
+  imeAction: ImeAction = ImeAction.Next,
   countries: List<Country>
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -320,7 +321,7 @@ fun PhoneInputField(
       },
       keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
       visualTransformation = PhonePrefixTransform("+${code}"),
-      modifier = Modifier.weight(1f)
+      modifier = Modifier.weight(1f),
     )
   }
 }
