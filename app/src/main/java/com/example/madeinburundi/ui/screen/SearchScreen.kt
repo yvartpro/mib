@@ -39,6 +39,8 @@ fun SearchScreen(
     productViewModel.products.filter {
       it.category.equals(categoryName, ignoreCase = true)
     }
+  } else if(categoryName == "tous"){
+    productViewModel.products
   } else {
     productViewModel.filteredProducts
   }

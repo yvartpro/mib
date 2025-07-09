@@ -17,6 +17,14 @@ fun BottomBar(navController: NavController, cartItemCount: Int) {
 
   val showBottomBar = bottomNavItems.any { it.route == currentRoute }
 
+  fun navigateSingleTop(route: String) {
+    navController.navigate(route) {
+      popUpTo(navController.graph.startDestinationId) {
+        inclusive = true
+        saveState = true
+      }
+    }
+  }
   if (showBottomBar) {
     NavigationBar {
       bottomNavItems.forEach { item ->
@@ -24,14 +32,8 @@ fun BottomBar(navController: NavController, cartItemCount: Int) {
         NavigationBarItem(
           selected = selected,
           onClick = {
-            if (currentRoute != item.route) {
-              navController.navigate(item.route) {
-                popUpTo(navController.graph.findStartDestination().id) {
-                  saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
-              }
+            if (!selected) {
+              navigateSingleTop(item.route)
             }
           },
           icon = {

@@ -54,7 +54,7 @@ fun EcommerceApp(
       )
     },
     topBar = {
-      if (currentRoute != NavDestinations.CART && currentRoute != NavDestinations.AUTH) {
+      if (currentRoute != NavDestinations.AUTH) {
         TopBar(navController = navController)
       }
     },

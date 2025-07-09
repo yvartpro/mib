@@ -131,7 +131,10 @@ fun ProductScreen(
       Button(
         onClick = {
           cartViewModel.addToCart(product)
-          navController.navigate(NavDestinations.CART)
+          navController.navigate(NavDestinations.CART) {
+            popUpTo(NavDestinations.HOME) { inclusive = false}
+            launchSingleTop = true
+          }
         },
         modifier = Modifier.weight(1f),
         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
@@ -194,7 +197,7 @@ fun ProductImageItem(
       .aspectRatio(1f)
       .clickable {
         navController.navigate("product/${product.id}") {
-          popUpTo(-1)
+          popUpTo(NavDestinations.HOME)
         }
       }
   ) {

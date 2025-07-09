@@ -7,6 +7,7 @@ import javax.inject.Singleton
 class CategoryProvider @Inject constructor() {
 
     fun getCategories(): List<Category> = listOf(
+        Category("Tous", "tous", true),
         Category("Aliments", "food", false),
         Category("Boissons", "beverage", false),
         Category("Sovons", "soap", false),

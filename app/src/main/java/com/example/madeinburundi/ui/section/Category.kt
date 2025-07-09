@@ -2,10 +2,11 @@ package com.example.madeinburundi.ui.section
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,12 +29,12 @@ fun CategoryRow(navController: NavController, viewModel: CategoryViewModel) {
       navController.navigate("home")
     }
   }
-  FlowRow(
-    modifier = Modifier
-      .fillMaxWidth()
-      .padding(horizontal = 8.dp)
+  LazyRow(
+    horizontalArrangement = Arrangement.spacedBy(12.dp),
+    contentPadding = PaddingValues(vertical = 8.dp) // Padding for the row itself
   ) {
-    for (category in categories) {
+    items(categories.size) { index ->
+      val category = categories[index]
       CategoryItem(
         category = category,
         isActive = category.isActive,
@@ -56,7 +57,7 @@ fun CategoryItem(
 ) {
   Text(
     text = category.title,
-    fontWeight = FontWeight(if (isActive) 700 else 400),
+    fontWeight = FontWeight(if (isActive) 700 else 800),
     modifier = Modifier
       .clickable(onClick = onClick)
       .padding(vertical = 2.dp, horizontal = 4.dp),

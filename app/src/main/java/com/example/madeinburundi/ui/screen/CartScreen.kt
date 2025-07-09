@@ -1,6 +1,7 @@
 package com.example.madeinburundi.ui.screen
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -53,6 +54,12 @@ fun CartScreen(
   navController: NavController,
   onBack: () -> Unit
 ) {
+  BackHandler {
+    val popped = navController.popBackStack("home", inclusive = false)
+    if (!popped) {
+      navController.navigate("home")
+    }
+  }
   val cartItems = cartViewModel.cartItems
   val totalAmount = cartViewModel.grandTotal
   val isCheckoutLoading = cartViewModel.isCheckingOut
@@ -63,25 +70,25 @@ fun CartScreen(
   var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
   val user = userViewModel.user
 
-  Scaffold(
-    snackbarHost = { SnackbarHost(snackbarHostState) },
-    topBar = {
-      TopAppBar(
-        title = { Text("Panier", fontWeight = FontWeight.Normal) },
-        colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = MaterialTheme.colorScheme.surfaceContainer,
-          titleContentColor = MaterialTheme.colorScheme.onSurface,
-          navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-          actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-      )
-
-    }
-  ) { innerPadding ->
+//  Scaffold(
+//    snackbarHost = { SnackbarHost(snackbarHostState) },
+//    topBar = {
+//      TopAppBar(
+//        title = { Text("Panier", fontWeight = FontWeight.Normal) },
+//        colors = TopAppBarDefaults.topAppBarColors(
+//          containerColor = MaterialTheme.colorScheme.surfaceContainer,
+//          titleContentColor = MaterialTheme.colorScheme.onSurface,
+//          navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//          actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+//        )
+//      )
+//
+//    }
+//  ) { innerPadding ->
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .padding(innerPadding)
+        //.padding(innerPadding)
         .padding(horizontal = 16.dp)
         .verticalScroll(rememberScrollState())
     ) {
@@ -138,7 +145,7 @@ fun CartScreen(
         )
       }
     }
-  }
+  //}
 
   if (showCheckoutDialog) {
     FancyCheckoutDialog(
@@ -173,7 +180,7 @@ fun ModernCartItem(
       AsyncImage(
         model = cartItem.product.image,
         contentDescription = cartItem.product.name,
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Fit,
         modifier = Modifier
           .size(72.dp)
           .clip(RoundedCornerShape(12.dp))
