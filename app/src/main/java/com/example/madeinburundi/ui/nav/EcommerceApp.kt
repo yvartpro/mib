@@ -18,8 +18,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.madeinburundi.ui.component.SnackbarTool
 import com.example.madeinburundi.viewmodel.CartViewModel
+import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.CompanyViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
+import com.example.madeinburundi.viewmodel.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.N)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +29,9 @@ import com.example.madeinburundi.viewmodel.ProductViewModel
 fun EcommerceApp(
   cartViewModel: CartViewModel = hiltViewModel(),
   productViewModel: ProductViewModel = hiltViewModel(),
-  companyViewModel: CompanyViewModel = hiltViewModel()
+  companyViewModel: CompanyViewModel = hiltViewModel(),
+  userViewModel: UserViewModel = hiltViewModel(),
+  categoryViewModel: CategoryViewModel = hiltViewModel()
 ) {
   val navController = rememberNavController()
   val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -55,7 +59,7 @@ fun EcommerceApp(
     },
     topBar = {
       if (currentRoute != NavDestinations.AUTH) {
-        TopBar(navController = navController)
+        TopBar(navController = navController, userViewModel = userViewModel)
       }
     },
     bottomBar = {
@@ -68,6 +72,8 @@ fun EcommerceApp(
       cartViewModel = cartViewModel,
       productViewModel = productViewModel,
       companyViewModel = companyViewModel,
+      userViewModel = userViewModel,
+      categoryViewModel = categoryViewModel
     )
   }
 }

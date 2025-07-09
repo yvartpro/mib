@@ -26,10 +26,10 @@ import okhttp3.Route
 fun AppNavGraph(
   modifier: Modifier,
   navController: NavHostController,
-  cartViewModel: CartViewModel = hiltViewModel(),
-  productViewModel: ProductViewModel = hiltViewModel(),
-  userViewModel: UserViewModel = hiltViewModel(),
-  categoryViewModel: CategoryViewModel = hiltViewModel(),
+  cartViewModel: CartViewModel,
+  productViewModel: ProductViewModel,
+  userViewModel: UserViewModel,
+  categoryViewModel: CategoryViewModel,
   companyViewModel: CompanyViewModel
 ) {
   LaunchedEffect(Unit) {

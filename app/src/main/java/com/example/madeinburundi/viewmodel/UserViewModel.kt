@@ -26,6 +26,13 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
   var error by mutableStateOf<String?>(null)
     private set
 
+  var isEditMode by mutableStateOf(false)
+    private set
+
+  fun toggleEdit() {
+    isEditMode = !isEditMode
+  }
+
   private val _navigateToLogin = MutableSharedFlow<Unit>()
   val navigateToLogin = _navigateToLogin.asSharedFlow()
 
