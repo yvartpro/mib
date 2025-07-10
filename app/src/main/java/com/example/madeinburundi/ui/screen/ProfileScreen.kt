@@ -67,13 +67,16 @@ fun ProfileScreen(
 
   LaunchedEffect(Unit) {
     userViewModel.loadUserProfile()
-  }
-
-  LaunchedEffect(Unit) {
     userViewModel.navigateToLogin.collect {
       navController.navigate(NavDestinations.AUTH)
     }
   }
+
+//  LaunchedEffect(Unit) {
+//    userViewModel.navigateToLogin.collect {
+//      navController.navigate(NavDestinations.AUTH)
+//    }
+//  }
 
   val imagePickerLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.GetContent()

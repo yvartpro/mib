@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.madeinburundi.data.AuthRepository
 import com.example.madeinburundi.data.model.TokenManager
 import com.example.madeinburundi.data.model.TokenResponse
-import com.example.madeinburundi.data.model.User
-import com.example.madeinburundi.data.model.UserManager
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay

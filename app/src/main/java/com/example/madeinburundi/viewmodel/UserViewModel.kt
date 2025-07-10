@@ -12,8 +12,10 @@ import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.data.repository.UnAuthorizedException
 import com.example.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,8 +35,8 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     isEditMode = !isEditMode
   }
 
-  private val _navigateToLogin = MutableSharedFlow<Unit>()
-  val navigateToLogin = _navigateToLogin.asSharedFlow()
+  private val _navigateToLogin = Channel<Unit>(Channel.CONFLATED)
+  val navigateToLogin = _navigateToLogin.receiveAsFlow()
 
   fun loadUserProfile() {
     viewModelScope.launch {
@@ -44,7 +46,7 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
         user = userRepository.getProfile()
         println("User is: $user")
       }catch (e: UnAuthorizedException){
-        _navigateToLogin.emit(Unit)
+        _navigateToLogin.trySend(Unit)
       }catch (e: Exception) {
         error = e.message
       }finally {

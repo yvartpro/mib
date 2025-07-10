@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -54,6 +55,7 @@ import com.example.madeinburundi.R
 import com.example.madeinburundi.ui.component.PhoneInputField
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.component.SmallText
+import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.theme.GreenMIB
 import com.example.madeinburundi.viewmodel.AuthViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
@@ -86,15 +88,15 @@ userViewModel: UserViewModel
   LaunchedEffect(loginSuccess) {
     if (loginSuccess) {
       userViewModel.loadUserProfile()
-      navController.popBackStack() // Go back to previous screen
+      //navController.popBackStack() // Go back to previous screen
     }
   }
-//  LaunchedEffect(token) {
-//    if (token != null) {
-//      Toast.makeText(context, "Bienvenue !", Toast.LENGTH_SHORT).show()
-//      onLoginSuccess()
-//    }
-//  }
+  LaunchedEffect(token) {
+    println("Token received: $token")
+    if (token != null) {
+      onLoginSuccess()
+    }
+  }
 
   Column(
     modifier = Modifier
@@ -105,6 +107,16 @@ userViewModel: UserViewModel
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
+    Column (
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+      horizontalAlignment = Alignment.Start
+    ){
+        IconButton(onClick = { navController.navigate(NavDestinations.HOME) }) {
+          Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
+        }
+    }
     Spacer(modifier = Modifier.height(48.dp))
     Image(
       painter = painterResource(id = R.drawable.logo),
