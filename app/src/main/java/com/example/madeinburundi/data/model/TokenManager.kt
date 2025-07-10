@@ -22,7 +22,7 @@ object TokenManager {
   private val USER_PHONE = stringPreferencesKey("user_phone")
 
   fun init(context: Context) {
-    dataStore = PreferenceDataStoreFactory.create(produceFile = { context.preferencesDataStoreFile("user_prefs")})
+    dataStore = context.userPrefsDataStore
   }
 
   suspend fun saveTokens(access: String, refresh: String) {

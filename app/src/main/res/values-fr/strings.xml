@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fabriqué au Burundi</string>
+    <string name="app_name">Made In Burundi</string>
     <!-- home section-->
     <string name="category">Catégorie</string>
     <string name="latest">Nouveautés</string>
@@ -46,7 +46,7 @@
     <!-- product screen -->
     <string name="p_unknown">Produit inconnu</string>
     <string name="p_add">Ajouter</string>
-    <string name="p_buy">Acheter maintenant</string>
+    <string name="p_buy">Acheter</string>
     <string name="p_same_cat">Produits similaires</string>
     <!-- form -->
     <string name="f_name">Nom complet</string>

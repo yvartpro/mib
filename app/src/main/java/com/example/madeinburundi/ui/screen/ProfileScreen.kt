@@ -71,9 +71,7 @@ fun ProfileScreen(
 
   LaunchedEffect(Unit) {
     userViewModel.navigateToLogin.collect {
-      navController.navigate(NavDestinations.AUTH) {
-        popUpTo(NavDestinations.PROFILE) { inclusive = true }
-      }
+      navController.navigate(NavDestinations.AUTH)
     }
   }
 

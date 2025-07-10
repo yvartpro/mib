@@ -21,7 +21,6 @@ class AuthRepository @Inject constructor(
         setBody(UserRegister(fullName, phoneNumber,  password))
       }
       if(resp.status == HttpStatusCode.Created || resp.status == HttpStatusCode.OK){
-        println("Success register: ${resp.status}")
         true
       }else{
         val err = resp.bodyAsText()
@@ -37,7 +36,7 @@ class AuthRepository @Inject constructor(
 
   suspend fun loginUser(phoneNumber: String, password: String): TokenResponse? {
     return try {
-      val resp = client.post("https://mib.vovota.bi/api/token/") {
+      val resp = client.post("https://mib.vovota.bi/token/") {
         contentType(ContentType.Application.Json)
         setBody(UserLogin(phoneNumber, password))
       }
@@ -55,7 +54,7 @@ class AuthRepository @Inject constructor(
       return false
     }
     return try {
-        val response = client.post("https://mib.vovota.bi/api/refresh") {
+        val response = client.post("https://mib.vovota.bi/refresh") {
           contentType(ContentType.Application.Json)
           setBody(mapOf("refresh" to refresh))
         }

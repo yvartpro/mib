@@ -19,7 +19,7 @@ object UserManager {
     private val USER_KEY = stringSetPreferencesKey("active_user")
 
     fun init(context: Context) {
-        dataStore = PreferenceDataStoreFactory.create(produceFile = { context.preferencesDataStoreFile("user_prefs")})
+        dataStore = context.userPrefsDataStore
     }
 
     suspend fun saveUser(user: User) {

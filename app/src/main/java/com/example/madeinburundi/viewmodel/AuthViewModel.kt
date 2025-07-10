@@ -25,6 +25,9 @@ class AuthViewModel @Inject constructor(
   private val _loading = MutableStateFlow(false)
   val loading: StateFlow<Boolean> = _loading
 
+  private val _registerOk = MutableStateFlow(false)
+  val registerOk: StateFlow<Boolean> = _registerOk
+
   private val _message = MutableStateFlow("")
   val message: StateFlow<String> = _message
 
@@ -43,9 +46,9 @@ class AuthViewModel @Inject constructor(
     viewModelScope.launch {
       try {
         val result = authRepository.registerUser(fullName, phone, password)
-        println("Result register: $result")
         if (result) {
           _message.value = "Compte créé avec succès"
+          _registerOk.value = true
         } else {
           _isError.value = true
           _message.value = "Une erreur est survenue"
@@ -68,9 +71,7 @@ class AuthViewModel @Inject constructor(
         val result = authRepository.loginUser(phone, password)
         if (result != null) {
           _token.value = result
-          //val user = userRepository.getProfile()
-          TokenManager.saveTokens(result.access, result.refresh) //save authentication keys for user
-          //TokenManager.saveUser(user)
+          TokenManager.saveTokens(result.access, result.refresh)
           _loginSuccess.value = true
           _message.value = "Connexion réussie"
         } else {
@@ -84,10 +85,5 @@ class AuthViewModel @Inject constructor(
         _loading.value = false
       }
     }
-  }
-
-  fun clearMessage() {
-    _message.value = ""
-    _isError.value = false
   }
 }

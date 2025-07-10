@@ -180,6 +180,8 @@ userViewModel: UserViewModel
           viewModel.login(phone, password)
         } else {
           viewModel.register(fullName, phone, password)
+          isLogin = viewModel.registerOk.value
+          fullName = ""
         }
       },
       modifier = Modifier
