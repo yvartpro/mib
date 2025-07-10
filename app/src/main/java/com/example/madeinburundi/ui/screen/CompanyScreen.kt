@@ -27,8 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.madeinburundi.R
 import com.example.madeinburundi.data.model.Company
 import com.example.madeinburundi.viewmodel.CompanyViewModel
 import kotlinx.coroutines.delay
@@ -61,7 +63,7 @@ fun CompanyScreen(
     }else{
     if (companies.isEmpty()) {
       Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Aucune industrie disponible")
+        Text(stringResource(R.string.co_empty))
       }
     } else {
       LazyColumn(
@@ -127,7 +129,7 @@ fun CompanyListItem(company: Company, navController: NavController) {
         company.year?.let {
           Spacer(modifier = Modifier.height(6.dp))
           Text(
-            text = "Depuis $it",
+            text = stringResource(R.string.co_since, it),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary
           )

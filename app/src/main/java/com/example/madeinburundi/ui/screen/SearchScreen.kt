@@ -17,8 +17,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.madeinburundi.R
 import com.example.madeinburundi.ui.section.CategoryRow
 import com.example.madeinburundi.ui.section.ProductCard
 import com.example.madeinburundi.ui.section.ProductList
@@ -55,14 +57,14 @@ fun SearchScreen(
       OutlinedTextField(
         value = searchQuery,
         onValueChange = { productViewModel.onSearch(it) },
-        placeholder = { Text("Recherchez un produit...") },
+        placeholder = { Text(stringResource(R.string.s_placeholder)) },
         modifier = Modifier.fillMaxWidth()
       )
     }
     Spacer(modifier = Modifier.height(16.dp))
 
     if (products.isEmpty()) {
-      Text("Aucun produit.")
+      Text(stringResource(R.string.s_no_results))
     } else {
       ProductList(cartViewModel = cartViewModel,productViewModel = productViewModel, navController = navController)
     }

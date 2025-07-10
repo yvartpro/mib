@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,6 +28,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.createGraph
 import coil.compose.AsyncImage
+import com.example.madeinburundi.R
 import com.example.madeinburundi.data.model.Product
 import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.section.CategoryRow
@@ -59,16 +61,16 @@ fun HomeScreen(
       .verticalScroll(rememberScrollState())
       .padding(vertical = 8.dp, horizontal = 8.dp)
   ) {
-    HomeSection(title = "Catégories") {
+    HomeSection(title = stringResource(R.string.category)) {
       CategoryRow(navController = navController, viewModel = categoryViewModel)
     }
-    HomeSection(title = "Les plus récents") {
+    HomeSection(title = stringResource(R.string.latest)) {
       ProductImageRow(productViewModel = productViewModel, navController = navController)
     }
-    HomeSection(title = "Recommendés") {
+    HomeSection(title = stringResource(R.string.recommended)) {
       Recommended(productViewModel = productViewModel, navController = navController)
     }
-    HomeSection(title = "Produits") {
+    HomeSection(title = stringResource(R.string.products)) {
       ProductList(cartViewModel = cartViewModel, productViewModel = productViewModel, navController = navController)
     }
   }

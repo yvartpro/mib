@@ -1,3 +1,78 @@
 <resources>
     <string name="app_name">Made In Burundi</string>
+    <!-- home section-->
+    <string name="category">Category</string>
+    <string name="latest">Latest</string>
+    <string name="recommended">Recommended</string>
+    <string name="products">Products</string>
+    <!-- bottom bar -->
+    <string name="b_home">Home</string>
+    <string name="b_industry">Industry</string>
+    <string name="b_cart">Cart</string>
+    <string name="b_profile">Profile</string>
+    <!-- top bar -->
+    <string name="t_search">Search</string>
+    <string name="t_your_cart">Your cart</string>
+    <string name="t_cat">Category</string>
+    <string name="t_product">Product</string>
+    <string name="t_edit">Edit</string>
+    <!-- category -->
+    <string name="c_all">All</string>
+    <string name="c_food">Food</string>
+    <string name="c_beverage">Beverages</string>
+    <string name="c_soap">Soap</string>
+    <string name="c_beauty">Beauty</string>
+    <string name="c_electronics">Electronics</string>
+    <string name="c_construction">Construction</string>
+    <string name="c_no_results">No product for this category</string>
+    <!-- search screen -->
+    <string name="s_placeholder">Search products...</string>
+    <string name="s_no_results">No matching product</string>
+    <!-- cart screen  -->
+    <string name="ca_title">Products in your cart</string>
+    <string name="ca_command_failed">Error while placing command. Please retry</string>
+    <string name="ca_command_details">Command details:\n</string>
+    <string name="ca_command_confirm">🎉 Successfully done !</string>
+    <string name="ok">Ok</string>
+    <string name="ca_empty">Your cart is empty</string>
+    <string name="ca_total_pay">Total amount</string>
+    <string name="ca_place_command">Place command</string>
+    <!-- companyScreen  -->
+    <string name="co_empty">No company found. Check your network</string>
+    <string name="co_since">Since %1$s!</string>
+    <string name="co_made_by">Produced by %1$s!</string>
+    <string name="co_no_prod">No product found</string>
+    <string name="co_missing">Company does not exist</string>
+    <!-- product screen  -->
+    <string name="p_unknown">Unknown product</string>
+    <string name="p_add">Add</string>
+    <string name="p_buy">Buy now</string>
+    <string name="p_same_cat">Similar products</string>
+    <!-- form  -->
+    <string name="f_name">Full name</string>
+    <string name="f_phone">Phone nuber</string>
+    <string name="f_pwd">Password</string>
+    <string name="f_addr">Address</string>
+    <string name="f_enter_pwd">Enter your password</string>
+    <!-- auth screen  -->
+    <string name="auth_login">Login</string>
+    <string name="auth_signin">Register</string>
+    <string name="auth_wait">Please wait...</string>
+    <string name="auth_not_yet_user">Not yet registered ?</string>
+    <string name="auth_create_one">Register now</string>
+    <string name="auth_user_yet">Already have an account ?</string>
+    <string name="auth_login_here">Login here</string>
+    <!-- profile screen  -->
+    <string name="pr_version">Version</string>
+    <string name="pr_vovota">Vovota Company</string>
+    <string name="pr_submit">Submit</string>
+    <string name="pr_cancel">Cancel</string>
+    <!-- categories  -->
+    <string name="cat_all">All</string>
+    <string name="cat_food">Food</string>
+    <string name="cat_beverage">Beverages</string>
+    <string name="cat_soap">Soap</string>
+    <string name="cat_beauty">Beauty</string>
+    <string name="cat_electronic">Electronics</string>
+    <string name="cat_construction">Construction</string>
 </resources>

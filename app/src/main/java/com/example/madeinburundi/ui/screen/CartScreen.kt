@@ -1,5 +1,6 @@
 package com.example.madeinburundi.ui.screen
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.madeinburundi.viewmodel.CartViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -34,18 +33,16 @@ import coil.compose.AsyncImage
 import com.example.madeinburundi.R
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.madeinburundi.data.model.CartItem
-import com.example.madeinburundi.data.repository.OrderRepository
 import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.theme.FontSizes
 import com.example.madeinburundi.ui.theme.GreenMIB
-import com.example.madeinburundi.viewmodel.OrderViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
@@ -95,7 +92,7 @@ fun CartScreen(
       if (cartItems.isEmpty()) {
         EmptyCartPlaceholder()
       } else {
-        Text("Articles dans le panier", fontSize = FontSizes.body(), modifier = Modifier.padding(vertical = 8.dp))
+        Text(stringResource(R.string.ca_title), fontSize = FontSizes.body(), modifier = Modifier.padding(vertical = 8.dp))
         Spacer(modifier = Modifier.height(8.dp))
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -112,19 +109,13 @@ fun CartScreen(
         CheckoutSummarySection(
           totalAmount = totalAmount,
           onCheckoutClick = {
-            println("🛒 Checkout clicked")
-            Log.d("CartScreen", "🛒 Checkout clicked. Total: $totalAmount, Items: ${cartItems.size}")
-
             val itemsCopy = cartItems.map { it.copy() }
-            val totalCopy = totalAmount
 
             if (user != null) {
               cartViewModel.checkoutAndClear { success ->
-                Log.d("CartScreen", "✅ Checkout result: $success")
-
                 if (success) {
                   confirmedItems = itemsCopy
-                  confirmedTotal = totalCopy
+                  confirmedTotal = totalAmount
                   showCheckoutDialog = true
                 } else {
                   coroutineScope.launch {
@@ -251,9 +242,10 @@ fun FancyCheckoutDialog(
   totalAmount: Double,
   onDismiss: () -> Unit
 ) {
+  val details = stringResource(R.string.ca_command_details)
   val orderSummary = remember(cartItems, totalAmount) {
     buildString {
-      append("Détails de la commande:\n")
+      append(details)
       cartItems.forEach {
         val name = it.product.name
         val unitPrice = it.product.price.toDouble()
@@ -268,14 +260,14 @@ fun FancyCheckoutDialog(
   AlertDialog(
     onDismissRequest = onDismiss,
     title = {
-      Text("🎉 Commande confirmée", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+      Text(stringResource(R.string.ca_command_confirm), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
     },
     text = {
       Text(orderSummary, style = MaterialTheme.typography.bodySmall)
     },
     confirmButton = {
       Button(onClick = onDismiss) {
-        Text(text = "Ok", fontSize = FontSizes.caption() )
+        Text(text = stringResource(R.string.ok), fontSize = FontSizes.caption() )
       }
     }
   )
@@ -298,7 +290,7 @@ fun EmptyCartPlaceholder() {
       )
       Spacer(modifier = Modifier.height(12.dp))
       Text(
-        "Votre panier est vide",
+        stringResource(R.string.ca_empty),
         style = MaterialTheme.typography.titleMedium,
         color = Color.Gray,
         fontWeight = FontWeight.SemiBold
@@ -327,7 +319,7 @@ fun CheckoutSummarySection(
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          "Total à payer",
+          stringResource(R.string.ca_total_pay),
           style = MaterialTheme.typography.bodyLarge,
           fontWeight = FontWeight.Bold
         )
@@ -354,7 +346,7 @@ fun CheckoutSummarySection(
             strokeWidth = 2.dp
           )
         } else {
-          Text("Passer la commande")
+          Text(stringResource(R.string.ca_place_command))
         }
       }
     }

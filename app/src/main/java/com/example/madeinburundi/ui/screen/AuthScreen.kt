@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -113,7 +114,7 @@ userViewModel: UserViewModel
     )
     Spacer(modifier = Modifier.height(16.dp))
     Text(
-      text = if (isLogin) "Connexion" else "Enregistrement",
+      text = if (isLogin) stringResource(R.string.auth_login) else stringResource(R.string.auth_signin),
       style = TextStyle(
         fontSize = 24.sp,
         fontWeight = FontWeight.Bold,
@@ -131,7 +132,7 @@ userViewModel: UserViewModel
         ProfileTextField(
           value = fullName,
           onValueChange = { fullName = it },
-          label = "Nom complet",
+          label = stringResource(R.string.f_name),
           leadingIconVector = Icons.Filled.Person,
           keyboardType = KeyboardType.Text,
           imeAction = ImeAction.Next
@@ -145,7 +146,7 @@ userViewModel: UserViewModel
       ProfileTextField(
         value = password,
         onValueChange = { password = it },
-        label = "Mot de passe",
+        label = stringResource(R.string.f_pwd),
         leadingIconVector = Icons.Filled.Lock,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         trailingIcon = {
@@ -157,7 +158,7 @@ userViewModel: UserViewModel
         keyboardType = KeyboardType.Password,
         imeAction = ImeAction.Done,
         isSensitive = true,
-        placeholderText = "Entrer votre mot depasse"
+        placeholderText = stringResource(R.string.f_enter_pwd)
       )
     }
 //    if(!isLogin){
@@ -185,7 +186,7 @@ userViewModel: UserViewModel
         .fillMaxWidth()
         .padding(horizontal = 24.dp),
     ) {
-      Text(if (loading) "En cours..." else if (isLogin) "Connexion" else "Créer un compte")
+      Text(if (loading) stringResource(R.string.auth_wait) else if (isLogin) stringResource(R.string.auth_login) else stringResource(R.string.auth_signin))
     }
 
     // Show message
@@ -198,9 +199,9 @@ userViewModel: UserViewModel
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.Center
     ){
-      Text(text = if (isLogin) "Vous n'avez pas de compte ? " else "Créez-en un ? ")
+      Text(text = if (isLogin) stringResource(R.string.auth_not_yet_user) else stringResource(R.string.auth_user_yet) )
       TextButton(onClick = { isLogin = !isLogin}){
-        Text(text = if(isLogin) "Crez un compte" else "Connectez-vous")
+        Text(text = if(isLogin) stringResource(R.string.auth_create_one) else stringResource(R.string.auth_login_here))
       }
     }
   }

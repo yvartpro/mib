@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,10 +43,10 @@ fun TopBar(
   TopAppBar(
     title = {
       when (currentRoute) {
-        NavDestinations.CART -> Text("Votre panier")
-        NavDestinations.SEARCH -> Text("Recherche")
-        NavDestinations.CATEGORY -> Text("Catégories")
-        NavDestinations.PRODUCT -> Text("Produit")
+        NavDestinations.CART -> Text(stringResource(R.string.t_your_cart))
+        NavDestinations.SEARCH -> Text(stringResource(R.string.t_search))
+        NavDestinations.CATEGORY -> Text(stringResource(R.string.t_cat))
+        NavDestinations.PRODUCT -> Text(stringResource(R.string.t_product))
         else -> {
           Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Logo")
         }

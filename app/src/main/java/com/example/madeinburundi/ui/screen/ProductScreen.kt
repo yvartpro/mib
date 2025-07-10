@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -91,7 +92,7 @@ fun ProductScreen(
           .align(Alignment.CenterVertically)
       ) {
         Text(
-          text = product.name ?: "Produit inconnu",
+          text = product.name ?: stringResource(R.string.p_unknown),
           fontSize = FontSizes.caption(),
           fontWeight = FontWeight.Bold
         )
@@ -125,7 +126,7 @@ fun ProductScreen(
       ) {
         Icon(Icons.Default.ShoppingCart, contentDescription = "Panier")
         Spacer(Modifier.width(8.dp))
-        Text(text = "Ajouter", fontSize = FontSizes.caption())
+        Text(text = stringResource(R.string.p_add), fontSize = FontSizes.caption())
       }
 
       Button(
@@ -141,14 +142,14 @@ fun ProductScreen(
       ) {
         Icon(painter = painterResource(R.drawable.checkout), contentDescription = "Buy now")
         Spacer(Modifier.width(8.dp))
-        Text(text = "Acheter", fontSize = FontSizes.caption())
+        Text(text = stringResource(R.string.p_buy), fontSize = FontSizes.caption())
       }
     }
 
     // Divider
     Spacer(modifier = Modifier.height(32.dp))
     Text(
-      text = "De la même catégorie",
+      text = stringResource(R.string.p_same_cat),
       style = MaterialTheme.typography.titleMedium,
       fontWeight = FontWeight.SemiBold,
       modifier = Modifier.padding(vertical = 8.dp)

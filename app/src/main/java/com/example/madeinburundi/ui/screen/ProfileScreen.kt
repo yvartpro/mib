@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
@@ -109,7 +110,7 @@ fun ProfileScreen(
 
       EditableProfileInfoItem(
         isEditMode = isEditMode,
-        label = "Nom complet",
+        label = stringResource(R.string.f_name),
         value = fullNameState,
         icon = Icons.Default.Person,
         onSubmit = {
@@ -119,7 +120,7 @@ fun ProfileScreen(
       )
 
       EditableProfileInfoItem(
-        label = "Numéro de téléphone",
+        label = stringResource(R.string.f_phone),
         isEditMode = isEditMode,
         value = phoneState,
         icon = Icons.Default.Phone,
@@ -130,7 +131,7 @@ fun ProfileScreen(
       )
 
       EditableProfileInfoItem(
-        label = "Adresse",
+        label = stringResource(R.string.f_addr),
         isEditMode = isEditMode,
         value = addressState,
         icon = Icons.Default.LocationOn,
@@ -142,7 +143,7 @@ fun ProfileScreen(
 
       EditableProfileInfoItem(
         isEditMode = isEditMode,
-        label = "Mot de passe",
+        label = stringResource(R.string.f_pwd),
         value = passwordState,
         icon = Icons.Default.Lock,
         placeholder = "",
@@ -167,11 +168,11 @@ fun ProfileScreen(
 
       // ✅ Footer included in scrollable content
       Text(
-        text = "Version 1.0",
+        text = stringResource(R.string.pr_version),
         fontSize = FontSizes.caption()
       )
       Text(
-        text = "Vovota Company",
+        text = stringResource(R.string.pr_vovota),
         fontSize = FontSizes.caption(),
         color = Color(0xFF37a8ee),
         modifier = Modifier.clickable {
@@ -180,7 +181,7 @@ fun ProfileScreen(
         }
       )
 
-      Spacer(modifier = Modifier.height(40.dp)) // Optional bottom space
+      Spacer(modifier = Modifier.height(40.dp))
     }
   }
 }

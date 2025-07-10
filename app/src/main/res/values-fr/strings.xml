@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Fabriqué au Burundi</string>
+    <!-- home section-->
+    <string name="category">Catégorie</string>
+    <string name="latest">Nouveautés</string>
+    <string name="recommended">Recommandé</string>
+    <string name="products">Produits</string>
+    <!-- bottom bar -->
+    <string name="b_home">Accueil</string>
+    <string name="b_industry">Industrie</string>
+    <string name="b_cart">Panier</string>
+    <string name="b_profile">Profil</string>
+    <!-- top bar -->
+    <string name="t_search">Rechercher</string>
+    <string name="t_your_cart">Votre panier</string>
+    <string name="t_cat">Catégorie</string>
+    <string name="t_product">Produit</string>
+    <string name="t_edit">Modifier</string>
+    <!-- category -->
+    <string name="c_all">Tout</string>
+    <string name="c_food">Nourriture</string>
+    <string name="c_beverage">Boissons</string>
+    <string name="c_soap">Savon</string>
+    <string name="c_beauty">Beauté</string>
+    <string name="c_electronics">Électronique</string>
+    <string name="c_construction">Construction</string>
+    <string name="c_no_results">Aucun produit pour cette catégorie</string>
+    <!-- search screen -->
+    <string name="s_placeholder">Rechercher des produits...</string>
+    <string name="s_no_results">Aucun produit correspondant</string>
+    <!-- cart screen -->
+    <string name="ca_title">Produits dans votre panier</string>
+    <string name="ca_command_failed">Erreur lors de la commande. Veuillez réessayer</string>
+    <string name="ca_command_details">Détails de la commande:\n</string>
+    <string name="ca_command_confirm">🎉 Réalisé avec succès !</string>
+    <string name="ok">Ok</string>
+    <string name="ca_empty">Votre panier est vide</string>
+    <string name="ca_total_pay">Montant total</string>
+    <string name="ca_place_command">Commander</string>
+    <!-- companyScreen -->
+    <string name="co_empty">Aucune entreprise trouvée. Vérifiez votre connexion</string>
+    <string name="co_since">Depuis %1$s !</string>
+    <string name="co_made_by">Produit par %1$s !</string>
+    <string name="co_no_prod">Aucun produit trouvé</string>
+    <string name="co_missing">Entreprise inexistante</string>
+    <!-- product screen -->
+    <string name="p_unknown">Produit inconnu</string>
+    <string name="p_add">Ajouter</string>
+    <string name="p_buy">Acheter maintenant</string>
+    <string name="p_same_cat">Produits similaires</string>
+    <!-- form -->
+    <string name="f_name">Nom complet</string>
+    <string name="f_phone">Numéro de téléphone</string>
+    <string name="f_pwd">Mot de passe</string>
+    <string name="f_addr">Adresse</string>
+    <string name="f_enter_pwd">Entrez votre mot de passe</string>
+    <!-- auth screen -->
+    <string name="auth_login">Connexion</string>
+    <string name="auth_signin">Inscription</string>
+    <string name="auth_wait">Veuillez patienter...</string>
+    <string name="auth_not_yet_user">Pas encore inscrit ?</string>
+    <string name="auth_create_one">Inscrivez-vous maintenant</string>
+    <string name="auth_user_yet">Déjà inscrit ?</string>
+    <string name="auth_login_here">Connectez-vous ici</string>
+    <!-- profile screen -->
+    <string name="pr_version">Version</string>
+    <string name="pr_vovota">Société Vovota</string>
+    <string name="pr_submit">Envoyer</string>
+    <string name="pr_cancel">Annuler</string>
+    <!-- categories -->
+    <string name="cat_all">Tout</string>
+    <string name="cat_food">Nourriture</string>
+    <string name="cat_beverage">Boissons</string>
+    <string name="cat_soap">Savon</string>
+    <string name="cat_beauty">Beauté</string>
+    <string name="cat_electronic">Électronique</string>
+    <string name="cat_construction">Construction</string>
+</resources>
