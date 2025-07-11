@@ -39,8 +39,8 @@
     <string name="ca_place_command">Place command</string>
     <!-- companyScreen  -->
     <string name="co_empty">No company found. Check your network</string>
-    <string name="co_since">Since %1$s!</string>
-    <string name="co_made_by">Produced by %1$s!</string>
+    <string name="co_since">Since %1$s</string>
+    <string name="co_made_by">Produced by %1$s</string>
     <string name="co_no_prod">No product found</string>
     <string name="co_missing">Company does not exist</string>
     <!-- product screen  -->

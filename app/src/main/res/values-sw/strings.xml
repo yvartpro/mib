@@ -32,8 +32,8 @@
     <string name="ca_total_pay">Jumla ya malipo</string>
     <string name="ca_place_command">Tuma agizo</string>
     <string name="co_empty">Hakuna kampuni iliyopatikana. Angalia mtandao</string>
-    <string name="co_since">Tangu %1$s!</string>
-    <string name="co_made_by">Imetengenezwa na %1$s!</string>
+    <string name="co_since">Tangu %1$s</string>
+    <string name="co_made_by">Imetengenezwa na %1$s</string>
     <string name="co_no_prod">Hakuna bidhaa</string>
     <string name="co_missing">Kampuni haipo</string>
     <string name="p_unknown">Bidhaa haijulikani</string>

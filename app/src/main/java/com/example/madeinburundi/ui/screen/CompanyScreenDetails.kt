@@ -79,8 +79,9 @@ fun CompanyDetailsScreen(
         Text(it, fontSize = FontSizes.caption())
       }
       Spacer(Modifier.height(24.dp))
+val nam = company.name
       Text(
-        text = stringResource(com.example.madeinburundi.R.string.co_made_by, {company.name}),
+        text = stringResource(com.example.madeinburundi.R.string.co_made_by, nam),
         fontSize = FontSizes.body(),
         fontWeight = FontWeight.Normal
       )

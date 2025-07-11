@@ -39,8 +39,8 @@
     <string name="ca_place_command">Commander</string>
     <!-- companyScreen -->
     <string name="co_empty">Aucune entreprise trouvée. Vérifiez votre connexion</string>
-    <string name="co_since">Depuis %1$s !</string>
-    <string name="co_made_by">Produit par %1$s !</string>
+    <string name="co_since">Depuis %1$s</string>
+    <string name="co_made_by">Produit par %1$s</string>
     <string name="co_no_prod">Aucun produit trouvé</string>
     <string name="co_missing">Entreprise inexistante</string>
     <!-- product screen -->
