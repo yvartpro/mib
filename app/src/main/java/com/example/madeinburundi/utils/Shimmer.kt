@@ -1,4 +1,4 @@
-import androidx.compose.foundation.background
+deimport androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -262,6 +262,82 @@ fun ProductCardShimmer(modifier: Modifier) {
                         ),
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+fun ProfileShimmer() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Title shimmer
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(30.dp)
+                .placeholder(
+                    visible = true,
+                    color = Color.LightGray,
+                    highlight = PlaceholderHighlight.shimmer()
+                )
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        repeat(4) {
+            ProfileItemShimmer()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+@Composable
+fun ProfileItemShimmer() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .placeholder(
+                    visible = true,
+                    color = Color.Gray,
+                    shape = CircleShape,
+                    highlight = PlaceholderHighlight.shimmer()
+                )
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .height(12.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.Gray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(18.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.Gray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
         }
     }
 }
