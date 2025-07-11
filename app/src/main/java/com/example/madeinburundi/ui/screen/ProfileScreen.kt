@@ -77,10 +77,15 @@ fun ProfileScreen(
 //      navController.navigate(NavDestinations.AUTH)
 //    }
 //  }
-
+//uploadProfileImage
   val imagePickerLauncher = rememberLauncherForActivityResult(
     contract = ActivityResultContracts.GetContent()
-  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
+  ) { uri -> uri?.let { user?.id?.let { it1 -> userViewModel.uploadProfileImage(context, it1,
+    user.fullName, it) } } }
+
+//  val imagePickerLauncher = rememberLauncherForActivityResult(
+//    contract = ActivityResultContracts.GetContent()
+//  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
 
   if (isLoading) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -97,7 +102,8 @@ fun ProfileScreen(
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       AsyncImage(
-        model = imageUri ?: user.photo,
+        //model = imageUri ?: user.photo,
+        model = "https://mib.vovota.bi/api/foto/${user.id}",
         contentDescription = "Profile Image",
         modifier = Modifier
           .size(120.dp)

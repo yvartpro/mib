@@ -173,18 +173,6 @@ userViewModel: UserViewModel
         placeholderText = stringResource(R.string.f_enter_pwd)
       )
     }
-//    if(!isLogin){
-//      Row(
-//        modifier = Modifier.fillMaxWidth()
-//          .padding(vertical = 0.dp),
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.End
-//      ){
-//        TextButton(onClick = {}){
-//          Text(text = "Mot de passe oublié ?")
-//        }
-//      }
-//    }
     Spacer(modifier = Modifier.height(16.dp))
     Button(
       onClick = {

@@ -34,6 +34,8 @@ import java.io.File
 import javax.inject.Inject
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.http.content.PartData
+import io.ktor.utils.io.streams.asInput
 import java.io.InputStream
 
 
@@ -80,6 +82,7 @@ class UserRepository @Inject constructor(
   }
 
 
+
   suspend fun editUser(update: UserUpdate, userId: Int): Boolean {
     val access = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
     return try {
@@ -103,6 +106,36 @@ class UserRepository @Inject constructor(
       e.printStackTrace()
       false
     }
+  }
+
+
+
+  suspend fun uploadProfile(
+    userId: Int,
+    fullName: String? = null,
+    photoFile: File
+  ): Boolean {
+    val token = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
+    val response = client.submitFormWithBinaryData(
+      url = "https://your-api.com/api/user/$userId/",
+      formData = formData {
+        fullName?.let {
+          append("full_name", it)
+        }
+
+        append("photo", photoFile.readBytes(), Headers.build {
+          append(HttpHeaders.ContentType, "image/jpeg")
+          append(HttpHeaders.ContentDisposition, "filename=\"${photoFile.name}\"")
+        })
+      }
+    ) {
+      method = HttpMethod.Patch
+      headers {
+        append(HttpHeaders.Authorization, "Bearer ${token}")
+      }
+    }
+
+    return response.status.isSuccess()
   }
 
   suspend fun uploadProfileImage(uri: Uri, userId: Int): Boolean = withContext(Dispatchers.IO) {
