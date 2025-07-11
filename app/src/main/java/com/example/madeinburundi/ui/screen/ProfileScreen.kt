@@ -1,4 +1,4 @@
-package com.example.madeinburundi.ui.screen
+depackage com.example.madeinburundi.ui.screen
 
 import android.content.Intent
 import android.net.Uri
@@ -45,6 +45,7 @@ import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.theme.FontSizes
 import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
+import com.example.madeinburundi.ui.utils.ProfileShimmer
 
 @Composable
 fun ProfileScreen(
@@ -88,9 +89,11 @@ fun ProfileScreen(
 //  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
 
   if (isLoading) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-      CircularProgressIndicator()
+    ProfileShimmer()
     }
+   // Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+     // CircularProgressIndicator()
+  //  }
   } else if (error != null) {
     Text("Erreur : $error", modifier = Modifier.padding(16.dp))
   } else if (user != null) {
