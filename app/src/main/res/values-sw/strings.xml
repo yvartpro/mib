@@ -52,6 +52,7 @@
     <string name="auth_create_one">Jisajili sasa</string>
     <string name="auth_user_yet">Tayari una akaunti?</string>
     <string name="auth_login_here">Ingia hapa</string>
+<string name="pr_welcome">Kalibu</string>
     <string name="pr_version">Toleo</string>
     <string name="pr_vovota">Kampuni ya Vovota</string>
     <string name="pr_submit">Tuma</string>

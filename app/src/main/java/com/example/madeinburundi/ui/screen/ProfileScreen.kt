@@ -101,17 +101,18 @@ fun ProfileScreen(
         .padding(16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      AsyncImage(
-        //model = imageUri ?: user.photo,
-        model = "https://mib.vovota.bi/api/foto/${user.id}",
-        contentDescription = "Profile Image",
-        modifier = Modifier
-          .size(120.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.surfaceVariant)
-          .clickable { imagePickerLauncher.launch("image/*") },
-        contentScale = ContentScale.Crop
-      )
+val name = user.fullName
+Text(
+  text = stringResource(R.string.pr_welcome,name),
+  style = MaterialTheme.typography.headlineSmall.copy(
+    color = MaterialTheme.colorScheme.primary,
+    fontWeight = FontWeight.Bold
+  ),
+  modifier = Modifier
+    .padding(vertical = 16.dp)
+    .fillMaxWidth(),
+  textAlign = androidx.compose.ui.text.style.TextAlign.Center
+)
 
       Spacer(modifier = Modifier.height(24.dp))
 

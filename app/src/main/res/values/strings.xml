@@ -63,6 +63,7 @@
     <string name="auth_user_yet">Already have an account ?</string>
     <string name="auth_login_here">Login here</string>
     <!-- profile screen  -->
+<string name="pr_welcome">Welcome</string>
     <string name="pr_version">Version</string>
     <string name="pr_vovota">Vovota Company</string>
     <string name="pr_submit">Submit</string>
