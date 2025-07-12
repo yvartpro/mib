@@ -1,6 +1,7 @@
 package com.example.madeinburundi.ui.section
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -56,7 +58,7 @@ fun CategoryItem(
   onClick: () -> Unit
 ) {
   Text(
-    text = category.title,
+    text = stringResource(category.title),
     fontWeight = FontWeight(if (isActive) 700 else 800),
     modifier = Modifier
       .clickable(onClick = onClick)

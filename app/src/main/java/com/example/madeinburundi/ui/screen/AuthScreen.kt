@@ -1,6 +1,5 @@
 package com.example.madeinburundi.ui.screen
 
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,8 +16,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
@@ -36,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -56,7 +52,6 @@ import com.example.madeinburundi.ui.component.PhoneInputField
 import com.example.madeinburundi.ui.component.ProfileTextField
 import com.example.madeinburundi.ui.component.SmallText
 import com.example.madeinburundi.ui.nav.NavDestinations
-import com.example.madeinburundi.ui.theme.GreenMIB
 import com.example.madeinburundi.viewmodel.AuthViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
 
@@ -147,7 +142,8 @@ userViewModel: UserViewModel
           label = stringResource(R.string.f_name),
           leadingIconVector = Icons.Filled.Person,
           keyboardType = KeyboardType.Text,
-          imeAction = ImeAction.Next
+          imeAction = ImeAction.Next,
+          isSensitive = false
         )
       }
       PhoneInputField(
@@ -208,8 +204,6 @@ userViewModel: UserViewModel
     }
   }
 }
-
-
 
 data class Country(
   val name: String,

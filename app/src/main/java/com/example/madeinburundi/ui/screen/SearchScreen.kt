@@ -1,28 +1,22 @@
 package com.example.madeinburundi.ui.screen
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.madeinburundi.R
 import com.example.madeinburundi.ui.section.CategoryRow
-import com.example.madeinburundi.ui.section.ProductCard
 import com.example.madeinburundi.ui.section.ProductList
 import com.example.madeinburundi.viewmodel.CartViewModel
 import com.example.madeinburundi.viewmodel.CategoryViewModel
@@ -37,15 +31,14 @@ fun SearchScreen(
   categoryViewModel: CategoryViewModel
 ) {
   val searchQuery = productViewModel.searchQuery
-  val products = if(categoryName != null) {
+  val products = productViewModel.filteredProducts
+    /*if(categoryName != null) {
     productViewModel.products.filter {
       it.category.equals(categoryName, ignoreCase = true)
     }
-  } else if(categoryName == "tous"){
-    productViewModel.filteredProducts
   } else {
     productViewModel.filteredProducts
-  }
+  }*/
 
   Column(modifier = Modifier
     .fillMaxSize()

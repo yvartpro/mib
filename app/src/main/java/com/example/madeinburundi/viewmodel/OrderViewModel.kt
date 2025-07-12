@@ -37,7 +37,6 @@ class OrderViewModel @Inject constructor(
   fun placeOrder(customerId: Int, description: String) {
     viewModelScope.launch {
       val user = userRepository.getProfile()
-      println("User ordering: $user")
       val success = orderRepo.placeOrder(NewOrder(user.id, description))
       _result.value = if (success) "Commande envoyée" else "Échec de la commande"
     }

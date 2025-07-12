@@ -35,7 +35,7 @@ fun ProductImageRow(
   navController: NavController,
 ) {
   val isLoading = productViewModel.isLoading
-  val products = productViewModel.products
+  val products = productViewModel.products.shuffled()
   LazyRow(
     horizontalArrangement = Arrangement.spacedBy(16.dp),
     contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)

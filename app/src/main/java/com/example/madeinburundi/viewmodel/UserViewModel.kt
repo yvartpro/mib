@@ -62,9 +62,11 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
 
   var updateMsg by mutableStateOf("")
     private set
+  var isUpdating by mutableStateOf(false)
+    private set
   fun updateUser(update: UserUpdate, userId: Int) {
     viewModelScope.launch {
-      isLoading = true
+      isUpdating = true
       try {
         val success = userRepository.editUser(update, userId)
         if (success) {
@@ -78,7 +80,7 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
         updateMsg = e.message.toString()
         e.printStackTrace()
       } finally {
-        isLoading = false
+        isUpdating = false
       }
     }
   }

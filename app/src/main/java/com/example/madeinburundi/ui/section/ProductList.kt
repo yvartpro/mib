@@ -48,7 +48,7 @@ fun ProductList(
   productViewModel: ProductViewModel,
   navController: NavController
 ) {
-  val products = productViewModel.products
+  val products = productViewModel.products.shuffled()
   val isLoading = productViewModel.isLoading
   val chunks = if (isLoading) List(5) { listOf(null, null) } else products.chunked(2)
 

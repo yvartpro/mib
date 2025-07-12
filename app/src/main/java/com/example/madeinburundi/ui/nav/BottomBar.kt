@@ -6,8 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import com.example.madeinburundi.ui.theme.GreenMIB
 
 @Composable
@@ -41,17 +41,17 @@ fun BottomBar(navController: NavController, cartItemCount: Int) {
               BadgedBox(badge = { Badge { Text(text = "$cartItemCount", color = MaterialTheme.colorScheme.onPrimary) } }) {
                 Icon(
                   painter = painterResource(id = item.icon),
-                  contentDescription = item.label
+                  contentDescription = stringResource(item.label)
                 )
               }
             } else {
               Icon(
                 painter = painterResource(id = item.icon),
-                contentDescription = item.label
+                contentDescription = stringResource(item.label)
               )
             }
           },
-          label = { Text(item.label) },
+          label = { Text(stringResource(item.label)) },
           alwaysShowLabel = true,
           colors = NavigationBarItemDefaults.colors(
             selectedIconColor = GreenMIB,

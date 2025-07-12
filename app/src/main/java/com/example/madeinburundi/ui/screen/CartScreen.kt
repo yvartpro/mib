@@ -1,7 +1,6 @@
 package com.example.madeinburundi.ui.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,7 +42,6 @@ import com.example.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
   cartViewModel: CartViewModel,
@@ -67,25 +65,9 @@ fun CartScreen(
   var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
   val user = userViewModel.user
 
-//  Scaffold(
-//    snackbarHost = { SnackbarHost(snackbarHostState) },
-//    topBar = {
-//      TopAppBar(
-//        title = { Text("Panier", fontWeight = FontWeight.Normal) },
-//        colors = TopAppBarDefaults.topAppBarColors(
-//          containerColor = MaterialTheme.colorScheme.surfaceContainer,
-//          titleContentColor = MaterialTheme.colorScheme.onSurface,
-//          navigationIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-//          actionIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant
-//        )
-//      )
-//
-//    }
-//  ) { innerPadding ->
     Column(
       modifier = Modifier
         .fillMaxSize()
-        //.padding(innerPadding)
         .padding(horizontal = 16.dp)
         .verticalScroll(rememberScrollState())
     ) {

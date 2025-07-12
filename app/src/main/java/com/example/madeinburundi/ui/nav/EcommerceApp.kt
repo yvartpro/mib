@@ -25,7 +25,6 @@ import com.example.madeinburundi.viewmodel.ProductViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
 
 @RequiresApi(Build.VERSION_CODES.N)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EcommerceApp(
   cartViewModel: CartViewModel = hiltViewModel(),

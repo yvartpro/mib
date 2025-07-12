@@ -3,8 +3,6 @@ package com.example.madeinburundi.ui.screen
 import ProfileShimmer
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -52,14 +50,13 @@ fun ProfileScreen(
   val isLoading = userViewModel.isLoading
   val error = userViewModel.error
   val isEditMode = userViewModel.isEditMode
-  val imageUri = userViewModel.selectedImageUri
+  val isUpdating = userViewModel.isUpdating
 
   var fullNameState by remember(user?.fullName) { mutableStateOf(user?.fullName ?: "") }
   var phoneState by remember(user?.phone) { mutableStateOf(user?.phone ?: "") }
   var addressState by remember(user?.address) { mutableStateOf(user?.address ?: "") }
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
-  val scope = rememberCoroutineScope()
 
   LaunchedEffect(Unit) {
     userViewModel.loadUserProfile()
@@ -105,6 +102,7 @@ Text(
 
       EditableProfileInfoItem(
         isEditMode = isEditMode,
+        isUpdating = isUpdating,
         label = stringResource(R.string.f_name),
         value = fullNameState,
         icon = Icons.Default.Person,
@@ -114,20 +112,24 @@ Text(
         }
       )
 
-      EditableProfileInfoItem(
-        label = stringResource(R.string.f_phone),
-        isEditMode = isEditMode,
-        value = phoneState,
-        icon = Icons.Default.Phone,
-        onSubmit = {
-          phoneState = it
-          userViewModel.updateUser(UserUpdate(UserFields(null, it, null), null), user.id)
+        if (!isEditMode) {
+            EditableProfileInfoItem(
+                label = stringResource(R.string.f_phone),
+                isEditMode = isEditMode,
+                isUpdating = isUpdating,
+                value = phoneState,
+                icon = Icons.Default.Phone,
+                onSubmit = {
+                    phoneState = it
+                    userViewModel.updateUser(UserUpdate(UserFields(null, it, null), null), user.id)
+                }
+            )
         }
-      )
 
       EditableProfileInfoItem(
         label = stringResource(R.string.f_addr),
         isEditMode = isEditMode,
+        isUpdating = isUpdating,
         value = addressState,
         icon = Icons.Default.LocationOn,
         onSubmit = {
@@ -136,28 +138,31 @@ Text(
         }
       )
 
-      EditableProfileInfoItem(
-        isEditMode = isEditMode,
-        label = stringResource(R.string.f_pwd),
-        value = passwordState,
-        icon = Icons.Default.Lock,
-        placeholder = "",
-        onSubmit = {
-          passwordState = it
-          userViewModel.updateUser(UserUpdate(UserFields(null, null, it), null), user.id)
-          passwordState = ""
-        },
-        keyboardType = KeyboardType.Password,
-        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-          IconButton(onClick = { passwordVisible = !passwordVisible }) {
-            Icon(
-              painter = painterResource(id = if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility),
-              contentDescription = "Toggle password"
+        if (isEditMode) {
+            EditableProfileInfoItem(
+                isEditMode = isEditMode,
+                isUpdating = isUpdating,
+                label = stringResource(R.string.f_pwd),
+                value = passwordState,
+                icon = Icons.Default.Lock,
+                placeholder = "",
+                onSubmit = {
+                    passwordState = it
+                    userViewModel.updateUser(UserUpdate(UserFields(null, null, it), null), user.id)
+                    passwordState = ""
+                },
+                keyboardType = KeyboardType.Password,
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            painter = painterResource(id = if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility),
+                            contentDescription = "Toggle password"
+                        )
+                    }
+                }
             )
-          }
         }
-      )
       if (ownOrders.isNotEmpty()) {
         OrderTable(ownOrders)
       }else{
@@ -188,6 +193,7 @@ fun EditableProfileInfoItem(
   value: String,
   icon: ImageVector,
   isEditMode: Boolean,
+  isUpdating: Boolean,
   onSubmit: (String) -> Unit,
   placeholder: String = "",
   keyboardType: KeyboardType = KeyboardType.Text,
@@ -258,20 +264,26 @@ fun EditableProfileInfoItem(
             onSubmit(textState)
             isEditing = false
           }) {
-            Icon(
-              Icons.Default.Check,
-              contentDescription = "Submit",
-              tint = MaterialTheme.colorScheme.primary
-            )
+            if (isUpdating) {
+              CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            } else {
+              Icon(
+                Icons.Default.Check,
+                contentDescription = "Submit",
+                tint = MaterialTheme.colorScheme.primary
+              )
+            }
           }
-          IconButton(onClick = {
-            isEditing = false
-          }) {
-            Icon(
-              Icons.Default.Close,
-              contentDescription = "Cancel",
-              tint = MaterialTheme.colorScheme.error
-            )
+          if (!isUpdating) {
+            IconButton(onClick = {
+              isEditing = false
+            }) {
+              Icon(
+                Icons.Default.Close,
+                contentDescription = "Cancel",
+                tint = MaterialTheme.colorScheme.error
+              )
+            }
           }
         } else {
           IconButton(onClick = {
@@ -297,7 +309,7 @@ fun OrderTable(orders: List<Order>){
     Spacer(modifier = Modifier.height(24.dp))
     Text(
       text = stringResource(R.string.pr_your_command),
-      style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+      style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = FontSizes.body()),
       modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = 8.dp)

@@ -3,7 +3,6 @@ package com.example.madeinburundi.ui.nav
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +20,6 @@ import com.example.madeinburundi.viewmodel.CompanyViewModel
 import com.example.madeinburundi.viewmodel.OrderViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
-import okhttp3.Route
 
 @Composable
 fun AppNavGraph(
@@ -45,7 +43,7 @@ fun AppNavGraph(
       HomeScreen(
         cartViewModel = cartViewModel,
         productViewModel = productViewModel,
-        onNavigateToCart = { navController.navigate(NavDestinations.CART) },
+        //onNavigateToCart = { navController.navigate(NavDestinations.CART) },
         categoryViewModel = categoryViewModel,
         navController = navController
       )

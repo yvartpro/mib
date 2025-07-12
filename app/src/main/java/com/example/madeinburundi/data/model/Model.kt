@@ -1,5 +1,6 @@
 package com.example.madeinburundi.data.model
 
+import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableIntStateOf
 import kotlinx.serialization.SerialName
@@ -85,7 +86,7 @@ data class NewOrder(
   val description: String
 )
 
-data class Category(val title: String, val name: String? = null, var isActive: Boolean)
+data class Category(@StringRes val title: Int, val name: String? = null, var isActive: Boolean)
 
 @Serializable
 data class UserUpdate(

@@ -1,7 +1,7 @@
 package com.example.madeinburundi.ui.nav
 
 import androidx.annotation.DrawableRes
-import androidx.compose.runtime.Composable
+import androidx.annotation.StringRes
 import com.example.madeinburundi.R
 
 object NavDestinations {
@@ -17,14 +17,14 @@ object NavDestinations {
 }
 
 data class BottomNavItem(
-  val label: String,
+  @StringRes val label: Int,
   @DrawableRes val icon: Int,
   val route: String
 )
 
 val bottomNavItems = listOf(
-  BottomNavItem("Accueil", R.drawable.home, NavDestinations.HOME),
-  BottomNavItem("Industrie", R.drawable.business, NavDestinations.COMPANIES),
-  BottomNavItem("Panier", R.drawable.shopping_cart, NavDestinations.CART),
-  BottomNavItem("Profil", R.drawable.person, NavDestinations.PROFILE)
+  BottomNavItem(R.string.b_home, R.drawable.home, NavDestinations.HOME),
+  BottomNavItem(R.string.b_industry, R.drawable.business, NavDestinations.COMPANIES),
+  BottomNavItem(R.string.b_cart, R.drawable.shopping_cart, NavDestinations.CART),
+  BottomNavItem(R.string.b_profile, R.drawable.person, NavDestinations.PROFILE)
 )
