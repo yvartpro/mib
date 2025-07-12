@@ -20,6 +20,7 @@ import com.example.madeinburundi.ui.component.SnackbarTool
 import com.example.madeinburundi.viewmodel.CartViewModel
 import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.CompanyViewModel
+import com.example.madeinburundi.viewmodel.OrderViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
 
@@ -31,7 +32,8 @@ fun EcommerceApp(
   productViewModel: ProductViewModel = hiltViewModel(),
   companyViewModel: CompanyViewModel = hiltViewModel(),
   userViewModel: UserViewModel = hiltViewModel(),
-  categoryViewModel: CategoryViewModel = hiltViewModel()
+  categoryViewModel: CategoryViewModel = hiltViewModel(),
+  orderViewModel: OrderViewModel = hiltViewModel()
 ) {
   val navController = rememberNavController()
   val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -73,7 +75,8 @@ fun EcommerceApp(
       productViewModel = productViewModel,
       companyViewModel = companyViewModel,
       userViewModel = userViewModel,
-      categoryViewModel = categoryViewModel
+      categoryViewModel = categoryViewModel,
+      orderViewModel = orderViewModel
     )
   }
 }

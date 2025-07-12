@@ -1,15 +1,13 @@
 package com.example.madeinburundi.ui.screen
 
+import ProfileShimmer
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -24,10 +22,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,21 +32,20 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.madeinburundi.R
-import com.example.madeinburundi.data.model.TokenManager
+import com.example.madeinburundi.data.model.Order
 import com.example.madeinburundi.data.model.UserFields
 import com.example.madeinburundi.data.model.UserUpdate
 import com.example.madeinburundi.ui.nav.NavDestinations
 import com.example.madeinburundi.ui.theme.FontSizes
+import com.example.madeinburundi.viewmodel.OrderViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
-import kotlinx.coroutines.launch
-import com.example.madeinburundi.utils.ProfileShimmer
 
 @Composable
 fun ProfileScreen(
   navController: NavController,
-  userViewModel: UserViewModel
+  userViewModel: UserViewModel,
+  orderViewModel: OrderViewModel
 ) {
   val context = LocalContext.current
   val user = userViewModel.user
@@ -68,33 +63,24 @@ fun ProfileScreen(
 
   LaunchedEffect(Unit) {
     userViewModel.loadUserProfile()
+    orderViewModel.loadOrders()
     userViewModel.navigateToLogin.collect {
       navController.navigate(NavDestinations.AUTH)
     }
   }
-
-//  LaunchedEffect(Unit) {
-//    userViewModel.navigateToLogin.collect {
-//      navController.navigate(NavDestinations.AUTH)
-//    }
-//  }
-//uploadProfileImage
-  val imagePickerLauncher = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.GetContent()
-  ) { uri -> uri?.let { user?.id?.let { it1 -> userViewModel.uploadProfileImage(context, it1,
-    user.fullName, it) } } }
-
-//  val imagePickerLauncher = rememberLauncherForActivityResult(
-//    contract = ActivityResultContracts.GetContent()
-//  ) { uri -> uri?.let { userViewModel.onImageSelected(it) } }
-
+    val orders = orderViewModel.orders
+    val ownOrders = orders.filter { it.customer == user?.id }.sortedByDescending { it.date }
   if (isLoading) {
     ProfileShimmer()
-   // Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-     // CircularProgressIndicator()
-  //  }
   } else if (error != null) {
-    Text("Erreur : $error", modifier = Modifier.padding(16.dp))
+    Column (
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceAround
+    ) {
+        Text(stringResource(R.string.pr_err))
+    }
   } else if (user != null) {
     Column(
       modifier = Modifier
@@ -115,7 +101,6 @@ Text(
     .fillMaxWidth(),
   textAlign = androidx.compose.ui.text.style.TextAlign.Center
 )
-
       Spacer(modifier = Modifier.height(24.dp))
 
       EditableProfileInfoItem(
@@ -173,10 +158,13 @@ Text(
           }
         }
       )
-
+      if (ownOrders.isNotEmpty()) {
+        OrderTable(ownOrders)
+      }else{
+        Text(stringResource(R.string.pr_no_command))
+      }
       Spacer(modifier = Modifier.height(32.dp))
 
-      // ✅ Footer included in scrollable content
       Text(
         text = stringResource(R.string.pr_version),
         fontSize = FontSizes.caption()
@@ -190,8 +178,6 @@ Text(
           context.startActivity(intent)
         }
       )
-
-      Spacer(modifier = Modifier.height(40.dp))
     }
   }
 }
@@ -304,3 +290,61 @@ fun EditableProfileInfoItem(
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
   }
 }
+
+@Composable
+fun OrderTable(orders: List<Order>){
+  Column {
+    Spacer(modifier = Modifier.height(24.dp))
+    Text(
+      text = stringResource(R.string.pr_your_command),
+      style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(bottom = 8.dp)
+    )
+
+    orders.forEach { order ->
+      Card(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 4.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+      ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            val commandId = order.id
+          Text(
+            text = stringResource(R.string.pr_command_no, commandId),
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+            color = MaterialTheme.colorScheme.primary
+          )
+          Spacer(modifier = Modifier.height(4.dp))
+          Text(
+            text = order.description,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+          )
+          Spacer(modifier = Modifier.height(4.dp))
+          Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Text(
+              text = if (order.isDelivered) stringResource(R.string.pr_delivred) else stringResource(R.string.pr_pending),
+              color = if (order.isDelivered) Color(0xFF4CAF50) else Color(0xFFF57C00),
+              fontWeight = FontWeight.SemiBold,
+              fontSize = 12.sp
+            )
+            Text(
+              text = if (order.isPayed) stringResource(R.string.pr_paid) else stringResource(R.string.pr_no_paid),
+              color = if (order.isPayed) Color(0xFF4CAF50) else Color(0xFFD32F2F),
+              fontWeight = FontWeight.SemiBold,
+              fontSize = 12.sp
+            )
+          }
+        }
+      }
+    }
+  }
+}
+
+

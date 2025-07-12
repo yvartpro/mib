@@ -1,8 +1,9 @@
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,22 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.example.madeinburundi.R
-import com.example.madeinburundi.data.model.Product
-import com.example.madeinburundi.ui.theme.FontSizes
 import com.example.madeinburundi.ui.theme.Spacings
-import com.example.madeinburundi.viewmodel.CartViewModel
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
-import io.ktor.utils.io.concurrent.shared
 
 @Composable
 fun CompanyShimmerCard() {
@@ -276,12 +265,10 @@ fun ProfileShimmer() {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Title shimmer
+        Spacer(modifier = Modifier.height(24.dp))
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
+                .fillMaxWidth(0.4f)
                 .height(30.dp)
                 .placeholder(
                     visible = true,
@@ -289,12 +276,24 @@ fun ProfileShimmer() {
                     highlight = PlaceholderHighlight.shimmer()
                 )
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
+        Spacer(modifier = Modifier.height(32.dp))
         repeat(4) {
             ProfileItemShimmer()
             Spacer(modifier = Modifier.height(16.dp))
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        repeat(2) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .height(10.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 }
@@ -310,7 +309,7 @@ fun ProfileItemShimmer() {
                 .size(28.dp)
                 .placeholder(
                     visible = true,
-                    color = Color.Gray,
+                    color = Color.LightGray,
                     shape = CircleShape,
                     highlight = PlaceholderHighlight.shimmer()
                 )
@@ -319,22 +318,22 @@ fun ProfileItemShimmer() {
         Column(modifier = Modifier.weight(1f)) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.4f)
                     .height(12.dp)
                     .placeholder(
                         visible = true,
-                        color = Color.Gray,
+                        color = Color.LightGray,
                         highlight = PlaceholderHighlight.shimmer()
                     )
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(18.dp)
+                    .fillMaxWidth(0.7f)
+                    .height(24.dp)
                     .placeholder(
                         visible = true,
-                        color = Color.Gray,
+                        color = Color.LightGray,
                         highlight = PlaceholderHighlight.shimmer()
                     )
             )

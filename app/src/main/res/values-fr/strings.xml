@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Made In Burundi</string>
     <!-- home section-->
     <string name="category">Catégorie</string>
     <string name="latest">Nouveautés</string>
@@ -64,8 +63,8 @@
     <string name="auth_login_here">Connectez-vous ici</string>
     <!-- profile screen -->
 <string name="pr_welcome">Bienvenue</string>
-    <string name="pr_version">Version</string>
-    <string name="pr_vovota">Société Vovota</string>
+    <string name="pr_version">Version 1.0</string>
+    <string name="pr_vovota">Powered by Vovota</string>
     <string name="pr_submit">Envoyer</string>
     <string name="pr_cancel">Annuler</string>
     <!-- categories -->
@@ -76,4 +75,12 @@
     <string name="cat_beauty">Beauté</string>
     <string name="cat_electronic">Électronique</string>
     <string name="cat_construction">Construction</string>
+    <string name="pr_no_command">Pas de commande</string>
+    <string name="pr_your_command">Vos Commandes</string>
+    <string name="pr_command_no">Commande %1$s</string>
+    <string name="pr_delivred">Livré</string>
+    <string name="pr_pending">En attente</string>
+    <string name="pr_paid">Payé</string>
+    <string name="pr_no_paid">Non payé</string>
+    <string name="pr_err">Une erreur est survenue, veuillez réessayer</string>
 </resources>

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Made In Burundi</string>
     <string name="category">Aina</string>
     <string name="latest">Mpya</string>
     <string name="recommended">Pendekezwa</string>
@@ -53,8 +52,8 @@
     <string name="auth_user_yet">Tayari una akaunti?</string>
     <string name="auth_login_here">Ingia hapa</string>
 <string name="pr_welcome">Kalibu</string>
-    <string name="pr_version">Toleo</string>
-    <string name="pr_vovota">Kampuni ya Vovota</string>
+    <string name="pr_version">Toleo 1.0</string>
+    <string name="pr_vovota">Powered by Vovota</string>
     <string name="pr_submit">Tuma</string>
     <string name="pr_cancel">Ghairi</string>
     <string name="cat_all">Zote</string>
@@ -64,4 +63,12 @@
     <string name="cat_beauty">Urembo</string>
     <string name="cat_electronic">Elektroniki</string>
     <string name="cat_construction">Ujenzi</string>
+    <string name="pr_no_command">Hakuna agizo</string>
+    <string name="pr_your_command">Maagizo yako</string>
+    <string name="pr_command_no">Agizo %1$s</string>
+    <string name="pr_delivred">Imewasilishwa</string>
+    <string name="pr_pending">Inasubiri</string>
+    <string name="pr_paid">Imelipwa</string>
+    <string name="pr_no_paid">Haijalipwa</string>
+    <string name="pr_err">Hitilafu imetokea, jaribu tena</string>
 </resources>

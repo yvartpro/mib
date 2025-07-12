@@ -18,6 +18,7 @@ import com.example.madeinburundi.ui.screen.SearchScreen
 import com.example.madeinburundi.viewmodel.CartViewModel
 import com.example.madeinburundi.viewmodel.CategoryViewModel
 import com.example.madeinburundi.viewmodel.CompanyViewModel
+import com.example.madeinburundi.viewmodel.OrderViewModel
 import com.example.madeinburundi.viewmodel.ProductViewModel
 import com.example.madeinburundi.viewmodel.UserViewModel
 import okhttp3.Route
@@ -30,7 +31,8 @@ fun AppNavGraph(
   productViewModel: ProductViewModel,
   userViewModel: UserViewModel,
   categoryViewModel: CategoryViewModel,
-  companyViewModel: CompanyViewModel
+  companyViewModel: CompanyViewModel,
+  orderViewModel: OrderViewModel
 ) {
   LaunchedEffect(Unit) {
     productViewModel.loadProducts()
@@ -76,7 +78,11 @@ fun AppNavGraph(
       }
     }
     composable(NavDestinations.PROFILE) {
-      ProfileScreen( navController = navController, userViewModel = userViewModel)
+      ProfileScreen(
+        navController = navController,
+        userViewModel = userViewModel,
+        orderViewModel = orderViewModel
+      )
     }
     composable(NavDestinations.AUTH) {
       AuthScreen(

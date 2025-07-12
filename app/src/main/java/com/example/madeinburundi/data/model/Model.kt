@@ -80,7 +80,7 @@ data class TokenResponse(
 )
 
 @Serializable
-data class Order(
+data class NewOrder(
   val customer: Int,
   val description: String
 )
@@ -98,4 +98,14 @@ data class UserFields(
   @SerialName("full_name") val fullName: String? =null,
   @SerialName("phone_number") val phone: String? = null,
   val password: String? = null,
+)
+
+@Serializable
+data class Order(
+  val id: Int,
+  val description: String,
+  @SerialName("is_delivered") val isDelivered: Boolean,
+  @SerialName("is_payed") val isPayed: Boolean,
+  val customer: Int,
+  val date: String
 )
