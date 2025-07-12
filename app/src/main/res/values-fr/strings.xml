@@ -77,10 +77,13 @@
     <string name="cat_construction">Construction</string>
     <string name="pr_no_command">Pas de commande</string>
     <string name="pr_your_command">Vos Commandes</string>
-    <string name="pr_command_no">Commande %1$s</string>
+    <string name="pr_command_no">Commande</string>
     <string name="pr_delivred">Livré</string>
-    <string name="pr_pending">En attente</string>
     <string name="pr_paid">Payé</string>
     <string name="pr_no_paid">Non payé</string>
-    <string name="pr_err">Une erreur est survenue, veuillez réessayer</string>
+    <string name="pr_err">Vérifiez votre connexion internet</string>
+    <string name="dropdown_label">Option</string>
+    <string name="pr_filter">Filter</string>
+    <string name="pr_all">Tout</string>
+    <string name="pr_delivred_not">Non livré</string>
 </resources>

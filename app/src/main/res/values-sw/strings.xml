@@ -65,10 +65,13 @@
     <string name="cat_construction">Ujenzi</string>
     <string name="pr_no_command">Hakuna agizo</string>
     <string name="pr_your_command">Maagizo yako</string>
-    <string name="pr_command_no">Agizo %1$s</string>
+    <string name="pr_command_no">Agizo</string>
     <string name="pr_delivred">Imewasilishwa</string>
-    <string name="pr_pending">Inasubiri</string>
     <string name="pr_paid">Imelipwa</string>
     <string name="pr_no_paid">Haijalipwa</string>
     <string name="pr_err">Hitilafu imetokea, jaribu tena</string>
+    <string name="dropdown_label">Chagua</string>
+    <string name="pr_filter">Chuja</string>
+    <string name="pr_all">Zote</string>
+    <string name="pr_delivred_not">Haijatumwa</string>
 </resources>

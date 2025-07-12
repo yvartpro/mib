@@ -78,10 +78,13 @@
     <string name="cat_construction">Construction</string>
     <string name="pr_no_command">No command to show</string>
     <string name="pr_your_command">Your commands</string>
-    <string name="pr_command_no">Command %1$s</string>
+    <string name="pr_command_no">Command</string>
     <string name="pr_delivred">Delivred</string>
-    <string name="pr_pending">Pending</string>
     <string name="pr_paid">Paid</string>
     <string name="pr_no_paid">Not paid</string>
-    <string name="pr_err">An error occured, try again</string>
+    <string name="pr_err">check your internet connection</string>
+    <string name="dropdown_label">Option</string>
+    <string name="pr_filter">Filter</string>
+    <string name="pr_all">All</string>
+    <string name="pr_delivred_not">Not delivred</string>
 </resources>
