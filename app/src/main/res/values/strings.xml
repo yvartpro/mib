@@ -82,7 +82,7 @@
     <string name="pr_delivred">Delivred</string>
     <string name="pr_paid">Paid</string>
     <string name="pr_no_paid">Not paid</string>
-    <string name="pr_err">check your internet connection</string>
+    <string name="pr_err">Check your internet connection</string>
     <string name="dropdown_label">Option</string>
     <string name="pr_filter">Filter</string>
     <string name="pr_all">All</string>

@@ -268,11 +268,11 @@ fun ProfileShimmer() {
         Spacer(modifier = Modifier.height(24.dp))
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.4f)
-                .height(30.dp)
+                .size(120.dp)
                 .placeholder(
                     visible = true,
                     color = Color.LightGray,
+                    shape = CircleShape,
                     highlight = PlaceholderHighlight.shimmer()
                 )
         )
@@ -282,7 +282,10 @@ fun ProfileShimmer() {
             Spacer(modifier = Modifier.height(16.dp))
         }
         Spacer(modifier = Modifier.height(32.dp))
-        repeat(2) {
+        Row(modifier = Modifier
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.4f)
@@ -293,7 +296,22 @@ fun ProfileShimmer() {
                         highlight = PlaceholderHighlight.shimmer()
                     )
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(4.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.2f)
+                    .height(10.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+        }
+        Spacer(modifier = Modifier.height(28.dp))
+        repeat(3) {
+            ProfileCommandShimmer()
+            Spacer(modifier = Modifier.height(28.dp))
         }
     }
 }
@@ -318,7 +336,7 @@ fun ProfileItemShimmer() {
         Column(modifier = Modifier.weight(1f)) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.4f)
+                    .fillMaxWidth(0.6f)
                     .height(12.dp)
                     .placeholder(
                         visible = true,
@@ -329,8 +347,74 @@ fun ProfileItemShimmer() {
             Spacer(modifier = Modifier.height(16.dp))
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.7f)
+                    .fillMaxWidth()
                     .height(24.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+        }
+    }
+}
+
+
+@Composable
+fun ProfileCommandShimmer() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .height(16.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(12.dp)
+                    .placeholder(
+                        visible = true,
+                        color = Color.LightGray,
+                        highlight = PlaceholderHighlight.shimmer()
+                    )
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(14.dp)
                     .placeholder(
                         visible = true,
                         color = Color.LightGray,

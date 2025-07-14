@@ -149,7 +149,7 @@ Text(
                 placeholder = "",
                 onSubmit = {
                     passwordState = it
-                    userViewModel.updateUser(UserUpdate(UserFields(null, null, it), null), user.id)
+                    userViewModel.updateUser(UserUpdate(UserFields(null, null, password = it), null), user.id)
                     passwordState = ""
                 },
                 keyboardType = KeyboardType.Password,
