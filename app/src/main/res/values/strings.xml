@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Made In Burundi</string>
+    <string name="app_name" translatable="false">MadeInBurundi</string>
     <!-- home section-->
     <string name="category">Category</string>
     <string name="latest">Latest</string>

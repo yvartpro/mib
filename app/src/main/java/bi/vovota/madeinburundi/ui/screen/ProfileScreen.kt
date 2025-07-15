@@ -70,16 +70,7 @@ fun ProfileScreen(
     val ownOrders = orders.filter { it.customer == user?.id }.sortedByDescending { it.date }
   if (isLoading) {
     ProfileShimmer()
-  } else if (error != null) {
-    Column (
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
-        Text(stringResource(R.string.pr_err))
-    }
-  } else if (user != null) {
+  }  else if (user != null) {
     Column(
       modifier = Modifier
         .fillMaxSize()

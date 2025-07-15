@@ -50,7 +50,7 @@ fun Recommended(
           if (product == null) {
             RecommendedShimmerItem()
           } else {
-            ProductItem(product, navController, user)
+              ProductItem(productViewModel, product, navController, user)
           }
         }
       }
@@ -59,27 +59,15 @@ fun Recommended(
 }
 
 @Composable
-fun ProductItem(product: Product, navController: NavController, user : User?) {
-  fun getPrice(): String {
-    return when (user?.code) {
-      "254" -> product.kePrice
-      "255" -> product.tzPrice
-      "250" -> product.rwPrice
-      "243" -> product.drcPrice
-      "256" -> product.ugPrice
-      else -> product.bdiPrice
-    }
-  }
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+fun ProductItem(
+  productViewModel: ProductViewModel,
+  product: Product,
+  navController: NavController,
+  user : User?
+) {
+  val price = productViewModel.getPrice(product, user)
+  val currency = productViewModel.getCurrency(user)
+
   Row(
     modifier = Modifier
       .clip(RoundedCornerShape(10.dp))
@@ -101,7 +89,7 @@ fun ProductItem(product: Product, navController: NavController, user : User?) {
       modifier = Modifier.fillMaxWidth()
     ) {
       Text(text = product.name, fontSize = FontSizes.caption())
-      Text(text = "${getPrice()} ${getCurrency()}", fontSize = FontSizes.caption(),  color = Color.Gray)
+      Text(text = "$price $currency", fontSize = FontSizes.caption(),  color = Color.Gray)
       Text(text = product.company.name, fontSize = FontSizes.caption(), color = Color.DarkGray)
     }
   }

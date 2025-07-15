@@ -54,7 +54,7 @@ fun AppNavGraph(
         cartViewModel = cartViewModel,
         userViewModel = userViewModel,
         navController = navController,
-        onBack = { navController.popBackStack() }
+        productViewModel = productViewModel
       )
     }
     composable(NavDestinations.COMPANIES)   {

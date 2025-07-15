@@ -39,6 +39,7 @@ import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.ui.nav.NavDestinations
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 import bi.vovota.madeinburundi.ui.theme.GreenMIB
+import bi.vovota.madeinburundi.viewmodel.ProductViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -48,7 +49,7 @@ fun CartScreen(
   cartViewModel: CartViewModel,
   userViewModel: UserViewModel,
   navController: NavController,
-  onBack: () -> Unit
+  productViewModel: ProductViewModel,
 ) {
   BackHandler {
     val popped = navController.popBackStack("home", inclusive = false)
@@ -65,6 +66,7 @@ fun CartScreen(
   var confirmedItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
   var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
   val user = userViewModel.user
+  val msg = stringResource(R.string.pr_err)
 
     Column(
       modifier = Modifier
@@ -80,13 +82,17 @@ fun CartScreen(
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
           cartItems.forEach { cartItem ->
-            ModernCartItem(
-              cartItem = cartItem,
-              onIncreaseQuantity = { cartViewModel.increaseQuantity(cartItem.product.id) },
-              onDecreaseQuantity = { cartViewModel.decreaseQuantity(cartItem.product.id) },
-              onRemoveItem = { cartViewModel.removeItem(cartItem.product.id) },
-              user = userViewModel.user
-            )
+            userViewModel.user?.let {
+              ModernCartItem(
+                cartItem = cartItem,
+                onIncreaseQuantity = { cartViewModel.increaseQuantity(cartItem.product.id) },
+                onDecreaseQuantity = { cartViewModel.decreaseQuantity(cartItem.product.id) },
+                onRemoveItem = { cartViewModel.removeItem(cartItem.product.id) },
+                user = it,
+                cartViewModel = cartViewModel,
+                productViewModel = productViewModel
+              )
+            }
           }
         }
 
@@ -94,42 +100,36 @@ fun CartScreen(
           totalAmount = totalAmount,
           onCheckoutClick = {
             val itemsCopy = cartItems.map { it.copy() }
-
-            if (user != null) {
-              cartViewModel.checkoutAndClear { success ->
-                if (success) {
-                  confirmedItems = itemsCopy
-                  confirmedTotal = totalAmount
-                  showCheckoutDialog = true
-                } else {
-                  coroutineScope.launch {
-                    snackbarHostState.showSnackbar(message = "La commande a échouée. Veuillez réessayer.", withDismissAction = true)
-                  }
+            cartViewModel.checkoutAndClear { success ->
+              if (success) {
+                confirmedItems = itemsCopy
+                confirmedTotal = totalAmount
+                showCheckoutDialog = true
+              } else {
+                coroutineScope.launch {
+                  snackbarHostState.showSnackbar(message = msg, withDismissAction = true)
                 }
               }
-            }else{
-              coroutineScope.launch {
-                userViewModel.loadUserProfile()
-                navController.navigate(NavDestinations.AUTH)
-              }
             }
-          }
-          ,
+          },
           isLoading = isCheckoutLoading,
           modifier = Modifier.padding(top = 24.dp),
-          user = user
-        )
+          user = user,
+          productViewModel = productViewModel
+          )
+
       }
     }
-  //}
 
   if (showCheckoutDialog) {
-    FancyCheckoutDialog(
-      cartItems = confirmedItems,
-      totalAmount = confirmedTotal,
-      onDismiss = { showCheckoutDialog = false },
-      user = user
-    )
+      FancyCheckoutDialog(
+        cartItems = confirmedItems,
+        totalAmount = confirmedTotal,
+        onDismiss = { showCheckoutDialog = false },
+        user = user,
+        cartViewModel = cartViewModel,
+        productViewModel = productViewModel
+      )
   }
 }
 
@@ -140,28 +140,12 @@ fun ModernCartItem(
   onIncreaseQuantity: () -> Unit,
   onDecreaseQuantity: () -> Unit,
   onRemoveItem: () -> Unit,
-  user: User?
+  user: User,
+  cartViewModel: CartViewModel,
+  productViewModel: ProductViewModel
 ) {
-  fun getPrice(): String {
-    return when (user?.code) {
-      "254" -> cartItem.product.kePrice
-      "255" -> cartItem.product.tzPrice
-      "250" -> cartItem.product.rwPrice
-      "243" -> cartItem.product.drcPrice
-      "256" -> cartItem.product.ugPrice
-      else -> cartItem.product.bdiPrice
-    }
-  }
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+  val price = cartViewModel.getCartPrice(user, cartItem)
+  val currency = productViewModel.getCurrency(user)
   Card(
     modifier = Modifier
       .fillMaxWidth()
@@ -197,7 +181,7 @@ fun ModernCartItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-          text = "${getPrice()} ${getCurrency()}",
+          text = "$price $currency",
           style = MaterialTheme.typography.bodyMedium,
           color = MaterialTheme.colorScheme.primary
         )
@@ -248,40 +232,24 @@ fun FancyCheckoutDialog(
   cartItems: List<CartItem>,
   totalAmount: Double,
   onDismiss: () -> Unit,
-  user: User?
+  user: User?,
+  cartViewModel: CartViewModel,
+  productViewModel: ProductViewModel
 ) {
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+  val currency = productViewModel.getCurrency(user)
   val details = stringResource(R.string.ca_command_details)
   val orderSummary = remember(cartItems, totalAmount) {
     buildString {
       append(details)
       cartItems.forEach {
-        fun getPrice(): String {
-          return when (user?.code) {
-            "254" -> it.product.kePrice
-            "255" -> it.product.tzPrice
-            "250" -> it.product.rwPrice
-            "243" -> it.product.drcPrice
-            "256" -> it.product.ugPrice
-            else -> it.product.bdiPrice
-          }
-        }
+        val price = cartViewModel.getCartPrice(user, it)
+
         val name = it.product.name
-        val unitPrice = getPrice().toDouble()
         val quantity = it.quantity.value
-        val subtotal = unitPrice * quantity
-        append("- ${quantity}x $name (${unitPrice.toInt()} ${getCurrency()}): ${subtotal.toInt()}  ${getCurrency()}\n")
+        val subtotal = price * quantity
+        append("- ${quantity}x $name (${price.toInt()} $currency): ${subtotal.toInt()}  $currency\n")
       }
-      append("\nTotal: ${totalAmount.toInt()}  ${getCurrency()}")
+      append("\nTotal: ${totalAmount.toInt()}  $currency")
     }
   }
 
@@ -334,18 +302,10 @@ fun CheckoutSummarySection(
   onCheckoutClick: () -> Unit,
   isLoading: Boolean,
   modifier: Modifier = Modifier,
+  productViewModel: ProductViewModel,
   user: User?
 ) {
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+ val currency = productViewModel.getCurrency(user)
   Card(
     modifier = modifier.fillMaxWidth(),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
@@ -364,7 +324,7 @@ fun CheckoutSummarySection(
         )
 
         Text(
-          "${totalAmount.toInt()} ${getCurrency()}",
+          "${totalAmount.toInt()} $currency",
           style = MaterialTheme.typography.titleLarge.copy(
             color = MaterialTheme.colorScheme.primary
           ),

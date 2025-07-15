@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import bi.vovota.madeinburundi.data.model.CartItem
+import bi.vovota.madeinburundi.data.model.Product
 import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.data.model.UserUpdate
 import bi.vovota.madeinburundi.data.repository.UnAuthorizedException
@@ -83,71 +85,17 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     }
   }
 
-  fun uploadProfileImage(context: Context, userId: Int, fullName: String? = null, uri: Uri) {
-    viewModelScope.launch {
-      try {
-        val file = uriToFile(uri = uri, context = context) ?: throw Exception("File not found")
-        val success = userRepository.uploadProfile(userId, fullName, file)
-        println("Picked image: $file, status: $success")
-        uploadMessage = if (success) "Mise à jour réussie" else "Échec de la mise à jour"
-      } catch (e: Exception) {
-        uploadMessage = "Erreur: ${e.localizedMessage}"
-        e.printStackTrace()
-      }
-    }
+  fun getCartPrice(user: User?, product: Product): Double {
+    return when (user?.code) {
+      "254" -> product.kePrice
+      "255" -> product.tzPrice
+      "250" -> product.rwPrice
+      "243" -> product.drcPrice
+      "256" -> product.ugPrice
+      else ->  product.bdiPrice
+    }.toDoubleOrNull() ?: 0.0
   }
 
-
-
-  fun uriToFile(context: Context, uri: Uri): File {
-    val inputStream = context.contentResolver.openInputStream(uri)!!
-    val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
-    tempFile.outputStream().use { outputStream ->
-      inputStream.copyTo(outputStream)
-    }
-    return tempFile
-  }
-
-//  fun uploadImage(userId: Int, context: Context) {
-//    selectedImageUri?.let { uri ->
-//      viewModelScope.launch {
-//        isUploading = true
-//        val success = userRepository.uploadProfileImage(uri, userId)
-//        uploadMessage = if (success) "Image upload réussie" else "Échec de l'upload"
-//        isUploading = false
-//      }
-//    }
-//  }
-  fun uploadImage(userId: Int) {
-    println("$userId")
-    selectedImageUri?.let { uri ->
-      println("$uri")
-      viewModelScope.launch {
-        isUploading = true
-        val success = userRepository.uploadProfileImage(uri, userId)
-        println("$success")
-        uploadMessage = if (success) "Succès" else "Erreur"
-        isUploading = false
-      }
-    } ?: run { println("No image selected")}
-  }
-  var selectedImageUri by mutableStateOf<Uri?>(null)
-    private set
-
-  var isUploading by mutableStateOf(false)
-    private set
-
-  var uploadMessage by mutableStateOf<String?>(null)
-    private set
-
-  var isImagePicked by mutableStateOf(false)
-    private set
-
-  fun onImageSelected(uri: Uri) {
-    selectedImageUri = uri
-    uploadMessage = null
-    isImagePicked = true
-  }
 }
 
 

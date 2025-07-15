@@ -42,6 +42,7 @@ import bi.vovota.madeinburundi.ui.theme.FontSizes
 import bi.vovota.madeinburundi.ui.theme.Spacings
 import bi.vovota.madeinburundi.viewmodel.CartViewModel
 import bi.vovota.madeinburundi.viewmodel.ProductViewModel
+import bi.vovota.madeinburundi.viewmodel.UserViewModel
 
 @Composable
 fun ProductList(
@@ -49,7 +50,7 @@ fun ProductList(
   products: List<Product>,
   productViewModel: ProductViewModel,
   navController: NavController,
-  user: User?
+  user: User?,
 ) {
 
   val isLoading = productViewModel.isLoading
@@ -74,13 +75,14 @@ fun ProductList(
           if (product == null) {
             ProductCardShimmer(modifier = Modifier.weight(1f))
           }else {
-            ProductCard(
-              cartViewModel =  cartViewModel,
-              product = product,
-              modifier = Modifier.weight(1f),
-              navController = navController,
-              user = user
-            )
+              ProductCard(
+                cartViewModel =  cartViewModel,
+                product = product,
+                modifier = Modifier.weight(1f),
+                navController = navController,
+                user = user,
+                productViewModel = productViewModel
+              )
           }
         }
         if (rowItems.size == 1) {
@@ -97,28 +99,12 @@ fun ProductCard(
   product: Product,
   modifier: Modifier = Modifier,
   navController: NavController,
-  user: User?
+  user: User?,
+  productViewModel: ProductViewModel
 ) {
-  fun getPrice(): String {
-    return when (user?.code) {
-      "254" -> product.kePrice
-      "255" -> product.tzPrice
-      "250" -> product.rwPrice
-      "243" -> product.drcPrice
-      "256" -> product.ugPrice
-      else -> product.bdiPrice
-    }
-  }
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+  val price = productViewModel.getPrice(product, user)
+  val currency = productViewModel.getCurrency(user)
+
   Card(
     modifier = modifier
       .width(IntrinsicSize.Max)
@@ -174,13 +160,12 @@ fun ProductCard(
         horizontalArrangement = Arrangement.SpaceBetween
       ) {
         Text(
-          text = "${getPrice()} ${getCurrency()} ${ if (product.isBox) " / box" else ""}",
+          text = "$price $currency ${ if (product.isBox) " / box" else ""}",
           fontSize = FontSizes.caption(),
           style = MaterialTheme.typography.titleMedium,
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.primary
         )
-        //Text(text = "1 box", fontSize = FontSizes.caption(), color = MaterialTheme.colorScheme.onBackground)
         FilledIconButton(
           onClick = { cartViewModel.addToCart(product) },
           shape = CircleShape,

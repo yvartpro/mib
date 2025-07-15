@@ -94,7 +94,14 @@ val nam = company.name
               horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
               for (product in rowItems){
-                ProductCard(product = product, cartViewModel = cartViewModel, modifier = Modifier.weight(1f), user = user, navController = navController)
+                ProductCard(
+                  product = product,
+                  cartViewModel = cartViewModel,
+                  modifier = Modifier.weight(1f),
+                  user = user,
+                  navController = navController,
+                  productViewModel = productViewModel
+                )
               }
             }
           }

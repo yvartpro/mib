@@ -48,33 +48,21 @@ fun ProductImageRow(
       items(5) { ProductImageShimmerItem() }
     } else {
       items(products) { product ->
-        ProductImageItem(product, navController, user)
+          ProductImageItem(product, navController, user, productViewModel)
       }
     }
   }
 }
 @Composable
-fun ProductImageItem(product: Product, navController: NavController, user: User?) {
-  fun getPrice(): String {
-    return when (user?.code) {
-      "254" -> product.kePrice
-      "255" -> product.tzPrice
-      "250" -> product.rwPrice
-      "243" -> product.drcPrice
-      "256" -> product.ugPrice
-      else -> product.bdiPrice
-    }
-  }
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+fun ProductImageItem(
+  product: Product,
+  navController: NavController,
+  user: User?,
+  productViewModel: ProductViewModel,
+  ) {
+  val price = productViewModel.getPrice(product, user)
+  val currency = productViewModel.getCurrency(user)
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     modifier = Modifier
@@ -99,7 +87,7 @@ fun ProductImageItem(product: Product, navController: NavController, user: User?
     }
     Spacer(Modifier.height(4.dp))
     Text(
-      text = "${getPrice()} ${getCurrency()}",
+      text = "$price $currency",
       fontSize = 10.sp,
       fontWeight = FontWeight.SemiBold,
       style = MaterialTheme.typography.bodySmall,

@@ -57,26 +57,8 @@ fun ProductScreen(
     productViewModel.loadProducts()
   }
   val user = userViewModel.user
-  fun getPrice(): String {
-    return when (user?.code) {
-      "254" -> product.kePrice
-      "255" -> product.tzPrice
-      "250" -> product.rwPrice
-      "243" -> product.drcPrice
-      "256" -> product.ugPrice
-      else -> product.bdiPrice
-    }
-  }
-  fun getCurrency(): String {
-    return when (user?.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
-  }
+  val price = user?.let { productViewModel.getPrice(product, it) }
+  val currency = user?.let { productViewModel.getCurrency(it) }
   val products = productViewModel.products
   val relatedProducts = products.filter { it.category == product.category && it.id != product.id }
   BackHandler {
@@ -130,7 +112,7 @@ fun ProductScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-          text = "${getPrice()} ${getCurrency()} ${if (product.isBox) " / box" else ""}",
+          text = "$price $currency ${if (product.isBox) " / box" else ""}",
           fontSize = FontSizes.caption(),
           fontWeight = FontWeight.ExtraBold,
           color = MaterialTheme.colorScheme.primary

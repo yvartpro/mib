@@ -127,15 +127,18 @@ class CartViewModel @Inject constructor(
 
   fun calculateGrandTotal(user: User?): Double {
     return cartItems.sumOf { item->
-      val price = when (user?.code) {
-        "254" -> item.product.kePrice
-        "255" -> item.product.tzPrice
-        "250" -> item.product.rwPrice
-        "243" -> item.product.drcPrice
-        "256" -> item.product.ugPrice
-        else -> item.product.bdiPrice
-      }.toDoubleOrNull() ?: 0.0
+      val price = getCartPrice(user, item)
       price * item.quantity.value
     }
+  }
+  fun getCartPrice(user: User?, item: CartItem): Double {
+    return when (user?.code) {
+      "254" -> item.product.kePrice
+      "255" -> item.product.tzPrice
+      "250" -> item.product.rwPrice
+      "243" -> item.product.drcPrice
+      "256" -> item.product.ugPrice
+      else ->  item.product.bdiPrice
+    }.toDoubleOrNull() ?: 0.0
   }
 }

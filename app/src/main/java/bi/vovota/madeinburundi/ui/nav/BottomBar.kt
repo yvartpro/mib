@@ -9,9 +9,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import bi.vovota.madeinburundi.ui.theme.GreenMIB
+import bi.vovota.madeinburundi.viewmodel.CartViewModel
 
 @Composable
-fun BottomBar(navController: NavController, cartItemCount: Int) {
+fun BottomBar(navController: NavController, cartItemCount: Int, cartViewModel: CartViewModel) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentRoute = navBackStackEntry?.destination?.route
 

@@ -53,8 +53,8 @@ class ProductViewModel @Inject constructor(
     }
   }
 
-  fun getPrice(product: Product, user: User): String {
-    return when (user.code) {
+  fun getPrice(product: Product, user: User?): String {
+    return when (user?.code) {
       "254" -> product.kePrice
       "255" -> product.tzPrice
       "250" -> product.rwPrice
@@ -63,15 +63,16 @@ class ProductViewModel @Inject constructor(
       else -> product.bdiPrice
     }
   }
-  fun getCurrency(user: User): String {
-    return when (user.code) {
-      "254" -> "KSH"
-      "255" -> "TSH"
-      "250" -> "RWF"
-      "243" -> "FC"
-      "256" -> "UGX"
-      else -> "FBU"
-    }
+
+  fun getCurrency(user: User?): String {
+      return when (user?.code) {
+        "254" -> "KSH"
+        "255" -> "TSH"
+        "250" -> "RWF"
+        "243" -> "FC"
+        "256" -> "UGX"
+        else -> "FBU"
+      }
   }
 }
 

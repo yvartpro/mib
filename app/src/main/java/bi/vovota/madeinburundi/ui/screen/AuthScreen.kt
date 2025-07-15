@@ -34,7 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -67,17 +66,14 @@ userViewModel: UserViewModel
   var isLogin by rememberSaveable { mutableStateOf(true) }
   var fullName by rememberSaveable { mutableStateOf("") }
   var phone by rememberSaveable { mutableStateOf("") }
-  var address by rememberSaveable { mutableStateOf("") }
   var password by rememberSaveable { mutableStateOf("") }
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
   val loading by viewModel.loading.collectAsState()
   val message by viewModel.message.collectAsState()
   val isError by viewModel.isError.collectAsState()
-  val token by viewModel.token.collectAsState()
   val loginSuccess by viewModel.loginSuccess.collectAsState()
 
-  val context = LocalContext.current
 
   LaunchedEffect(loginSuccess) {
     if (loginSuccess) {

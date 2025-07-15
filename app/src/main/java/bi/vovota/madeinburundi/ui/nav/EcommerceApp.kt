@@ -54,7 +54,7 @@ fun EcommerceApp(
         scope = scope,
         snackbarHostState = snackbarHostState,
         message = msg,
-        topPadding = if ( currentRoute == NavDestinations.HOME) 100.dp else 24.dp
+        topPadding = 100.dp //if ( currentRoute == NavDestinations.HOME) 100.dp else 24.dp
       )
     },
     topBar = {
@@ -63,7 +63,7 @@ fun EcommerceApp(
       }
     },
     bottomBar = {
-      BottomBar(navController = navController, cartItemCount = cartCount)
+      BottomBar(navController = navController, cartItemCount = cartCount, cartViewModel)
     }
   ) { innerPadding ->
     AppNavGraph(

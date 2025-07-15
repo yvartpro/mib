@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -56,13 +57,15 @@ fun SnackbarTool(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = topPadding),
+                .padding(top = topPadding)
+                .zIndex(100f),
             contentAlignment = Alignment.TopCenter
         ) {
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 color = Color(0xFF303030),
-                shadowElevation = 4.dp
+                shadowElevation = 4.dp,
+                modifier = Modifier.zIndex(100f)
             ) {
                 Row(
                     modifier = Modifier
