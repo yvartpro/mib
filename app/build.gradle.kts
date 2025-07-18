@@ -80,7 +80,7 @@ dependencies {
   implementation("androidx.datastore:datastore-preferences:1.0.0")
   //coi for images
   implementation("io.coil-kt:coil-compose:2.4.0")
-  implementation("com.github.bumptech.glide:glide:4.15.1")
+  //implementation("com.github.bumptech.glide:glide:4.15.1")
   // Navigation
   implementation("androidx.navigation:navigation-compose:2.6.0")
   //viewmodel
@@ -90,5 +90,5 @@ dependencies {
   kapt("com.google.dagger:hilt-compiler:2.50")
   implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
   //splash theme
-  implementation("androidx.core:core-splashscreen:1.0.1")
+  //implementation("androidx.core:core-splashscreen:1.0.1")
 }

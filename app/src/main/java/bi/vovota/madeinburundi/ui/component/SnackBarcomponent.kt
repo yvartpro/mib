@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -51,9 +50,8 @@ fun SnackbarTool(
             resetState()
         }
     }
-    val currentSnackBarData = snackbarHostState.currentSnackbarData
 
-    if (currentSnackBarData != null) {
+    snackbarHostState.currentSnackbarData?.let { snackbarData ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,32 +60,33 @@ fun SnackbarTool(
             contentAlignment = Alignment.TopCenter
         ) {
             Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = Color(0xFF303030),
-                shadowElevation = 4.dp,
-                modifier = Modifier.zIndex(100f)
+                shape = RoundedCornerShape(12.dp),
+                tonalElevation = 6.dp,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .zIndex(101f)
             ) {
                 Row(
                     modifier = Modifier
-                        .wrapContentWidth()
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = currentSnackBarData.visuals.message,
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        text = snackbarData.visuals.message,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = FontSizes.caption(),
-                        modifier = Modifier.padding(end = 4.dp)
+                        modifier = Modifier.padding(end = 8.dp)
                     )
                     IconButton(
-                        onClick = { snackbarHostState.currentSnackbarData?.dismiss() },
-                        modifier = Modifier.size(18.dp)
+                        onClick = { snackbarData.dismiss() },
+                        modifier = Modifier.size(20.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Fermer",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier.size(14.dp)
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }

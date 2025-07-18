@@ -57,8 +57,8 @@ fun ProductScreen(
     productViewModel.loadProducts()
   }
   val user = userViewModel.user
-  val price = user?.let { productViewModel.getPrice(product, it) }
-  val currency = user?.let { productViewModel.getCurrency(it) }
+  val price = productViewModel.getPrice(product, user)
+  val currency = productViewModel.getCurrency(user)
   val products = productViewModel.products
   val relatedProducts = products.filter { it.category == product.category && it.id != product.id }
   BackHandler {

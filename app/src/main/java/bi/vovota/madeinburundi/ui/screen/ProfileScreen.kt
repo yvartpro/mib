@@ -49,7 +49,6 @@ fun ProfileScreen(
   val context = LocalContext.current
   val user = userViewModel.user
   val isLoading = userViewModel.isLoading
-  val error = userViewModel.error
   val isEditMode = userViewModel.isEditMode
   val isUpdating = userViewModel.isUpdating
 

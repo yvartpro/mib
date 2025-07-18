@@ -30,6 +30,7 @@ private val DarkColorScheme = darkColorScheme(
   background = DarkBackground,
   onBackground = LightText,
 
+  error = Color(0xFFCF6679),
   onError = Color(0xFFEF5350),
 
   surface = DarkBackground,

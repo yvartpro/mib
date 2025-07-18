@@ -103,7 +103,7 @@ data class UserUpdate(
 
 @Serializable
 data class UserFields(
-  @SerialName("full_name") val fullName: String? =null,
+  @SerialName("full_name") val fullName: String? = null,
   @SerialName("phone_number") val phone: String? = null,
   val password: String? = null,
 )

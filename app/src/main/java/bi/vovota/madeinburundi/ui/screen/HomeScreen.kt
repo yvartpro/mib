@@ -33,6 +33,7 @@ fun HomeScreen(
   userViewModel: UserViewModel,
   navController: NavController
 ) {
+
   val user = userViewModel.user
   Column(
     modifier = Modifier

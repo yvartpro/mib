@@ -31,7 +31,7 @@ fun Recommended(
 ) {
   val user = userViewModel.user
   val isLoading = productViewModel.isLoading
-  val products = productViewModel.products
+  val products = productViewModel.products.shuffled()
   val chunks = if (isLoading) List(5) { listOf(null, null) } else products.chunked(2)
 
   LazyRow(
