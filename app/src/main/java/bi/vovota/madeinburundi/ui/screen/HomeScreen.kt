@@ -54,13 +54,13 @@ fun HomeScreen(
         navController = navController
       )
     }
-    HomeSection(title = stringResource(R.string.recommended)) {
-      Recommended(
-        productViewModel = productViewModel,
-        navController = navController,
-        userViewModel = userViewModel
-      )
-    }
+//    HomeSection(title = stringResource(R.string.recommended)) {
+//      Recommended(
+//        productViewModel = productViewModel,
+//        navController = navController,
+//        userViewModel = userViewModel
+//      )
+//    }
     HomeSection(title = stringResource(R.string.products)) {
       ProductList(
         cartViewModel = cartViewModel,

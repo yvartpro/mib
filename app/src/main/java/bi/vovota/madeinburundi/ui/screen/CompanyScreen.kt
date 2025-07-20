@@ -86,8 +86,8 @@ fun CompanyListItem(company: Company, navController: NavController) {
     modifier = Modifier
       .fillMaxWidth()
       .clickable { navController.navigate("company/${company.id}") },
-    shape = RoundedCornerShape(12.dp),
-    elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+    //shape = RoundedCornerShape(12.dp),
+    //elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // white
   ) {
     Row(
@@ -137,5 +137,7 @@ fun CompanyListItem(company: Company, navController: NavController) {
         }
       }
     }
+    Spacer(modifier = Modifier.height(4.dp))
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
   }
 }
