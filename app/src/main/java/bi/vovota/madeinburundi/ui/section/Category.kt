@@ -41,7 +41,12 @@ fun CategoryRow(navController: NavController, viewModel: CategoryViewModel) {
         isActive = category.isActive,
         onClick = {
           viewModel.setActive(category.name)
-          navController.navigate("search/${category.name}")
+          navController.navigate("search/${category.name}") {
+            popUpTo("home") {
+              inclusive = false
+            }
+            launchSingleTop = true
+          }
         }
       )
     }
