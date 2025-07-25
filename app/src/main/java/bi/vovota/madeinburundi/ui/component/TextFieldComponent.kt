@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,7 +61,7 @@ fun ProfileTextField(
     trailingIcon = trailingIcon,
     modifier = modifier
       .fillMaxWidth()
-      .padding(vertical = 8.dp),
+      .padding(vertical = 2.dp),
     singleLine = true,
     visualTransformation = visualTransformation,
     keyboardOptions = KeyboardOptions(

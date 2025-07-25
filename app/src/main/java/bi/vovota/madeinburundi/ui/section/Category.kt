@@ -25,9 +25,11 @@ import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 fun CategoryRow(navController: NavController, viewModel: CategoryViewModel) {
   val categories = viewModel.categories
   BackHandler {
+    viewModel.setNotActive()
     val popped = navController.popBackStack("home", inclusive = false)
     if (!popped) {
       navController.navigate("home")
+      viewModel.setActive(null)
     }
   }
   LazyRow(

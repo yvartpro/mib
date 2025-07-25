@@ -87,4 +87,6 @@
     <string name="pr_filter">Filter</string>
     <string name="pr_all">All</string>
     <string name="pr_delivred_not">Not delivred</string>
+    <string name="pwd_v">Verify password</string>
+    <string name="pwd_unmatch">Password not matching</string>
 </resources>

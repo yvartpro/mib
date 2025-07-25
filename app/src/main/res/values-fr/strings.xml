@@ -86,4 +86,6 @@
     <string name="pr_filter">Filter</string>
     <string name="pr_all">Tout</string>
     <string name="pr_delivred_not">Non livré</string>
+    <string name="pwd_v">Retapper le mot de passe</string>
+    <string name="pwd_unmatch">Mot de paasse incoherent</string>
 </resources>

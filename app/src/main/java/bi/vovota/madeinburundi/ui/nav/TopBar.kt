@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import bi.vovota.madeinburundi.R
 import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.ui.theme.FontSizes
+import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
@@ -26,7 +27,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun TopBar(
   navController: NavController,
-  userViewModel: UserViewModel
+  userViewModel: UserViewModel,
+  categoryViewModel: CategoryViewModel
 ) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
   val currentRoute = navBackStackEntry?.destination?.route
@@ -52,7 +54,14 @@ fun TopBar(
     },
     navigationIcon = {
       if (showBackArrow) {
-        IconButton(onClick = { navController.popBackStack() }) {
+        IconButton(onClick = {
+//          navController.popBackStack()
+          categoryViewModel.setNotActive()
+          navController.navigate(NavDestinations.HOME) {
+            popUpTo(NavDestinations.AUTH) { inclusive = true }
+            launchSingleTop = true
+          }
+        } ) {
           Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
         }
       }

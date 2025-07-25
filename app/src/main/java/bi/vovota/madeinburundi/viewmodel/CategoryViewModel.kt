@@ -26,4 +26,10 @@ class CategoryViewModel @Inject constructor(
             it.copy(isActive = it.name == name)
         }.toMutableStateList()
     }
+
+    fun setNotActive() {
+        categories = categories.map {
+            it.copy(isActive = false)
+        }.toMutableStateList()
+    }
 }

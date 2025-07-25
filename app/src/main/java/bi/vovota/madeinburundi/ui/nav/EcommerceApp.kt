@@ -68,7 +68,7 @@ fun EcommerceApp(
     },
     topBar = {
       if (currentRoute != NavDestinations.AUTH) {
-        TopBar(navController = navController, userViewModel = userViewModel)
+        TopBar(navController = navController, userViewModel = userViewModel, categoryViewModel = categoryViewModel)
       }
     },
     bottomBar = {

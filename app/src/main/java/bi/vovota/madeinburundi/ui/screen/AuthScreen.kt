@@ -1,5 +1,6 @@
 package bi.vovota.madeinburundi.ui.screen
 
+import android.annotation.SuppressLint
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -55,6 +56,7 @@ import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun AuthScreen(
 modifier: Modifier = Modifier,
@@ -67,6 +69,7 @@ userViewModel: UserViewModel
   var fullName by rememberSaveable { mutableStateOf("") }
   var phone by rememberSaveable { mutableStateOf("") }
   var password by rememberSaveable { mutableStateOf("") }
+  var passwordV by rememberSaveable { mutableStateOf("") }
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
   val loading by viewModel.loading.collectAsState()
@@ -153,10 +156,32 @@ userViewModel: UserViewModel
           }
         },
         keyboardType = KeyboardType.Password,
-        imeAction = ImeAction.Done,
+        imeAction = ImeAction.Next,
         isSensitive = true,
         placeholderText = stringResource(R.string.f_enter_pwd)
       )
+      if(!isLogin) {
+        ProfileTextField(
+          value = passwordV,
+          onValueChange = { passwordV = it },
+          label = stringResource(R.string.pwd_v),
+          leadingIconVector = Icons.Filled.Lock,
+          visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+          trailingIcon = {
+            val description = if (passwordVisible) "Hide password" else "Show password"
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+              Icon(painter = if (passwordVisible) painterResource(R.drawable.visibility_off) else painterResource(R.drawable.visibility), description)
+            }
+          },
+          keyboardType = KeyboardType.Password,
+          imeAction = ImeAction.Done,
+          isSensitive = true,
+          placeholderText = stringResource(R.string.pwd_v)
+        )
+        if (viewModel.pwdUnmatch.value) {
+          SmallText(text = stringResource(R.string.pwd_unmatch), color = MaterialTheme.colorScheme.error)
+        }
+      }
     }
     Spacer(modifier = Modifier.height(16.dp))
     Button(
@@ -164,9 +189,12 @@ userViewModel: UserViewModel
         if (isLogin) {
           viewModel.login(phone, password)
         } else {
-          viewModel.register(fullName, phone, password)
-          isLogin = viewModel.registerOk.value
-          fullName = ""
+          viewModel.verifyPwd(password, passwordV)
+          if (!viewModel.pwdUnmatch.value) {
+            viewModel.register(fullName, phone, password)
+            isLogin = viewModel.registerOk.value
+            fullName = ""
+          }
         }
       },
       modifier = Modifier

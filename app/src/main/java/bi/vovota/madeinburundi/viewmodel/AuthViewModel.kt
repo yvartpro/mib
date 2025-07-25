@@ -35,6 +35,13 @@ class AuthViewModel @Inject constructor(
   private val _token = MutableStateFlow<TokenResponse?>(null)
   val token: StateFlow<TokenResponse?> = _token
 
+  private val _pwdUnmatch = MutableStateFlow(false)
+  val pwdUnmatch: StateFlow<Boolean> = _pwdUnmatch
+
+  fun verifyPwd(pwd: String, pwdV: String) {
+    _pwdUnmatch.value = pwd != pwdV
+  }
+
   private val _loginSuccess = MutableStateFlow(false)
   val loginSuccess: StateFlow<Boolean> = _loginSuccess
 

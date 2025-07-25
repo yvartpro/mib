@@ -74,4 +74,6 @@
     <string name="pr_filter">Chuja</string>
     <string name="pr_all">Zote</string>
     <string name="pr_delivred_not">Haijatumwa</string>
+    <string name="pwd_v">Verify password</string>
+    <string name="pwd_unmatch">Password not matching</string>
 </resources>
