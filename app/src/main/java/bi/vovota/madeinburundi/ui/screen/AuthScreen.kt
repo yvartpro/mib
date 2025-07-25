@@ -1,10 +1,13 @@
 package bi.vovota.madeinburundi.ui.screen
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,16 +17,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -31,11 +42,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -90,7 +103,7 @@ userViewModel: UserViewModel
     modifier = Modifier
       .fillMaxSize()
       .padding(0.dp)
-      .background(color = MaterialTheme.colorScheme.background )
+      .background(color = MaterialTheme.colorScheme.background)
       .verticalScroll(rememberScrollState())
       .imePadding(),
     verticalArrangement = Arrangement.Top,
@@ -109,7 +122,7 @@ userViewModel: UserViewModel
     Spacer(modifier = Modifier.height(48.dp))
     Image(
       painter = painterResource(id = R.drawable.logo),
-      contentDescription = "DUN",
+      contentDescription = stringResource(R.string.app_name),
       modifier = Modifier.size(96.dp),
       contentScale = ContentScale.Fit
     )
@@ -140,11 +153,12 @@ userViewModel: UserViewModel
           isSensitive = false
         )
       }
-      PhoneInputField(
-        modifier = Modifier,
-        onPhoneChanged = { phone = it},
-        countries = countryList
-        )
+//      PhoneInputField(
+//        modifier = Modifier,
+//        onPhoneChanged = { phone = it},
+//        countries = countryList
+//        )
+      CountryDropdownWithFlags(onPhoneNumberChanged = { phone = it })
       ProfileTextField(
         value = password,
         onValueChange = { password = it },
@@ -191,6 +205,7 @@ userViewModel: UserViewModel
         if (isLogin) {
           viewModel.login(phone, password)
         } else {
+          Log.e("Register phone:", "${phone}${fullName}")
           viewModel.verifyPwd(password, passwordV)
           if (!viewModel.pwdUnmatch.value) {
             viewModel.register(fullName, phone, password)
@@ -228,16 +243,99 @@ data class Country(
   val name: String,
   val code: String,
   @DrawableRes val flag: Int,
-  val initial: String
+  val initial: String,
+  val numberLength: Int
 )
 
 val countryList = listOf(
-  Country("Burundi", "257", R.drawable.bi, "BDI"),
-  Country("DRC", "243", R.drawable.cd, "RDC"),
-  Country("Kenya", "254", R.drawable.ke, "KE"),
-  Country("Ouganda", "256", R.drawable.ug, "UG"),
-  Country("Rwanda", "250", R.drawable.rw, "RW"),
-  Country("Tanzania", "255", R.drawable.tz, "TZ"),
-  Country("South Soudan", "211", R.drawable.ss, "SS"),
-  Country("Somalia", "252", R.drawable.so, "SO")
+  Country("Burundi", "257", R.drawable.bi, "BDI", 8),
+  Country("DRC", "243", R.drawable.cd, "RDC", 9),
+  Country("Kenya", "254", R.drawable.ke, "KE", 9),
+  Country("Ouganda", "256", R.drawable.ug, "UG", 9),
+  Country("Rwanda", "250", R.drawable.rw, "RW", 9),
+  Country("Tanzania", "255", R.drawable.tz, "TZ", 9),
+  Country("South Soudan", "211", R.drawable.ss, "SS", 9),
+  Country("Somalia", "252", R.drawable.so, "SO", 9)
 )
+
+
+@Composable
+fun CountryDropdownWithFlags(
+  onPhoneNumberChanged: (String) -> Unit,
+) {
+  var expanded by remember { mutableStateOf(false) }
+  var selectedCountry by remember { mutableStateOf(countryList[0]) }
+  var phoneNumber by remember { mutableStateOf("") }
+  var isValid by remember { mutableStateOf(true) }
+
+  OutlinedTextField(
+    value = phoneNumber,
+    onValueChange = {
+      phoneNumber = it
+      val countryCode = selectedCountry.code
+      isValid = it.startsWith(countryCode) && it.length == selectedCountry.numberLength
+
+      if (isValid) {
+        onPhoneNumberChanged("+$phoneNumber")
+      }
+    },
+    label = { Text("Phone number") },
+    isError = !isValid,
+    leadingIcon = {
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+          .padding(start = 8.dp)
+          .clickable { expanded = true }
+      ) {
+        Image(
+          painter = painterResource(id = selectedCountry.flag),
+          contentDescription = null,
+          modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Icon(
+          imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+          contentDescription = null,
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = "+${selectedCountry.code}")
+        Spacer(modifier = Modifier.width(4.dp))
+      }
+    },
+    supportingText = {
+      if (!isValid) {
+        Text("Format attendu: ${selectedCountry.code} + ${selectedCountry.numberLength} chiffres")
+      }
+    },
+    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+    modifier = Modifier.fillMaxWidth()
+  )
+
+  DropdownMenu(
+    expanded = expanded,
+    onDismissRequest = { expanded = false }
+  ) {
+    countryList.forEach { country ->
+      DropdownMenuItem(
+        text = {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+              painter = painterResource(id = country.flag),
+              contentDescription = null,
+              modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "${country.name} (+${country.code})")
+          }
+        },
+        onClick = {
+          selectedCountry = country
+          expanded = false
+          phoneNumber = "" // reset on change
+          isValid = true
+        }
+      )
+    }
+  }
+}
