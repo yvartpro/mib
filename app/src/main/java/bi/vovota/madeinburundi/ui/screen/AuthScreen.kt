@@ -237,5 +237,7 @@ val countryList = listOf(
   Country("Kenya", "254", R.drawable.ke, "KE"),
   Country("Ouganda", "256", R.drawable.ug, "UG"),
   Country("Rwanda", "250", R.drawable.rw, "RW"),
-  Country("Tanzania", "255", R.drawable.tz, "TZ")
+  Country("Tanzania", "255", R.drawable.tz, "TZ"),
+  Country("South Soudan", "211", R.drawable.ss, "SS"),
+  Country("Somalia", "252", R.drawable.so, "SO")
 )
