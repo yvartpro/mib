@@ -16,7 +16,7 @@ class AuthRepository @Inject constructor(
 ) {
   suspend fun registerUser(fullName: String, phoneNumber: String, password: String): Boolean {
     return try {
-      val resp = client.post("https://mib.vovota.bi/api/register/") {
+      val resp = client.post("https://mib.clubtechlac.bi/api/register/") {
         contentType(ContentType.Application.Json)
         setBody(UserRegister(fullName, phoneNumber,  password))
       }

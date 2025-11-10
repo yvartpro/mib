@@ -26,7 +26,7 @@ class OrderRepository @Inject constructor(
     val token = access ?: println("No token found") //throw UnAuthorizedException("No access token found")
     println("Sending...: ${order}")
     return try {
-      val response = client.post("https://mib.vovota.bi/api/order/") {
+      val response = client.post("https://mib.clubtechlac.bi/api/order/") {
         contentType(ContentType.Application.Json)
         header(HttpHeaders.Authorization, "Bearer $token")
         setBody(order)

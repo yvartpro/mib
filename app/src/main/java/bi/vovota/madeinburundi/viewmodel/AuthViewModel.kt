@@ -7,19 +7,28 @@ import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.data.model.TokenResponse
 import bi.vovota.madeinburundi.data.repository.UserRepository
 import bi.vovota.madeinburundi.data.AuthRepository
+import bi.vovota.madeinburundi.data.remote.dto.UserRegister
+import bi.vovota.madeinburundi.data.repository.AuthRepo
+import bi.vovota.madeinburundi.utils.Logger
+import bi.vovota.madeinburundi.utils.UiState
+import bi.vovota.madeinburundi.utils.launchWithState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
   private val authRepository: AuthRepository,
-  private val userRepository: UserRepository
+  private val userRepository: UserRepository,
+  private val repo: AuthRepo
 ): ViewModel() {
 
+  private val _authState = MutableStateFlow(UiState<Boolean>())
+  val authState = _authState.asStateFlow()
   private val _loading = MutableStateFlow(false)
   val loading: StateFlow<Boolean> = _loading
 
@@ -44,6 +53,18 @@ class AuthViewModel @Inject constructor(
 
   private val _loginSuccess = MutableStateFlow(false)
   val loginSuccess: StateFlow<Boolean> = _loginSuccess
+
+  fun createUser(request: UserRegister) {
+    viewModelScope.launch {
+      launchWithState(
+        stateFlow = _authState,
+        block = { repo.register(request)},
+        onSuccess = {
+          Logger.d("Register", "Success")
+        }, onFailure = { e-> e.message?.let { Logger.e("Register", it)}}
+      )
+    }
+  }
 
   fun register(fullName: String, phone: String, password: String) {
     _loading.value = true

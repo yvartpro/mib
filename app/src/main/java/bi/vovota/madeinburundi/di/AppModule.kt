@@ -3,6 +3,9 @@ package bi.vovota.madeinburundi.di
 import android.content.Context
 import bi.vovota.madeinburundi.data.AuthRepository
 import bi.vovota.madeinburundi.data.model.TokenManager
+import bi.vovota.madeinburundi.data.remote.ApiService
+import bi.vovota.madeinburundi.data.repository.AuthRepo
+import bi.vovota.madeinburundi.data.repository.AuthRepoImpl
 import bi.vovota.madeinburundi.data.repository.OrderRepository
 import bi.vovota.madeinburundi.data.repository.UserRepository
 import dagger.Module
@@ -21,6 +24,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+  @Provides
+  @Singleton
+  fun provideApiService(client: HttpClient): ApiService = ApiService(client)
 
   @Provides
   @Singleton
@@ -66,4 +73,7 @@ object AppModule {
     return TokenManager
   }
 
+  @Provides
+  @Singleton
+  fun provideAuthRepo(api: ApiService): AuthRepo = AuthRepoImpl(api)
 }

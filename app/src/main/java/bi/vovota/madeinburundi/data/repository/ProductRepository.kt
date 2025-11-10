@@ -14,7 +14,7 @@ class ProductRepository @Inject constructor(
   suspend fun getProducts(): List<Product> {
     return try {
       println("🔎 Calling Product API...")
-      val response: HttpResponse = client.get("https://mib.vovota.bi/api/product/")
+      val response: HttpResponse = client.get("https://mib.clubtechlac.bi/api/product/")
       println("✅ Response: ${response.status}")
       val rawJson = response.bodyAsText()
       println("📦 Body: $rawJson")

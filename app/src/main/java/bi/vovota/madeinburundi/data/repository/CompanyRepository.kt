@@ -13,7 +13,7 @@ class CompanyRepository @Inject constructor(
 ) {
   suspend fun getCompanies(): List<Company> {
     return try {
-      val response: HttpResponse = client.get("https://mib.vovota.bi/api/company/")
+      val response: HttpResponse = client.get("https://mib.clubtechlac.bi/api/company/")
       val rawJson = response.bodyAsText()
 
       val companies = Json.decodeFromString<List<Company>>(rawJson)

@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bi.vovota.madeinburundi.R
+import bi.vovota.madeinburundi.data.remote.dto.UserRegister
 import bi.vovota.madeinburundi.ui.component.PhoneInputField
 import bi.vovota.madeinburundi.ui.component.ProfileTextField
 import bi.vovota.madeinburundi.ui.component.SmallText
@@ -208,7 +209,7 @@ userViewModel: UserViewModel
           Log.e("Register phone:", "${phone}${fullName}")
           viewModel.verifyPwd(password, passwordV)
           if (!viewModel.pwdUnmatch.value) {
-            viewModel.register(fullName, phone, password)
+            viewModel.createUser(UserRegister(fullName, phone, password))
             isLogin = viewModel.registerOk.value
             fullName = ""
           }

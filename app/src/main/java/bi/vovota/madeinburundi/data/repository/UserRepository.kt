@@ -50,7 +50,7 @@ class UserRepository @Inject constructor(
       throw UnAuthorizedException("No access token found")
     }
     try {
-      val response = client.get("https://mib.vovota.bi/api/profile/"){
+      val response = client.get("https://mib.clubtechlac.bi/api/profile/"){
           header(HttpHeaders.Authorization, "Bearer $token")
       }
       val responseText = response.bodyAsText()
