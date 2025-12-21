@@ -61,13 +61,30 @@ fun ProfileScreen(
   }
 }
 @Composable
+fun RequireAuth(
+  authState: AuthState,
+  navController: NavController,
+  content: @Composable () -> Unit
+) {
+  LaunchedEffect(authState) {
+    if (authState == AuthState.LOGGED_OUT) {
+      navController.navigate(NavDestinations.AUTH)
+    }
+  }
+
+  if (authState == AuthState.LOGGED_IN) {
+    content()
+  }
+}
+
+@Composable
 fun ProfileContent(
   navController: NavController,
   authViewModel: AuthViewModel,
   userViewModel: UserViewModel,
   orderViewModel: OrderViewModel) {
   val context = LocalContext.current
-  val user = userViewModel.user
+  val user by userViewModel.user.collectAsState()
   val isLoading = userViewModel.isLoading
   val isEditMode = userViewModel.isEditMode
   val isUpdating = userViewModel.isUpdating
@@ -100,9 +117,9 @@ fun ProfileContent(
         .padding(16.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-val name = user.fullName
+val name = user?.fullName
 Text(
-  text = stringResource(R.string.pr_welcome,name),
+  text = stringResource(R.string.pr_welcome,name ?: ""),
   style = MaterialTheme.typography.headlineSmall.copy(
     color = MaterialTheme.colorScheme.primary,
     fontWeight = FontWeight.Bold
@@ -113,70 +130,72 @@ Text(
   textAlign = androidx.compose.ui.text.style.TextAlign.Center
 )
       Spacer(modifier = Modifier.height(24.dp))
+user?.let { u->
+  EditableProfileInfoItem(
+    isEditMode = isEditMode,
+    isUpdating = isUpdating,
+    label = stringResource(R.string.f_name),
+    value = fullNameState,
+    icon = Icons.Default.Person,
+    onSubmit = {
+      fullNameState = it
+      userViewModel.updateUser(UserUpdate(UserFields(it, null, null), null), u.id)
+    }
+  )
 
-      EditableProfileInfoItem(
-        isEditMode = isEditMode,
-        isUpdating = isUpdating,
-        label = stringResource(R.string.f_name),
-        value = fullNameState,
-        icon = Icons.Default.Person,
-        onSubmit = {
-          fullNameState = it
-          userViewModel.updateUser(UserUpdate(UserFields(it, null, null), null), user.id)
-        }
-      )
+  if (!isEditMode) {
+    EditableProfileInfoItem(
+      label = stringResource(R.string.f_phone),
+      isEditMode = false,
+      isUpdating = isUpdating,
+      value = phoneState,
+      icon = Icons.Default.Phone,
+      onSubmit = {
+        phoneState = it
+        userViewModel.updateUser(UserUpdate(UserFields(null, it, null), null), u.id)
+      }
+    )
+  }
 
-        if (!isEditMode) {
-            EditableProfileInfoItem(
-                label = stringResource(R.string.f_phone),
-                isEditMode = false,
-                isUpdating = isUpdating,
-                value = phoneState,
-                icon = Icons.Default.Phone,
-                onSubmit = {
-                    phoneState = it
-                    userViewModel.updateUser(UserUpdate(UserFields(null, it, null), null), user.id)
-                }
-            )
-        }
+  EditableProfileInfoItem(
+    label = stringResource(R.string.f_addr),
+    isEditMode = isEditMode,
+    isUpdating = isUpdating,
+    value = addressState,
+    icon = Icons.Default.LocationOn,
+    onSubmit = {
+      addressState = it
+      userViewModel.updateUser(UserUpdate(UserFields(null, null, null), address = it), u.id)
+    }
+  )
 
-      EditableProfileInfoItem(
-        label = stringResource(R.string.f_addr),
-        isEditMode = isEditMode,
-        isUpdating = isUpdating,
-        value = addressState,
-        icon = Icons.Default.LocationOn,
-        onSubmit = {
-          addressState = it
-          userViewModel.updateUser(UserUpdate(UserFields(null, null, null), address = it), user.id)
+  if (isEditMode) {
+    EditableProfileInfoItem(
+      isEditMode = true,
+      isUpdating = isUpdating,
+      label = stringResource(R.string.f_pwd),
+      value = passwordState,
+      icon = Icons.Default.Lock,
+      placeholder = "",
+      onSubmit = {
+        passwordState = it
+        userViewModel.updateUser(UserUpdate(UserFields(null, null, password = it), null), u.id)
+        passwordState = ""
+      },
+      keyboardType = KeyboardType.Password,
+      visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+      trailingIcon = {
+        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+          Icon(
+            painter = painterResource(id = if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility),
+            contentDescription = "Toggle password"
+          )
         }
-      )
+      }
+    )
+  }
+}
 
-        if (isEditMode) {
-            EditableProfileInfoItem(
-                isEditMode = isEditMode,
-                isUpdating = isUpdating,
-                label = stringResource(R.string.f_pwd),
-                value = passwordState,
-                icon = Icons.Default.Lock,
-                placeholder = "",
-                onSubmit = {
-                    passwordState = it
-                    userViewModel.updateUser(UserUpdate(UserFields(null, null, password = it), null), user.id)
-                    passwordState = ""
-                },
-                keyboardType = KeyboardType.Password,
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(
-                            painter = painterResource(id = if (passwordVisible) R.drawable.visibility_off else R.drawable.visibility),
-                            contentDescription = "Toggle password"
-                        )
-                    }
-                }
-            )
-        }
       if (ownOrders.isNotEmpty()) {
         OrderTable(ownOrders)
       }else{
@@ -410,20 +429,3 @@ data class OrderState(
   val title: String,
   val value: String
 )
-
-@Composable
-fun RequireAuth(
-  authState: AuthState,
-  navController: NavController,
-  content: @Composable () -> Unit
-) {
-  LaunchedEffect(authState) {
-    if (authState == AuthState.LOGGED_OUT) {
-      navController.navigate(NavDestinations.AUTH)
-    }
-  }
-
-  if (authState == AuthState.LOGGED_IN) {
-    content()
-  }
-}

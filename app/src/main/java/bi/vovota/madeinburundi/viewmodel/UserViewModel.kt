@@ -11,19 +11,26 @@ import bi.vovota.madeinburundi.data.model.CartItem
 import bi.vovota.madeinburundi.data.model.Product
 import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.data.model.UserUpdate
+import bi.vovota.madeinburundi.data.repository.AuthRepo
 import bi.vovota.madeinburundi.data.repository.UnAuthorizedException
 import bi.vovota.madeinburundi.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class UserViewModel  @Inject constructor(private val userRepository: UserRepository): ViewModel(){
-  var user by mutableStateOf<User?>(null)
-    private set
+class UserViewModel  @Inject constructor(
+  private val userRepository: UserRepository,
+  private val authRepo: AuthRepo
+): ViewModel(){
+  private val _user = MutableStateFlow<User?>(null)
+  val user = _user.asStateFlow()
+
   var isLoading by mutableStateOf(false)
     private set
   var error by mutableStateOf<String?>(null)
@@ -36,28 +43,14 @@ class UserViewModel  @Inject constructor(private val userRepository: UserReposit
     isEditMode = !isEditMode
   }
 
-  private val _navigateToLogin = Channel<Unit>(Channel.CONFLATED)
-  val navigateToLogin = _navigateToLogin.receiveAsFlow()
-
-  fun loadUserProfile() {
-    viewModelScope.launch {
-      isLoading = true
-      error = null
-      try {
-        user = userRepository.getProfile()
-        println("User is: $user")
-      }catch (e: UnAuthorizedException){
-        _navigateToLogin.trySend(Unit)
-      }catch (e: Exception) {
-        error = e.message
-      }finally {
-        isLoading = false
-      }
-    }
+  init {
+    loadUser()
   }
 
-  fun clearUser() {
-    user = null
+  fun loadUser() {
+    viewModelScope.launch {
+      _user.value = authRepo.getUser()
+    }
   }
 
   var updateMsg by mutableStateOf("")

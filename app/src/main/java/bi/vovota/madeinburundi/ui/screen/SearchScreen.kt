@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import bi.vovota.madeinburundi.R
@@ -32,7 +34,7 @@ fun SearchScreen(
   categoryViewModel: CategoryViewModel,
   userViewModel: UserViewModel
 ) {
-  println("Categoryname: $categoryName")
+  val user by userViewModel.user.collectAsState()
   val searchQuery = productViewModel.searchQuery
   val products = if(categoryName != null && categoryName != "tous") {
     productViewModel.products.filter {
@@ -65,7 +67,7 @@ fun SearchScreen(
         cartViewModel = cartViewModel,
         products = products,
         productViewModel = productViewModel,
-        user = userViewModel.user,
+        user = user,
         navController = navController
       )
     }

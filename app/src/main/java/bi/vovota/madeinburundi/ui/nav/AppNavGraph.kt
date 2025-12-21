@@ -135,7 +135,7 @@ fun AppNavGraph(
           navController = navController,
           productViewModel = productViewModel,
           companies = companyViewModel.companies,
-          user = userViewModel.user
+          userViewModel = userViewModel
         )
       }
     }

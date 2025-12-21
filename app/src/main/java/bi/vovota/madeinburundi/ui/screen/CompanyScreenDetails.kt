@@ -16,6 +16,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,8 +34,10 @@ import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.ui.section.ProductCard
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 import bi.vovota.madeinburundi.ui.theme.Spacings
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.CartViewModel
 import bi.vovota.madeinburundi.viewmodel.ProductViewModel
+import bi.vovota.madeinburundi.viewmodel.UserViewModel
 
 @Composable
 fun CompanyDetailsScreen(
@@ -42,8 +46,9 @@ fun CompanyDetailsScreen(
   companies: List<Company>,
   productViewModel: ProductViewModel,
   cartViewModel: CartViewModel,
-  user: User?
+  userViewModel: UserViewModel,
 ) {
+  val user by userViewModel.user.collectAsState()
 
   val company = companies.find { it.id == companyId }
   val companyProducts = productViewModel.products.filter { it.company.id == companyId }

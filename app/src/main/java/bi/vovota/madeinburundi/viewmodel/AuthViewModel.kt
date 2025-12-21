@@ -89,7 +89,7 @@ class AuthViewModel @Inject constructor(
       launchWithState(
         stateFlow = _registerState,
         block = { repo.register(RegisterRequest(_fullName.value, phoneNumber, _password.value))},
-        onSuccess = { viewModelScope.launch { loginUser(); clearForm() }},
+        onSuccess = { viewModelScope.launch { loginUser() }},
         onFailure = { e-> e.message?.let { Logger.e("Register failed: ", it)}}
       )
     }

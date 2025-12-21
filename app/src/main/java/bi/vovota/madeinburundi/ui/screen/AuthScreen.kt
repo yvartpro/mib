@@ -2,6 +2,7 @@ package bi.vovota.madeinburundi.ui.screen
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -94,7 +95,12 @@ fun AuthScreen(
       }
     }
   }
-
+  /** systemBackButton brings to Home not Profile */
+  BackHandler(enabled = true) {
+    navController.navigate(NavDestinations.HOME) {
+      popUpTo(NavDestinations.AUTH) { inclusive = true }
+    }
+  }
 
   Column(
     modifier = Modifier

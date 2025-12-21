@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,7 +31,7 @@ fun Recommended(
   navController: NavController,
   userViewModel: UserViewModel
 ) {
-  val user = userViewModel.user
+  val user by userViewModel.user.collectAsState()
   val isLoading = productViewModel.isLoading
   val products = productViewModel.products.shuffled()
   val chunks = if (isLoading) List(5) { listOf(null, null) } else products.chunked(2)

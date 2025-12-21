@@ -51,6 +51,7 @@ fun CartScreen(
   navController: NavController,
   productViewModel: ProductViewModel,
 ) {
+  val user by userViewModel.user.collectAsState()
   BackHandler {
     val popped = navController.popBackStack("home", inclusive = false)
     if (!popped) {
@@ -58,14 +59,13 @@ fun CartScreen(
     }
   }
   val cartItems = cartViewModel.cartItems
-  val totalAmount = cartViewModel.calculateGrandTotal(userViewModel.user)
+  val totalAmount = cartViewModel.calculateGrandTotal(user)
   val isCheckoutLoading = cartViewModel.isCheckingOut
   var showCheckoutDialog by remember { mutableStateOf(false) }
   val snackbarHostState = remember { SnackbarHostState() }
   val coroutineScope = rememberCoroutineScope()
   var confirmedItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
   var confirmedTotal by remember { mutableDoubleStateOf(0.0) }
-  val user = userViewModel.user
   val msg = stringResource(R.string.pr_err)
 
     Column(
@@ -82,7 +82,7 @@ fun CartScreen(
 
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
           cartItems.forEach { cartItem ->
-            userViewModel.user?.let {
+            user?.let {
               ModernCartItem(
                 cartItem = cartItem,
                 onIncreaseQuantity = { cartViewModel.increaseQuantity(cartItem.product.id) },
