@@ -7,6 +7,7 @@ import bi.vovota.madeinburundi.data.model.UserLogin
 import bi.vovota.madeinburundi.data.remote.ApiService
 import bi.vovota.madeinburundi.data.remote.dto.RegisterRequest
 import bi.vovota.madeinburundi.data.remote.dto.RegisterResponse
+import bi.vovota.madeinburundi.utils.Logger
 import bi.vovota.madeinburundi.utils.safeApiCall
 import javax.inject.Inject
 
@@ -30,6 +31,7 @@ class AuthRepoImpl @Inject constructor(
     override suspend fun login(request: UserLogin): Result<TokenResponse> {
       val result = safeApiCall { api.login(request)}
       result.getOrNull()?.let { tokens ->
+        Logger.d("token", tokens.access)
         tokenManager.saveTokens(tokens.access, tokens.refresh)
         val user = api.getProfile(tokens.access)
         tokenManager.saveUser(user)

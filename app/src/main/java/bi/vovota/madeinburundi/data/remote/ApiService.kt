@@ -1,5 +1,6 @@
 package bi.vovota.madeinburundi.data.remote
 
+import bi.vovota.madeinburundi.data.model.Order
 import bi.vovota.madeinburundi.data.model.TokenResponse
 import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.data.model.UserLogin
@@ -32,27 +33,34 @@ class ApiService(
       throw ClientRequestException(resp,txt)
     }
   }
-    suspend fun login(request: UserLogin): TokenResponse {
-        val resp = client.post("$baseUrl/token/") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }
-        val txt = resp.bodyAsText()
-
-        if (resp.status.isSuccess()) {
-            return resp.body()
-        } else {
-            throw ClientRequestException(resp, txt)
-        }
+  suspend fun login(request: UserLogin): TokenResponse {
+    val resp = client.post("$baseUrl/token/") {
+      contentType(ContentType.Application.Json)
+      setBody(request)
     }
-
-    suspend fun getProfile(token: String): User {
-        val profiles: List<UserRaw> = client.get("$baseUrl/api/profile/") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-        }.body()
-
-        return profiles.singleOrNull()
-            ?.toUser()
-            ?: error("Profile API returned ${profiles.size} items")
+    val txt = resp.bodyAsText()
+    if (resp.status.isSuccess()) {
+      return resp.body()
+    } else {
+      throw ClientRequestException(resp, txt)
     }
+  }
+
+  suspend fun getProfile(token: String): User {
+    val profiles: List<UserRaw> = client.get("$baseUrl/api/profile/") {
+      header(HttpHeaders.Authorization, "Bearer $token")
+    }.body()
+
+    return profiles.singleOrNull()
+      ?.toUser()
+      ?: error("Profile API returned ${profiles.size} items")
+  }
+
+  suspend fun getOrders(token: String): List<Order> {
+    val orders: List<Order> = client.get("$baseUrl/api/order/") {
+      header(HttpHeaders.Authorization, "Bearer $token")
+    }.body()
+
+    return orders
+  }
 }

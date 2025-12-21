@@ -6,6 +6,8 @@ import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.data.remote.ApiService
 import bi.vovota.madeinburundi.data.repository.AuthRepo
 import bi.vovota.madeinburundi.data.repository.AuthRepoImpl
+import bi.vovota.madeinburundi.data.repository.OrderRepo
+import bi.vovota.madeinburundi.data.repository.OrderRepoImpl
 import bi.vovota.madeinburundi.data.repository.OrderRepository
 import bi.vovota.madeinburundi.data.repository.UserRepository
 import dagger.Module
@@ -75,4 +77,8 @@ object AppModule {
   @Provides
   @Singleton
   fun provideAuthRepo(api: ApiService, tokenManager: TokenManager): AuthRepo = AuthRepoImpl(api, tokenManager)
+
+  @Provides
+  @Singleton
+  fun provideOrderRepo(api: ApiService, tokenManager: TokenManager): OrderRepo = OrderRepoImpl(api, tokenManager)
 }

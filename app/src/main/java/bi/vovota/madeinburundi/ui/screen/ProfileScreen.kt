@@ -96,6 +96,8 @@ fun ProfileContent(
   var passwordVisible by remember { mutableStateOf(false) }
 
   val authState by authViewModel.authState.collectAsState()
+  val loadOrderState by orderViewModel.loadOrderState.collectAsState()
+
 
   LaunchedEffect(authState) {
     if (authState == AuthState.LOGGED_OUT) {
@@ -103,6 +105,10 @@ fun ProfileContent(
         popUpTo(NavDestinations.PROFILE) { inclusive = true }
       }
     }
+  }
+
+  LaunchedEffect(Unit, loadOrderState) {
+    orderViewModel.loadOrders()
   }
 
     val orders = orderViewModel.orders

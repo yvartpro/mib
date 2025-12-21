@@ -22,23 +22,18 @@ class OrderRepository @Inject constructor(
   }
   suspend fun placeOrder(order: NewOrder): Boolean {
     val access = TokenManager.getAccessToken()
-    println("Passed access_token: $access")
     val token = access ?: println("No token found") //throw UnAuthorizedException("No access token found")
-    println("Sending...: ${order}")
     return try {
       val response = client.post("https://mib.clubtechlac.bi/api/order/") {
         contentType(ContentType.Application.Json)
         header(HttpHeaders.Authorization, "Bearer $token")
         setBody(order)
       }
-      println("Response: $response")
       response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK
     } catch (e: Exception) {
       e.printStackTrace()
-      println("Error found: ${e.message}")
       false
     }finally {
-      println("Order placed successfully or failed")
     }
   }
   suspend fun placeOrderMessage(user: User, cartItems: List<CartItem>): Boolean {
@@ -81,11 +76,9 @@ class OrderRepository @Inject constructor(
   }
   suspend fun getOrders(): List<Order> {
     val access = TokenManager.getAccessToken()
-    println("Passed access_token: $access")
     val token = access ?: println("No token found")
     return try {
-      println("🔎 Calling order API...")
-      val response: HttpResponse = client.get("https://mib.vovota.bi/api/order/") {
+      val response: HttpResponse = client.get("https://mib.clubtechlac.bi/api/order/") {
         contentType(ContentType.Application.Json)
         header(HttpHeaders.Authorization, "Bearer $token")
       }
