@@ -29,15 +29,9 @@ class OrderViewModel @Inject constructor(
 
 
   private val _result = MutableStateFlow("")
-  val result: StateFlow<String> = _result
-  var orders by mutableStateOf<List<Order>>(emptyList())
-    private set
 
-  var emptyMsg by mutableStateOf("")
-    private set
-
-  var isLoading by mutableStateOf(false)
-    private set
+    private val _orders = MutableStateFlow<List<Order>?>(null)
+    val orders = _orders.asStateFlow()
 
   fun placeOrder(customerId: Int, description: String) {
     viewModelScope.launch {
@@ -53,10 +47,9 @@ class OrderViewModel @Inject constructor(
     launchWithState(
       stateFlow = _loadOrderState,
       block = { repo.getOrders() },
-      onSuccess = { orders = it },
+      onSuccess = { _orders.value = it },
       onFailure = {
         Logger.e("Error loading order", it.message ?: "Unknown error")
-        emptyMsg = "Aucune commande trouvée"
       }
     )
   }

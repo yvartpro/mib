@@ -18,13 +18,15 @@ android {
     targetSdk = 35
     versionCode = 1
     versionName = "1.0"
-
+    buildConfigField("String", "BASE_URL", "\"${property("BASE_URL")}\"")
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+      android.buildFeatures.buildConfig = true
   }
 
   buildTypes {
     release {
-      isMinifyEnabled = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
@@ -37,6 +39,14 @@ android {
   }
   buildFeatures {
     compose = true
+  }
+  splits {
+    abi {
+      isEnable = true
+      reset()
+      include("arm64-v8a")
+      isUniversalApk = false
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 package bi.vovota.madeinburundi.di
 
 import android.content.Context
-import bi.vovota.madeinburundi.data.AuthRepository
+import bi.vovota.madeinburundi.data.repository.AuthRepository
 import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.data.remote.ApiService
 import bi.vovota.madeinburundi.data.repository.AuthRepo

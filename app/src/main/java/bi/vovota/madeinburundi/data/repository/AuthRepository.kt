@@ -1,4 +1,4 @@
-package bi.vovota.madeinburundi.data
+package bi.vovota.madeinburundi.data.repository
 
 import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.data.model.TokenResponse
@@ -36,7 +36,7 @@ class AuthRepository @Inject constructor(
 
   suspend fun loginUser(phoneNumber: String, password: String): TokenResponse? {
     return try {
-      val resp = client.post("https://mib.vovota.bi/token/") {
+      val resp = client.post("https://mib.clubtechlac.bi/token/") {
         contentType(ContentType.Application.Json)
         setBody(UserLogin(phoneNumber, password))
       }
@@ -54,7 +54,7 @@ class AuthRepository @Inject constructor(
       return false
     }
     return try {
-        val response = client.post("https://mib.vovota.bi/refresh") {
+        val response = client.post("https://mib.clubtechlac.bi/refresh") {
           contentType(ContentType.Application.Json)
           setBody(mapOf("refresh" to refresh))
         }

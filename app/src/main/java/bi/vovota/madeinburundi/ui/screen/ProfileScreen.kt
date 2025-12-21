@@ -1,6 +1,7 @@
 package bi.vovota.madeinburundi.ui.screen
 
 import ProfileShimmer
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ import bi.vovota.madeinburundi.viewmodel.AuthState
 import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.OrderViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
+import androidx.core.net.toUri
 
 @Composable
 fun ProfileScreen(
@@ -77,6 +79,7 @@ fun RequireAuth(
   }
 }
 
+@SuppressLint("UseKtx")
 @Composable
 fun ProfileContent(
   navController: NavController,
@@ -97,6 +100,7 @@ fun ProfileContent(
 
   val authState by authViewModel.authState.collectAsState()
   val loadOrderState by orderViewModel.loadOrderState.collectAsState()
+    val orders by orderViewModel.orders.collectAsState()
 
 
   LaunchedEffect(authState) {
@@ -107,12 +111,9 @@ fun ProfileContent(
     }
   }
 
-  LaunchedEffect(Unit, loadOrderState) {
+  LaunchedEffect(Unit) {
     orderViewModel.loadOrders()
   }
-
-    val orders = orderViewModel.orders
-    val ownOrders = orders.filter { it.customer == user?.id }.sortedByDescending { it.date }
   if (isLoading) {
     ProfileShimmer()
   }  else if (user != null) {
@@ -202,11 +203,12 @@ user?.let { u->
   }
 }
 
-      if (ownOrders.isNotEmpty()) {
-        OrderTable(ownOrders)
-      }else{
-        Text(stringResource(R.string.pr_no_command))
-      }
+        when {
+            loadOrderState.isLoading -> CircularProgressIndicator()
+            loadOrderState.data != null && orders != null -> OrderTable(orders!!)
+            loadOrderState.error != null -> Text(stringResource(R.string.err_refresh))
+            else -> Text(stringResource(R.string.pr_no_command))
+        }
       Spacer(modifier = Modifier.height(32.dp))
 
       Text(
@@ -218,7 +220,7 @@ user?.let { u->
         fontSize = FontSizes.caption(),
         color = Color(0xFF37a8ee),
         modifier = Modifier.clickable {
-          val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://vovota.bi/about"))
+          val intent = Intent(Intent.ACTION_VIEW, "https://vovota.bi/about".toUri())
           context.startActivity(intent)
         }
       )

@@ -64,7 +64,7 @@ class UserRepository @Inject constructor(
         val refreshed = refreshToken()
         if (refreshed) {
           val newAccess = TokenManager.getAccessToken()
-          val retryResponse =  client.get("https://mib.vovota.bi/api/profile/"){
+          val retryResponse =  client.get("https://mib.clubtechlac.bi/api/profile/"){
             contentType(ContentType.Application.Json)
             header(HttpHeaders.Authorization, "Bearer $newAccess")
           }
@@ -84,7 +84,7 @@ class UserRepository @Inject constructor(
     val access = TokenManager.getAccessToken() ?: throw UnAuthorizedException("No access token")
     return try {
       println("payload: $update")
-      val response = client.patch("https://mib.vovota.bi/api/profile/$userId/"){
+      val response = client.patch("https://mib.clubtechlac.bi/api/profile/$userId/"){
         header(HttpHeaders.Authorization, "Bearer $access")
         contentType(ContentType.Application.Json)
         setBody(update)
@@ -113,7 +113,7 @@ class UserRepository @Inject constructor(
       return false
     }
     return try {
-      val response = client.post("https://mib.vovota.bi/api/refresh/") {
+      val response = client.post("https://mib.clubtechlac.bi/api/refresh/") {
         contentType(ContentType.Application.Json)
         setBody(mapOf("refresh" to refresh))
       }

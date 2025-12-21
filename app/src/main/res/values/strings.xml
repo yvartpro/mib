@@ -90,4 +90,5 @@
     <string name="pwd_v">Verify password</string>
     <string name="pwd_unmatch">Password not matching</string>
     <string name="success_create_acc">Compte créé avec succès</string>
+    <string name="err_refresh">Unknown error while loading orders, please refresh</string>
 </resources>
