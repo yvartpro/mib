@@ -41,7 +41,6 @@ object AppModule {
         })
       }
     }
-    println("Provided: ${client.hashCode()}")
     return client
   }
 
@@ -75,5 +74,5 @@ object AppModule {
 
   @Provides
   @Singleton
-  fun provideAuthRepo(api: ApiService): AuthRepo = AuthRepoImpl(api)
+  fun provideAuthRepo(api: ApiService, tokenManager: TokenManager): AuthRepo = AuthRepoImpl(api, tokenManager)
 }

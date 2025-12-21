@@ -62,11 +62,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import bi.vovota.madeinburundi.R
+import bi.vovota.madeinburundi.data.model.Country
+import bi.vovota.madeinburundi.data.model.countryList
 import bi.vovota.madeinburundi.data.remote.dto.UserRegister
 import bi.vovota.madeinburundi.ui.component.PhoneInputField
 import bi.vovota.madeinburundi.ui.component.ProfileTextField
 import bi.vovota.madeinburundi.ui.component.SmallText
 import bi.vovota.madeinburundi.ui.nav.NavDestinations
+import bi.vovota.madeinburundi.utils.Logger
 import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 
@@ -81,16 +84,16 @@ viewModel: AuthViewModel = hiltViewModel(),
 userViewModel: UserViewModel
 ) {
   var isLogin by rememberSaveable { mutableStateOf(true) }
-  var fullName by rememberSaveable { mutableStateOf("") }
-  var phone by rememberSaveable { mutableStateOf("") }
-  var password by rememberSaveable { mutableStateOf("") }
-  var passwordV by rememberSaveable { mutableStateOf("") }
+  val fullName by viewModel.fullName.collectAsState()
+  val phone by viewModel.phone.collectAsState()
+  val password by viewModel.password.collectAsState()
+  val passwordV by viewModel.passwordV.collectAsState()
   var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
-  val loading by viewModel.loading.collectAsState()
-  val message by viewModel.message.collectAsState()
-  val isError by viewModel.isError.collectAsState()
+    val loginState by viewModel.loginState.collectAsState()
+    val authState by viewModel.authState.collectAsState()
   val loginSuccess by viewModel.loginSuccess.collectAsState()
+    val isPhoneValid by viewModel.isPhoneValid.collectAsState()
 
 
   LaunchedEffect(loginSuccess) {
@@ -146,7 +149,7 @@ userViewModel: UserViewModel
       if(!isLogin) {
         ProfileTextField(
           value = fullName,
-          onValueChange = { fullName = it },
+          onValueChange = { viewModel.setFullName(it) },
           label = stringResource(R.string.f_name),
           leadingIconVector = Icons.Filled.Person,
           keyboardType = KeyboardType.Text,
@@ -154,15 +157,14 @@ userViewModel: UserViewModel
           isSensitive = false
         )
       }
-//      PhoneInputField(
-//        modifier = Modifier,
-//        onPhoneChanged = { phone = it},
-//        countries = countryList
-//        )
-      CountryDropdownWithFlags(onPhoneNumberChanged = { phone = it })
+      CountryDropdownWithFlags(
+          isPhoneValid = isPhoneValid,
+          onCountrySelected = { viewModel.setCountry(it)},
+          onPhoneNumberChanged = { viewModel.setPhone(it) }
+      )
       ProfileTextField(
         value = password,
-        onValueChange = { password = it },
+        onValueChange = { viewModel.setPassword(it) },
         label = stringResource(R.string.f_pwd),
         leadingIconVector = Icons.Filled.Lock,
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -180,7 +182,7 @@ userViewModel: UserViewModel
       if(!isLogin) {
         ProfileTextField(
           value = passwordV,
-          onValueChange = { passwordV = it },
+          onValueChange = { viewModel.setPasswordV(it) },
           label = stringResource(R.string.pwd_v),
           leadingIconVector = Icons.Filled.Lock,
           visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
@@ -204,14 +206,13 @@ userViewModel: UserViewModel
     Button(
       onClick = {
         if (isLogin) {
-          viewModel.login(phone, password)
+          viewModel.loginUser()
         } else {
           Log.e("Register phone:", "${phone}${fullName}")
           viewModel.verifyPwd(password, passwordV)
           if (!viewModel.pwdUnmatch.value) {
-            viewModel.createUser(UserRegister(fullName, phone, password))
+            viewModel.createUser()
             isLogin = viewModel.registerOk.value
-            fullName = ""
           }
         }
       },
@@ -219,13 +220,22 @@ userViewModel: UserViewModel
         .fillMaxWidth()
         .padding(horizontal = 24.dp),
     ) {
-      Text(if (loading) stringResource(R.string.auth_wait) else if (isLogin) stringResource(R.string.auth_login) else stringResource(R.string.auth_signin))
+      Text(
+          when {
+              loginState.isLoading -> stringResource(R.string.auth_wait)
+              authState.isLoading -> stringResource(R.string.auth_wait)
+              else -> if (isLogin) stringResource(R.string.auth_login) else stringResource(R.string.auth_signin)
+          }
+      )
     }
 
-    // Show message
-    if (message.isNotBlank()) {
-      SmallText(text = message, color = if (isError) MaterialTheme.colorScheme.onError  else MaterialTheme.colorScheme.primary)
-    }
+    // Show message and error
+      when {
+          authState.data != null -> SmallText(text = stringResource(R.string.success_create_acc), color = MaterialTheme.colorScheme.primary)
+          loginState.error != null -> SmallText(text = loginState.error!!, color = MaterialTheme.colorScheme.error)
+          authState.error != null -> SmallText(text = authState.error!!, color = MaterialTheme.colorScheme.error)
+          else -> {}
+      }
     Spacer(modifier = Modifier.height(8.dp))
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -240,48 +250,27 @@ userViewModel: UserViewModel
   }
 }
 
-data class Country(
-  val name: String,
-  val code: String,
-  @DrawableRes val flag: Int,
-  val initial: String,
-  val numberLength: Int
-)
-
-val countryList = listOf(
-  Country("Burundi", "257", R.drawable.bi, "BDI", 8),
-  Country("DRC", "243", R.drawable.cd, "RDC", 9),
-  Country("Kenya", "254", R.drawable.ke, "KE", 9),
-  Country("Ouganda", "256", R.drawable.ug, "UG", 9),
-  Country("Rwanda", "250", R.drawable.rw, "RW", 9),
-  Country("Tanzania", "255", R.drawable.tz, "TZ", 9),
-  Country("South Soudan", "211", R.drawable.ss, "SS", 9),
-  Country("Somalia", "252", R.drawable.so, "SO", 9)
-)
-
 
 @Composable
 fun CountryDropdownWithFlags(
-  onPhoneNumberChanged: (String) -> Unit,
+    isPhoneValid: Boolean,
+    onCountrySelected: (Country) -> Unit,
+    onPhoneNumberChanged: (String) -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
   var selectedCountry by remember { mutableStateOf(countryList[0]) }
   var phoneNumber by remember { mutableStateOf("") }
-  var isValid by remember { mutableStateOf(true) }
 
   OutlinedTextField(
     value = phoneNumber,
     onValueChange = {
       phoneNumber = it
-      val countryCode = selectedCountry.code
-      isValid = it.startsWith(countryCode) && it.length == selectedCountry.numberLength
-
-      if (isValid) {
+      if (isPhoneValid) {
         onPhoneNumberChanged("+$phoneNumber")
       }
     },
     label = { Text("Phone number") },
-    isError = !isValid,
+    isError = !isPhoneValid,
     leadingIcon = {
       Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -305,7 +294,7 @@ fun CountryDropdownWithFlags(
       }
     },
     supportingText = {
-      if (!isValid) {
+      if (!isPhoneValid) {
         Text("Format attendu: ${selectedCountry.code} + ${selectedCountry.numberLength} chiffres")
       }
     },
@@ -330,11 +319,9 @@ fun CountryDropdownWithFlags(
             Text(text = "${country.name} (+${country.code})")
           }
         },
-        onClick = {
-          selectedCountry = country
-          expanded = false
-          phoneNumber = "" // reset on change
-          isValid = true
+        onClick = { 
+            onCountrySelected(country)
+            expanded = false
         }
       )
     }

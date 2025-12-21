@@ -7,6 +7,9 @@ import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.data.model.TokenResponse
 import bi.vovota.madeinburundi.data.repository.UserRepository
 import bi.vovota.madeinburundi.data.AuthRepository
+import bi.vovota.madeinburundi.data.model.Country
+import bi.vovota.madeinburundi.data.model.UserLogin
+import bi.vovota.madeinburundi.data.model.countryList
 import bi.vovota.madeinburundi.data.remote.dto.UserRegister
 import bi.vovota.madeinburundi.data.repository.AuthRepo
 import bi.vovota.madeinburundi.utils.Logger
@@ -29,42 +32,92 @@ class AuthViewModel @Inject constructor(
 
   private val _authState = MutableStateFlow(UiState<Boolean>())
   val authState = _authState.asStateFlow()
+    private val _loginState = MutableStateFlow(UiState<TokenResponse>())
+    val loginState = _loginState.asStateFlow()
   private val _loading = MutableStateFlow(false)
-  val loading: StateFlow<Boolean> = _loading
+  val loading= _loading.asStateFlow()
 
   private val _registerOk = MutableStateFlow(false)
-  val registerOk: StateFlow<Boolean> = _registerOk
+  val registerOk= _registerOk.asStateFlow()
 
   private val _message = MutableStateFlow("")
-  val message: StateFlow<String> = _message
+  val message: StateFlow<String> = _message.asStateFlow()
 
   private val _isError = MutableStateFlow(false)
-  val isError: StateFlow<Boolean> = _isError
+  val isError= _isError.asStateFlow()
 
   private val _token = MutableStateFlow<TokenResponse?>(null)
-  val token: StateFlow<TokenResponse?> = _token
 
   private val _pwdUnmatch = MutableStateFlow(false)
-  val pwdUnmatch: StateFlow<Boolean> = _pwdUnmatch
+  val pwdUnmatch= _pwdUnmatch.asStateFlow()
+    
+    /**  input variables */
+    private val _fullName = MutableStateFlow("")
+    val fullName = _fullName.asStateFlow()
+    private val _phone = MutableStateFlow("")
+    val phone = _phone.asStateFlow()
+    private val _isPhoneValid = MutableStateFlow(false)
+    val isPhoneValid = _isPhoneValid.asStateFlow()
+    private val _country = MutableStateFlow(countryList[0])
+    val country = _country.asStateFlow()
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+    private val _passwordV = MutableStateFlow("")
+    val passwordV = _passwordV.asStateFlow()
 
+    /** input setters */
+    fun setFullName(value: String) = _fullName.tryEmit(value)
+    fun setPhone(value: String) = _phone.tryEmit(value)
+    fun setPassword(value: String) = _password.tryEmit(value)
+    fun setPasswordV(value: String) = _passwordV.tryEmit(value)
+    fun setCountry(value: Country) = _country.tryEmit(value)
+
+    private fun verifyPhone() {
+        _isPhoneValid.value = _phone.value.length == _country.value.numberLength
+    }
   fun verifyPwd(pwd: String, pwdV: String) {
     _pwdUnmatch.value = pwd != pwdV
   }
 
   private val _loginSuccess = MutableStateFlow(false)
-  val loginSuccess: StateFlow<Boolean> = _loginSuccess
+  val loginSuccess= _loginSuccess
 
-  fun createUser(request: UserRegister) {
+  fun createUser() {
+      Logger.d("Register", "createUser")
+      verifyPhone()
+      if (_fullName.value.isEmpty() || _password.value.isEmpty() || _passwordV.value.isEmpty()) {
+          _authState.value = UiState(error = "Veuillez remplir tous les champs")
+          return
+      }
     viewModelScope.launch {
+        val phoneNumber = _country.value.code + _phone.value
       launchWithState(
         stateFlow = _authState,
-        block = { repo.register(request)},
+        block = { repo.register(UserRegister(_fullName.value, phoneNumber, _password.value))},
         onSuccess = {
           Logger.d("Register", "Success")
         }, onFailure = { e-> e.message?.let { Logger.e("Register", it)}}
       )
     }
   }
+
+    fun loginUser() {
+        verifyPhone()
+        if (_password.value.isEmpty()) {
+            _authState.value = UiState(error = "Veuillez remplir tous les champs")
+            return
+        }
+        viewModelScope.launch {
+            val phoneNumber = _country.value.code + _phone.value
+            launchWithState(
+                stateFlow = _loginState,
+                block = { repo.login(UserLogin(phoneNumber, _password.value))},
+                onSuccess = {
+                    Logger.d("Register", "Success")
+                }, onFailure = { e-> e.message?.let { Logger.e("Register", it)}}
+            )
+        }
+    }
 
   fun register(fullName: String, phone: String, password: String) {
     _loading.value = true

@@ -89,4 +89,5 @@
     <string name="pr_delivred_not">Not delivred</string>
     <string name="pwd_v">Verify password</string>
     <string name="pwd_unmatch">Password not matching</string>
+    <string name="success_create_acc">Compte créé avec succès</string>
 </resources>

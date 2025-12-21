@@ -36,7 +36,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
-import bi.vovota.madeinburundi.ui.screen.Country
+import bi.vovota.madeinburundi.data.model.Country
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 
 @Composable
@@ -99,7 +99,6 @@ fun PhoneInputField(
     verticalAlignment = Alignment.CenterVertically,
 
   ) {
-    // Country Code Dropdown
     ExposedDropdownMenuBox(
       expanded = expanded,
       onExpandedChange = { expanded = !expanded }
@@ -125,7 +124,7 @@ fun PhoneInputField(
       ) {
         countries.forEach { country ->
           DropdownMenuItem(
-            text = { Text("${country.code}")},
+            text = { Text(country.code)},
             leadingIcon = {
               Image(
                 painter = painterResource(country.flag),
