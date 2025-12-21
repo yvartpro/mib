@@ -19,6 +19,7 @@ import bi.vovota.madeinburundi.R
 import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 import bi.vovota.madeinburundi.viewmodel.AuthViewModel
+import bi.vovota.madeinburundi.viewmodel.CartViewModel
 import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ fun TopBar(
   navController: NavController,
   authViewModel: AuthViewModel,
   userViewModel: UserViewModel,
+  cartViewModel: CartViewModel,
   categoryViewModel: CategoryViewModel
 ) {
   val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -83,7 +85,7 @@ fun TopBar(
               color = MaterialTheme.colorScheme.onBackground
             )
           }
-          IconButton(onClick = { authViewModel.logout()}) {
+          IconButton(onClick = { authViewModel.logout(); cartViewModel.clearCart() }) {
             Icon(Icons.Default.ExitToApp, contentDescription = "Logout", tint = MaterialTheme.colorScheme.onBackground)
           }
         }

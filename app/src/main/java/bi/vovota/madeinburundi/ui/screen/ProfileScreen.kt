@@ -69,7 +69,7 @@ fun RequireAuth(
   content: @Composable () -> Unit
 ) {
   LaunchedEffect(authState) {
-    if (authState == AuthState.LOGGED_OUT) {
+    if (authState != AuthState.LOGGED_IN) {
       navController.navigate(NavDestinations.AUTH)
     }
   }

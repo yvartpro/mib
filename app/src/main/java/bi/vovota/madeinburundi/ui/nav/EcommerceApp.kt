@@ -74,7 +74,8 @@ fun EcommerceApp(
           navController = navController,
           authViewModel = authViewModel,
           userViewModel = userViewModel,
-          categoryViewModel = categoryViewModel
+            cartViewModel = cartViewModel,
+            categoryViewModel = categoryViewModel
         )
       }
     },

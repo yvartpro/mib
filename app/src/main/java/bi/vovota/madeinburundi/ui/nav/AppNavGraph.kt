@@ -66,6 +66,7 @@ fun AppNavGraph(
         cartViewModel = cartViewModel,
         userViewModel = userViewModel,
         navController = navController,
+          authViewModel = authViewModel,
         productViewModel = productViewModel
       )
     }

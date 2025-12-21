@@ -39,6 +39,8 @@ import bi.vovota.madeinburundi.data.model.User
 import bi.vovota.madeinburundi.ui.nav.NavDestinations
 import bi.vovota.madeinburundi.ui.theme.FontSizes
 import bi.vovota.madeinburundi.ui.theme.GreenMIB
+import bi.vovota.madeinburundi.viewmodel.AuthState
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.ProductViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -50,8 +52,10 @@ fun CartScreen(
   userViewModel: UserViewModel,
   navController: NavController,
   productViewModel: ProductViewModel,
+  authViewModel: AuthViewModel
 ) {
   val user by userViewModel.user.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
   BackHandler {
     val popped = navController.popBackStack("home", inclusive = false)
     if (!popped) {
@@ -99,18 +103,25 @@ fun CartScreen(
         CheckoutSummarySection(
           totalAmount = totalAmount,
           onCheckoutClick = {
-            val itemsCopy = cartItems.map { it.copy() }
-            cartViewModel.checkoutAndClear { success ->
-              if (success) {
-                confirmedItems = itemsCopy
-                confirmedTotal = totalAmount
-                showCheckoutDialog = true
-              } else {
-                coroutineScope.launch {
-                  snackbarHostState.showSnackbar(message = msg, withDismissAction = true)
-                }
+              if (authState == AuthState.LOGGED_IN) {
+                  val itemsCopy = cartItems.map { it.copy() }
+                  cartViewModel.checkoutAndClear { success ->
+                      if (success) {
+                          confirmedItems = itemsCopy
+                          confirmedTotal = totalAmount
+                          showCheckoutDialog = true
+                      } else {
+                          coroutineScope.launch {
+                              snackbarHostState.showSnackbar(
+                                  message = msg,
+                                  withDismissAction = true
+                              )
+                          }
+                      }
+                  }
+              }else {
+                  navController.navigate(NavDestinations.AUTH)
               }
-            }
           },
           isLoading = isCheckoutLoading,
           modifier = Modifier.padding(top = 24.dp),
