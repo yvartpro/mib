@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
     TokenManager.init(applicationContext)
     UserManager.init(applicationContext)
     setContent {
-      MadeInBurundiTheme {
+      MadeInBurundiTheme(darkTheme = false) {
         EcommerceApp()
       }
     }
