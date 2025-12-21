@@ -53,7 +53,7 @@ fun ProfileScreen(
 ) {
   val authState by authViewModel.authState.collectAsState()
 
-  RequireAuth(authState, navController) {
+  RequireAuth(authState, userViewModel, navController) {
     ProfileContent(
       navController = navController,
       authViewModel = authViewModel,
@@ -65,6 +65,7 @@ fun ProfileScreen(
 @Composable
 fun RequireAuth(
   authState: AuthState,
+  userViewModel: UserViewModel,
   navController: NavController,
   content: @Composable () -> Unit
 ) {
@@ -73,6 +74,7 @@ fun RequireAuth(
       navController.navigate(NavDestinations.AUTH)
     }
   }
+    LaunchedEffect(Unit) { userViewModel.loadUser() }
 
   if (authState == AuthState.LOGGED_IN) {
     content()
