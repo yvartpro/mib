@@ -2,6 +2,9 @@ package bi.vovota.madeinburundi.ui.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.autoSaver
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,6 +17,8 @@ import bi.vovota.madeinburundi.ui.screen.HomeScreen
 import bi.vovota.madeinburundi.ui.screen.ProductScreen
 import bi.vovota.madeinburundi.ui.screen.ProfileScreen
 import bi.vovota.madeinburundi.ui.screen.SearchScreen
+import bi.vovota.madeinburundi.viewmodel.AuthState
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.CartViewModel
 import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 import bi.vovota.madeinburundi.viewmodel.CompanyViewModel
@@ -25,6 +30,7 @@ import bi.vovota.madeinburundi.viewmodel.UserViewModel
 fun AppNavGraph(
   modifier: Modifier,
   navController: NavHostController,
+  authViewModel: AuthViewModel,
   cartViewModel: CartViewModel,
   productViewModel: ProductViewModel,
   userViewModel: UserViewModel,
@@ -38,7 +44,13 @@ fun AppNavGraph(
     companyViewModel.loadCompanies()
   }
 
-  NavHost(navController, startDestination = NavDestinations.HOME, modifier = modifier) {
+  val startDestination =
+    if (authViewModel.authState.collectAsState().value == AuthState.LOGGED_IN)
+      NavDestinations.HOME
+    else
+      NavDestinations.HOME
+
+  NavHost(navController, startDestination = startDestination, modifier = modifier) {
     composable(NavDestinations.HOME) {
       HomeScreen(
         cartViewModel = cartViewModel,
@@ -76,10 +88,12 @@ fun AppNavGraph(
         )
       }
     }
+
     composable(NavDestinations.PROFILE) {
       ProfileScreen(
         navController = navController,
         userViewModel = userViewModel,
+        authViewModel = authViewModel,
         orderViewModel = orderViewModel
       )
     }
@@ -87,8 +101,9 @@ fun AppNavGraph(
       AuthScreen(
         modifier = Modifier,
         onBackClick = { navController.navigate(NavDestinations.HOME)},
+        authViewModel = authViewModel,
         navController = navController,
-        userViewModel = userViewModel
+
       )
     }
     composable(NavDestinations.SEARCH) {

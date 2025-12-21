@@ -37,7 +37,27 @@ object TokenManager {
       it[USER_PHONE] = user.phone
     }
   }
-  suspend fun getAccessToken(): String? = dataStore.data.map {
+    suspend fun getUser(): User? {
+        return dataStore.data
+            .map { prefs ->
+                val id = prefs[USER_ID]
+                val name = prefs[USER_NAME]
+                val phone = prefs[USER_PHONE]
+
+                if (id != null && name != null && phone != null) {
+                    User(
+                        id = id,
+                        fullName = name,
+                        phone = phone
+                    )
+                } else {
+                    null
+                }
+            }
+            .firstOrNull()
+    }
+
+    suspend fun getAccessToken(): String? = dataStore.data.map {
     it[ACCESS_TOKEN_KEY]  }.firstOrNull().also { println("Access token got: $it") }
 
   suspend fun getRefreshToken(): String? = dataStore.data.map { it[REFRESH_TOKEN_KEY] }.firstOrNull()
@@ -47,4 +67,14 @@ object TokenManager {
       it.remove(REFRESH_TOKEN_KEY)
     }
   }
+    suspend fun clearAll() {
+        dataStore.edit {
+            it.remove(ACCESS_TOKEN_KEY)
+            it.remove(REFRESH_TOKEN_KEY)
+            it.remove(USER_ID)
+            it.remove(USER_NAME)
+            it.remove(USER_PHONE)
+        }
+    }
+
 }

@@ -19,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import bi.vovota.madeinburundi.ui.component.SnackbarTool
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.CartViewModel
 import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 import bi.vovota.madeinburundi.viewmodel.CompanyViewModel
@@ -32,6 +33,7 @@ import kotlin.system.exitProcess
 fun EcommerceApp(
   cartViewModel: CartViewModel = hiltViewModel(),
   productViewModel: ProductViewModel = hiltViewModel(),
+  authViewModel: AuthViewModel = hiltViewModel(),
   companyViewModel: CompanyViewModel = hiltViewModel(),
   userViewModel: UserViewModel = hiltViewModel(),
   categoryViewModel: CategoryViewModel = hiltViewModel(),
@@ -63,12 +65,17 @@ fun EcommerceApp(
         scope = scope,
         snackbarHostState = snackbarHostState,
         message = msg,
-        topPadding = 100.dp //if ( currentRoute == NavDestinations.HOME) 100.dp else 24.dp
+        topPadding = 100.dp
       )
     },
     topBar = {
       if (currentRoute != NavDestinations.AUTH) {
-        TopBar(navController = navController, userViewModel = userViewModel, categoryViewModel = categoryViewModel)
+        TopBar(
+          navController = navController,
+          authViewModel = authViewModel,
+          userViewModel = userViewModel,
+          categoryViewModel = categoryViewModel
+        )
       }
     },
     bottomBar = {
@@ -78,6 +85,7 @@ fun EcommerceApp(
     AppNavGraph(
       modifier = Modifier.padding(innerPadding),
       navController = navController,
+      authViewModel = authViewModel,
       cartViewModel = cartViewModel,
       productViewModel = productViewModel,
       companyViewModel = companyViewModel,

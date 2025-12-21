@@ -37,15 +37,35 @@ import bi.vovota.madeinburundi.data.model.UserUpdate
 import bi.vovota.madeinburundi.ui.component.MyDropDownMenu
 import bi.vovota.madeinburundi.ui.nav.NavDestinations
 import bi.vovota.madeinburundi.ui.theme.FontSizes
+import bi.vovota.madeinburundi.viewmodel.AuthState
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.OrderViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 
 @Composable
 fun ProfileScreen(
   navController: NavController,
+  authViewModel: AuthViewModel,
   userViewModel: UserViewModel,
   orderViewModel: OrderViewModel
 ) {
+  val authState by authViewModel.authState.collectAsState()
+
+  RequireAuth(authState, navController) {
+    ProfileContent(
+      navController = navController,
+      authViewModel = authViewModel,
+      userViewModel = userViewModel,
+      orderViewModel = orderViewModel
+    )
+  }
+}
+@Composable
+fun ProfileContent(
+  navController: NavController,
+  authViewModel: AuthViewModel,
+  userViewModel: UserViewModel,
+  orderViewModel: OrderViewModel) {
   val context = LocalContext.current
   val user = userViewModel.user
   val isLoading = userViewModel.isLoading
@@ -58,13 +78,16 @@ fun ProfileScreen(
   var passwordState by remember { mutableStateOf("") }
   var passwordVisible by remember { mutableStateOf(false) }
 
-  LaunchedEffect(Unit) {
-    userViewModel.loadUserProfile()
-    orderViewModel.loadOrders()
-    userViewModel.navigateToLogin.collect {
-      navController.navigate(NavDestinations.AUTH)
+  val authState by authViewModel.authState.collectAsState()
+
+  LaunchedEffect(authState) {
+    if (authState == AuthState.LOGGED_OUT) {
+      navController.navigate(NavDestinations.AUTH) {
+        popUpTo(NavDestinations.PROFILE) { inclusive = true }
+      }
     }
   }
+
     val orders = orderViewModel.orders
     val ownOrders = orders.filter { it.customer == user?.id }.sortedByDescending { it.date }
   if (isLoading) {
@@ -106,7 +129,7 @@ Text(
         if (!isEditMode) {
             EditableProfileInfoItem(
                 label = stringResource(R.string.f_phone),
-                isEditMode = isEditMode,
+                isEditMode = false,
                 isUpdating = isUpdating,
                 value = phoneState,
                 icon = Icons.Default.Phone,
@@ -387,3 +410,20 @@ data class OrderState(
   val title: String,
   val value: String
 )
+
+@Composable
+fun RequireAuth(
+  authState: AuthState,
+  navController: NavController,
+  content: @Composable () -> Unit
+) {
+  LaunchedEffect(authState) {
+    if (authState == AuthState.LOGGED_OUT) {
+      navController.navigate(NavDestinations.AUTH)
+    }
+  }
+
+  if (authState == AuthState.LOGGED_IN) {
+    content()
+  }
+}

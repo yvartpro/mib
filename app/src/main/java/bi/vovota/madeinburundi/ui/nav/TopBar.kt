@@ -18,6 +18,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import bi.vovota.madeinburundi.R
 import bi.vovota.madeinburundi.data.model.TokenManager
 import bi.vovota.madeinburundi.ui.theme.FontSizes
+import bi.vovota.madeinburundi.viewmodel.AuthViewModel
 import bi.vovota.madeinburundi.viewmodel.CategoryViewModel
 import bi.vovota.madeinburundi.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TopBar(
   navController: NavController,
+  authViewModel: AuthViewModel,
   userViewModel: UserViewModel,
   categoryViewModel: CategoryViewModel
 ) {
@@ -81,13 +83,7 @@ fun TopBar(
               color = MaterialTheme.colorScheme.onBackground
             )
           }
-          IconButton(onClick = {
-            scope.launch {
-              TokenManager.clearTokens()
-              userViewModel.clearUser()
-              navController.navigate(NavDestinations.HOME)
-            }
-          }) {
+          IconButton(onClick = { authViewModel.logout()}) {
             Icon(Icons.Default.ExitToApp, contentDescription = "Logout", tint = MaterialTheme.colorScheme.onBackground)
           }
         }
